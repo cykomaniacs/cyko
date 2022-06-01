@@ -1,0 +1,50 @@
+{
+  "[cpp]":
+  {
+    "editor.wordBasedSuggestions": false, // suggestion popup based on history
+    "editor.suggest.insertMode": "insert",
+    "editor.guides.indentation": true,
+    "editor.suggest.showInlineDetails": true,
+    "editor.guides.highlightActiveIndentation": "always",
+    "editor.selectionHighlight": true, // highlight matching selection
+    "editor.occurrencesHighlight": true, // highligt cursor occurrences
+  },
+
+  "editor.roundedSelection": true,
+
+  "editor.guides.bracketPairs": "active",
+  //"editor.guides.bracketPairs": true, // "active" (cursor) | true (always)
+  "editor.matchBrackets": "near",
+  //"editor.matchBrackets": "always", // "near" (cursor) | "always"
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairsHorizontal": true,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "editor.language.brackets": [
+    [ "[", "]" ],
+    [ "{", "}" ],
+    [ "<", ">" ],
+    [ "(", ")" ],
+    [ "\"","\""],
+    [ "'", "'" ],
+  ],
+
+  "editor.guides.highlightActiveBracketPair": true,
+  "editor.guides.highlightActiveIndentation": "always", // "always" (+bracket)
+  "editor.guides.indentation": true,
+
+  "gitlens.blame.highlight.enabled": true,
+  "gitlens.blame.highlight.locations": [
+    "gutter",
+    "line",
+    "overview",
+  ],
+  "editor.selectionHighlight": true, // highlight matching selection
+  "editor.occurrencesHighlight": true, // highligt cursor occurrences
+  "editor.renderLineHighlight": "all", // highlight current line
+  "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
+
+  "workbench.tree.renderIndentGuides": "always", // file explorer
+  "workbench.sideBar.location": "right",
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.editor.tabSizing": "shrink",
+}

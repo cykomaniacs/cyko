@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "debug(msvc:x64)", "presentation": {
+        "hidden": false,
+        "group": "VC",
+        "order": 1
+      },
+
+      "type":    "cppvsdbg",
+      "request": "launch",
+      "cwd":     "${fileDirname}",
+      "program": "${workspaceFolder}/bin/debug/x64/cyko.exe", "args": [],
+
+      "console": "integratedTerminal", "environment": [],
+
+      "stopAtEntry": false,
+      "symbolSearchPath": "${workspaceFolder}/bin/debug/x64/",
+    }, {
+      "name": "debug/clean(msvc:x64)", "presentation": {
+        "hidden": false,
+        "group": "VC",
+        "order": 2
+      },
+
+      "type":    "PowerShell",
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "script":  "./nuke.ps1", "args": [],
+    }
+  ]
+}

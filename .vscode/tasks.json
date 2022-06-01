@@ -1,0 +1,101 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "detail": "debug(msvc:x64)",
+      "type":   "cppbuild",
+      "label":  "Compile Active File",
+      "group": { "kind": "build", "isDefault": true, }, "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false,
+      },
+
+      "command": "cl.exe", "args": [
+        "/options:strict", // unrecognized compiler options == error!!
+
+        /*
+         * preprocessing
+         */
+
+        "/DCYKO_BUILD_TOOLCHAIN_MSVC", // Microsoft VC
+        "/DCYKO_BUILD_CODEBASE_MSVC",
+        "/DCYKO_BUILD_X64",
+        "/DCYKO_BUILD_WINDOWS",
+        "/DCYKO_DEBUG",
+
+        "/D_CONSOLE",
+        //"/D_DEBUG", // linker errors!!!
+        "/D_UNICODE","/DUNICODE",
+
+        /*
+         * include paths/files
+         */
+
+        "/I${workspaceFolder}/include",
+        "/FI${workspaceFolder}/include/cyko/common/types.h",
+
+        /*
+         * c++ preferences
+         */
+
+        "/std:c++20",         // c++ standard version <c++(11|17|20)>
+      //"/Zc:auto",           // [-] enforce the new Standard C++ meaning for auto
+      //"/Zc:forScope",       // [-] enforce Standard C++ for scoping rules
+      //"/Zc:inline",         // [-] remove unreferenced function or data if it is COMDAT or has internal linkage only (off by default)
+      //"/Zc:lambda",         // [-] better lambda support by using the newer lambda processor (off by default)
+      //"/Zc:static_assert",  // [-] strict handling of 'static_assert' (implied by /permissive-)
+      //"/Zc:wchar_t",        // [-] wchar_t is the native type, not a typedef
+
+        /*
+        * unsorted...
+        */
+
+        "/EHsc",
+        "/nologo",
+        "/Gd",                // specifies the __cdecl (default) calling convention for all functions except C++ member functions and functions that are marked __stdcall, __fastcall, or __vectorcall.
+        "/Od",                // disable optimize
+      //"/Zi",                // enable debug information (masked by /ZI)
+        "/ZI",                // enable Edit and Continue debug info (overrides /Zi)
+      //"/JMC",               // [-] enable native Just-My-Code (debug?)
+        "/W3",                // warning level (<all>|[0-3])
+        "/WX",                // treat warnings as errors
+      //"/WL",                // enable one line diagnostics
+        "/fp:precise",        // floating-point model; results are predictable
+        "/Gm-",               // [-] enable minimal rebuild
+        "/GS",                // [-] enable security checks
+        "/utf-8",             // set source and execution character set to UTF-8
+        "/sdl",               // enable additional security features and warnings
+      //"/TP",                // compile all files as .cpp
+        "/permissive-",       // [-] enable some nonconforming code to compile (feature set subject to change) (on by default)
+
+        "/Fd:", "${workspaceFolder}/bin/debug/x64/vc143.pdb",
+        "/Fo:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.obj",
+        "/Fe:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe", "${file}"
+      ],
+
+      "problemMatcher": [ "$msCompile" ],
+      "dependsOn": [ "clean-debug-msvc-x64" ],
+    }, {
+      "detail": "debug(msvc:x64)",
+      "type":   "shell",
+      "label":  "clean-debug-msvc-x64",
+      "group": { "kind": "none", "isDefault": false }, "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true,
+      },
+
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "./nuke.ps1",
+    }
+  ]
+}

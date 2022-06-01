@@ -1,0 +1,32 @@
+{
+  "version": 4,
+  "configurations": [
+    {
+      "name": "Win32",
+
+      "includePath": [
+        "${workspaceFolder}/include"
+      ], "forcedInclude": [
+        "${workspaceFolder}/include/cyko/common/types.h"
+      ],
+
+      "defines": [
+        "CYKO_DEBUG",                // TARGET
+        "CYKO_BUILD_TOOLCHAIN_MSVC", // HOST Microsoft VC (cl.exe)
+        "CYKO_BUILD_CODEBASE_MSVC",  // HOST Microsoft VC (stdlib)
+        "CYKO_BUILD_X64",            // HOST Architecture
+        "CYKO_BUILD_WINDOWS",        // TARGET OS
+
+        "_CONSOLE",
+        "_DEBUG",
+        "_UNICODE", "UNICODE"
+      ],
+
+      "windowsSdkVersion": "10.0.22000.0",
+      "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "windows-msvc-x64"
+    }
+  ]
+}
