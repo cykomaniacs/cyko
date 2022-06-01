@@ -1,0 +1,6 @@
+.vs
+bin/**/*
+!bin/debug/x64/.gitkeep
+!bin/debug/x86/.gitkeep
+!bin/release/x64/.gitkeep
+!bin/release/x86/.gitkeep
