@@ -47,4 +47,9 @@
   "workbench.sideBar.location": "right",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.tabSizing": "shrink",
+  "files.associations": {
+    "*.ps1": "powershell",
+    "iostream": "cpp",
+    "type_traits": "cpp"
+  },
 }

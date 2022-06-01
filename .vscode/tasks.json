@@ -4,9 +4,30 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "detail": "debug(msvc:x64)",
-      "type":   "cppbuild",
-      "label":  "Compile Active File",
+      "label": "debug-x64(clean)",
+      "type":  "shell",
+      "group": { "kind": "none", "isDefault": false }, "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true,
+      },
+
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "./nuke.ps1",
+    },
+
+
+    /*
+     * MSVC (DEFAULT)
+     */
+
+
+    {
+      "label": "debug-x64-msvc",
+      "type":  "cppbuild",
       "group": { "kind": "build", "isDefault": true, }, "presentation": {
         "echo": true,
         "reveal": "always",
@@ -80,22 +101,90 @@
       ],
 
       "problemMatcher": [ "$msCompile" ],
-      "dependsOn": [ "clean-debug-msvc-x64" ],
-    }, {
-      "detail": "debug(msvc:x64)",
-      "type":   "shell",
-      "label":  "clean-debug-msvc-x64",
-      "group": { "kind": "none", "isDefault": false }, "presentation": {
+      "dependsOn": [ "debug-x64(clean)" ],
+    },
+
+
+    /*
+     * MSVC CLANG
+     */
+
+
+    {
+      "label": "debug-x64(msvc:clang)", // link
+      "type":  "cppbuild",
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
         "echo": true,
         "reveal": "always",
         "focus": false,
         "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true,
+        "showReuseMessage": true,
+        "clear": false,
       },
 
-      "options": { "cwd": "${workspaceFolder}" },
-      "command": "./nuke.ps1",
-    }
+      "command": "clang-cl<linker>.exe", "args": [
+
+      ],
+
+      "problemMatcher": [ "$msCompile" ],
+      "dependsOn": [ "debug-x64(msvc:clang:build)" ],
+    }, {
+      "label": "debug-x64(msvc:clang:build)",
+      "type":  "cppbuild",
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false,
+      },
+
+      "command": "clang-cl.exe", "args": [
+        "/options:strict", // unrecognized compiler options == error!!
+
+        /*
+         * preprocessing
+         */
+
+        "/DCYKO_BUILD_TOOLCHAIN_MSVC", // Microsoft VC
+        "/DCYKO_BUILD_CODEBASE_MSVC",
+        "/DCYKO_BUILD_X64",
+        "/DCYKO_BUILD_WINDOWS",
+        "/DCYKO_DEBUG",
+
+        "/D_CONSOLE",
+      //"/D_DEBUG", // linker errors!!!
+        "/D_UNICODE","/DUNICODE",
+
+        /*
+         * include paths/files
+         */
+
+        "/I${workspaceFolder}/include",
+        "/FI${workspaceFolder}/include/cyko/common/types.h",
+
+        /*
+         * c++ preferences
+         */
+
+        "/c",
+        "/Z7",
+        "/nologo",
+        "/W3",
+        "/WX-",
+        "/diagnostics:column",
+        "/Od",
+        "/EHsc",
+        "/MDd",
+        "/GS",
+        "/fp:precise",
+        "/std:c++20",
+        "/FoD:\\o.workshop\\src\\cpp\\cyko\\bin\\debug\\x64\\", "/Gd", "/TP", "-m64", "D:\\o.workshop\\src\\cpp\\cyko\\src\\cyko.cpp"
+      ],
+
+      "problemMatcher": [ "$msCompile" ],
+      "dependsOn": [ "debug-x64(clean)" ],
+    },
   ]
 }

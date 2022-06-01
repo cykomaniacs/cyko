@@ -1,21 +1,34 @@
 {
   "version": 4,
+  "enableConfigurationSquiggles": true, // extension error reporting
+
+  "env": {
+    // tools
+    "compilerMSVCx64":      "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
+    "compilerMSVCx64Clang": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+    // cyko related...
+    "cykoInclude": "${workspaceFolder}/include",
+    "cykoSource": "${workspaceFolder}/src",
+    "cykoOutput": "${workspaceFolder}/bin"
+  },
+
   "configurations": [
     {
-      "name": "Win32",
+      "name": "debug(msvc:x64:clang)",
 
       "includePath": [
-        "${workspaceFolder}/include"
+        "${cykoInclude}"
       ], "forcedInclude": [
-        "${workspaceFolder}/include/cyko/common/types.h"
+        "${cykoInclude}/cyko/common/types.h"//,"${workspaceFolder}/include/cyko/common/types.h"
       ],
 
       "defines": [
-        "CYKO_DEBUG",                // TARGET
-        "CYKO_BUILD_TOOLCHAIN_MSVC", // HOST Microsoft VC (cl.exe)
-        "CYKO_BUILD_CODEBASE_MSVC",  // HOST Microsoft VC (stdlib)
-        "CYKO_BUILD_X64",            // HOST Architecture
-        "CYKO_BUILD_WINDOWS",        // TARGET OS
+        "CYKO_DEBUG",                // TARGET > Configuration
+      //"CYKO_BUILD_TOOLCHAIN_MSVC", //   HOST > Microsoft VC (cl.exe)
+        "CYKO_BUILD_TOOLCHAIN_CLANG",//   HOST > Microsoft VC (cl.exe)
+        "CYKO_BUILD_CODEBASE_MSVC",  //   HOST > Microsoft VC (stdlib)
+        "CYKO_BUILD_X64",            //   HOST > Architecture
+        "CYKO_BUILD_WINDOWS",        // TARGET > OS
 
         "_CONSOLE",
         "_DEBUG",
@@ -23,10 +36,10 @@
       ],
 
       "windowsSdkVersion": "10.0.22000.0",
-      "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
+      "compilerPath": "${compilerMSVCx64Clang}",
       "cStandard": "c17",
       "cppStandard": "c++20",
-      "intelliSenseMode": "windows-msvc-x64"
+      "intelliSenseMode": "windows-clang-x64" // "windows-msvc-x64"
     }
   ]
 }
