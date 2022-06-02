@@ -7,19 +7,19 @@
     "compilerMSVCx64":      "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
     "compilerMSVCx64Clang": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
     // cyko related...
-    "cykoInclude": "${workspaceFolder}/include",
-    "cykoSource": "${workspaceFolder}/src",
-    "cykoOutput": "${workspaceFolder}/bin"
+    "cykoInc": "${workspaceFolder}/include",
+    "cykoSrc": "${workspaceFolder}/src",
+    "cykoBin": "${workspaceFolder}/bin"
   },
 
   "configurations": [
     {
-      "name": "debug(msvc:x64:clang)",
+      "name": "debug(msvc:x64)",
 
       "includePath": [
-        "${cykoInclude}"
+        "${cykoInc}"
       ], "forcedInclude": [
-        "${cykoInclude}/cyko/common/types.h"//,"${workspaceFolder}/include/cyko/common/types.h"
+        "${cykoInc}/cyko/common/types.h"
       ],
 
       "defines": [
@@ -40,7 +40,6 @@
       "cStandard": "c17",
       "cppStandard": "c++20",
       "intelliSenseMode": "windows-msvc-x64"
-    //"intelliSenseMode": "windows-clang-x64"
     }
   ]
 }

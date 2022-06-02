@@ -48,4 +48,9 @@
   "workbench.sideBar.location": "right",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.tabSizing": "shrink",
+  "files.associations": {
+    "*.ps1": "powershell",
+    "cstddef": "cpp",
+    "xtr1common": "cpp"
+  },
 }

@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "debug(msvc:x64)", "presentation": {
+      "name": "debug-x64-msvc", "presentation": {
         "hidden": false,
         "group": "VC",
         "order": 1
@@ -13,12 +13,12 @@
       "cwd":     "${fileDirname}",
       "program": "${workspaceFolder}/bin/debug/x64/cyko.exe", "args": [],
 
-      "console": "integratedTerminal", "environment": [],
+      "console": "internalConsole", "environment": [],
 
       "stopAtEntry": false,
       "symbolSearchPath": "${workspaceFolder}/bin/debug/x64/",
     }, {
-      "name": "debug/clean(msvc:x64)", "presentation": {
+      "name": "debug-x64(clean)", "presentation": {
         "hidden": false,
         "group": "VC",
         "order": 2
@@ -27,7 +27,30 @@
       "type":    "PowerShell",
       "request": "launch",
       "cwd":     "${workspaceFolder}",
-      "script":  "./nuke.ps1", "args": [],
+      "script":  "./nuke.ps1", "args": [
+        "-base", "'./bin'",
+        "-name", "'debug'",
+        "-arch", "'x64'"
+      ],
+
+      "createTemporaryIntegratedConsole": false,
+    }, {
+      "name": "clean-all", "presentation": {
+        "hidden": false,
+        "group": "X",
+        "order": 1
+      },
+
+      "type":    "PowerShell",
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "script":  "./nuke.ps1", "args": [
+        "-base", "'./bin'",
+        "-name", "'debug, release'",
+        "-arch", "'x86, x64'"
+      ],
+
+      "createTemporaryIntegratedConsole": false,
     }
   ]
 }
