@@ -5,9 +5,12 @@
     "editor.suggest.insertMode": "insert",
     "editor.guides.indentation": true,
     "editor.suggest.showInlineDetails": true,
-    "editor.guides.highlightActiveIndentation": "always",
+    "editor.guides.highlightActiveBracketPair": true,
+    "editor.guides.highlightActiveIndentation": "always", // "always" (+bracket)
     "editor.selectionHighlight": true, // highlight matching selection
     "editor.occurrencesHighlight": true, // highligt cursor occurrences
+    "editor.renderLineHighlight": "all", // highlight current line
+    "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
   },
 
   "editor.roundedSelection": true,
@@ -30,7 +33,6 @@
 
   "editor.guides.highlightActiveBracketPair": true,
   "editor.guides.highlightActiveIndentation": "always", // "always" (+bracket)
-  "editor.guides.indentation": true,
 
   "gitlens.blame.highlight.enabled": true,
   "gitlens.blame.highlight.locations": [
@@ -38,8 +40,7 @@
     "line",
     "overview",
   ],
-  "editor.selectionHighlight": true, // highlight matching selection
-  "editor.occurrencesHighlight": true, // highligt cursor occurrences
+
   "editor.renderLineHighlight": "all", // highlight current line
   "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
 
@@ -47,9 +48,4 @@
   "workbench.sideBar.location": "right",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.tabSizing": "shrink",
-  "files.associations": {
-    "*.ps1": "powershell",
-    "iostream": "cpp",
-    "type_traits": "cpp"
-  },
 }

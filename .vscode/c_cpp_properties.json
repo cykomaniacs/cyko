@@ -24,8 +24,8 @@
 
       "defines": [
         "CYKO_DEBUG",                // TARGET > Configuration
-      //"CYKO_BUILD_TOOLCHAIN_MSVC", //   HOST > Microsoft VC (cl.exe)
-        "CYKO_BUILD_TOOLCHAIN_CLANG",//   HOST > Microsoft VC (cl.exe)
+        "CYKO_BUILD_TOOLCHAIN_MSVC", //   HOST > Microsoft VC (cl.exe)
+      //"CYKO_BUILD_TOOLCHAIN_CLANG",//   HOST > Microsoft VC (cl.exe)
         "CYKO_BUILD_CODEBASE_MSVC",  //   HOST > Microsoft VC (stdlib)
         "CYKO_BUILD_X64",            //   HOST > Architecture
         "CYKO_BUILD_WINDOWS",        // TARGET > OS
@@ -36,10 +36,11 @@
       ],
 
       "windowsSdkVersion": "10.0.22000.0",
-      "compilerPath": "${compilerMSVCx64Clang}",
+      "compilerPath": "${compilerMSVCx64}",
       "cStandard": "c17",
       "cppStandard": "c++20",
-      "intelliSenseMode": "windows-clang-x64" // "windows-msvc-x64"
+      "intelliSenseMode": "windows-msvc-x64"
+    //"intelliSenseMode": "windows-clang-x64"
     }
   ]
 }
