@@ -49,7 +49,7 @@
          * preprocessing
          */
 
-        "/DCYKO_BUILD_TOOLCHAIN_MSVC", // Microsoft VC
+        "/DCYKO_BUILD_COMPILER_MSVC", // Microsoft VC
         "/DCYKO_BUILD_CODEBASE_MSVC",
         "/DCYKO_BUILD_X64",
         "/DCYKO_BUILD_WINDOWS",

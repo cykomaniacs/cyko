@@ -34,7 +34,10 @@
       ],
 
       "createTemporaryIntegratedConsole": false,
-    }, {
+    },
+
+
+    {
       "name": "clean-all", "presentation": {
         "hidden": false,
         "group": "X",
