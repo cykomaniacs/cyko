@@ -2,7 +2,7 @@
 #define CYKO_TYPE_IS_BASE_OF_H
 
 #include <cyko/meta/expression.h>
-#ifdef CYKO_BUILD_CODEBASE_MSVC
+#ifdef CYKO_BUILD_CODESET_MSVC
 #include <type_traits>
 #endif
 
@@ -16,14 +16,15 @@ namespace type {
 
   template <typename B, typename D>
     struct is_base_of
-    #ifdef CYKO_BUILD_CODEBASE_MSVC
+    #ifdef CYKO_BUILD_CODESET_MSVC
     : meta::bool_t<__is_base_of(B, D)>
-    #else
-    : meta::assert<!true>
-    #endif
     {
       using self = is_base_of<B, D>;
     };
+    #else
+    { static_assert(false, "unimplemented!"); };
+    #endif
+
 
 } // namespace cyko::type
 } // namespace cyko

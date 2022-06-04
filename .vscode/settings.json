@@ -1,20 +1,5 @@
 {
-  "[cpp]":
-  {
-    "editor.wordBasedSuggestions": false, // suggestion popup based on history
-    "editor.suggest.insertMode": "insert",
-    "editor.guides.indentation": true,
-    "editor.suggest.showInlineDetails": true,
-    "editor.guides.highlightActiveBracketPair": true,
-    "editor.guides.highlightActiveIndentation": "always", // "always" (+bracket)
-    "editor.selectionHighlight": true, // highlight matching selection
-    "editor.occurrencesHighlight": true, // highligt cursor occurrences
-    "editor.renderLineHighlight": "all", // highlight current line
-    "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
-  },
-
   "editor.roundedSelection": true,
-
   "editor.guides.bracketPairs": "active",
   //"editor.guides.bracketPairs": true, // "active" (cursor) | true (always)
   "editor.matchBrackets": "near",
@@ -48,9 +33,78 @@
   "workbench.sideBar.location": "right",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.tabSizing": "shrink",
-  "files.associations": {
-    "*.ps1": "powershell",
-    "cstddef": "cpp",
-    "xtr1common": "cpp"
+
+  //+-----+-----------------------------------------------------------------
+  //| CPP | OVERRIDES
+  //+-----+-----------------------------------------------------------------
+  "[cpp]":
+  {
+    "editor.wordBasedSuggestions": true, // suggestion popup based on history
+    "editor.suggest.insertMode": "insert",
+    "editor.guides.indentation": true,
+    "editor.suggest.showInlineDetails": true,
+    "editor.guides.highlightActiveBracketPair": true,
+    "editor.guides.highlightActiveIndentation": "always", // "always" (+bracket)
+    "editor.selectionHighlight": true, // highlight matching selection
+    "editor.occurrencesHighlight": true, // highligt cursor occurrences
+    "editor.renderLineHighlight": "all", // highlight current line
+    "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
   },
+  //+-----+-----------------------------------------------------------------
+  //| CPP | GENERAL
+  //+-----+-----------------------------------------------------------------
+  "C_Cpp.autoAddFileAssociations": true,
+  "C_Cpp.autocomplete": "Default",
+  "C_Cpp.dimInactiveRegions": true,
+  "C_Cpp.enhancedColorization": "Enabled",
+  "C_Cpp.errorSquiggles": "Enabled",
+  "C_Cpp.intelliSenseEngine": "Default",
+  "C_Cpp.suggestSnippets": true,
+  //+-----+-----------------------------------------------------------------
+  //| CPP | TIDY (LINT)
+  //+-----+-----------------------------------------------------------------
+  "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+  "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
+    "clang-analyzer-*",
+    "llvm-*", "misc-*"
+  ],
+  "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
+    "llvm-namespace-comment",
+    "llvm-include-order",
+  ],
+  //+-----+-----------------------------------------------------------------
+  //| CPP | BUILD CONFIGURATION
+  //+-----+-----------------------------------------------------------------
+  "C_Cpp.default.cStandard": "c17",
+  "C_Cpp.default.cppStandard": "c++20",
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/include"
+  ],
+  "C_Cpp.default.forcedInclude": [
+    "${workspaceFolder}/include/common/common.h"
+  ],
+  //+-----+-----------------------------------------------------------------
+  //| CPP | LOGGING (OUTPUT TAB)
+  //+-----+-----------------------------------------------------------------
+//"C_Cpp.loggingLevel": "Debug",
+  "C_Cpp.loggingLevel": "Information",
+//"C_Cpp.loggingLevel": "Warning",
+//"C_Cpp.loggingLevel": "Error",
+//"C_Cpp.loggingLevel": "None",
+  //+-----+-----------------------------------------------------------------
+  //| CPP | END!
+  //+-----+-----------------------------------------------------------------
+
+
+
+
+  //+-----------------------------------------------------------------------
+  //| FILE-TYPES
+  //+-----------------------------------------------------------------------
+  "files.associations": {
+    "cstddef": "cpp",
+    "xtr1common": "cpp",
+    "cstdint": "cpp",
+    "iostream": "cpp"
+  }
 }

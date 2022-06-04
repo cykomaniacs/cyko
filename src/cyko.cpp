@@ -4,7 +4,7 @@
 int main()
 {
   cyko::size_t x = 1337;
-
+  cyko::size_t z = 1337;
   using namespace cyko::type;
 
   add_const<int> a = 1;
@@ -22,6 +22,7 @@ int main()
   remove_pointer<int volatile*const**const, true> qe = NULL;
   remove_pointer<int*[], true> qf = { &pa };
   cyko::type::add_const<int> xjj = 1;
+
   /*
   remove_const<int const volatile&&const volatile> e = 3;
   remove_const<int const volatile&const volatile> e = e;
@@ -42,8 +43,7 @@ int main()
   remove_pointer<int const*> pg = 0;
   remove_pointer<int const**> ph = 0;
   */
-  std::cout << "Hello World!\n";
-  std::cout << xjj
+  std::cout << "Hello World!"
   << std::endl << ':'
   << sizeof(int)
   << std::endl << ':'

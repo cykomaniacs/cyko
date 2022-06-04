@@ -3,13 +3,13 @@
   "enableConfigurationSquiggles": true, // extension error reporting
 
   "env": {
-    // tools
-    "compilerWinMSVCx64":  "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
-    "compilerWinClangx64": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
-    "compilerWinLLVMx64":  "",
-    "compilerWinGCCx64":   "",
-    "compilerNixLLVMx64":  "",
-    "compilerNixGCCx64":   "",
+    "compilerWinMSVCx64":     "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
+    "compilerWinMSVClangx64": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+  //"compilerWinLLVMx64":     "",
+  //"compilerWinGCCx64":      "",
+  //"compilerNixLLVMx64":     "",
+  //"compilerNixGCCx64":      "",
+
     // cyko related...
     "cykoInc": "${workspaceFolder}/include",
     "cykoSrc": "${workspaceFolder}/src",
@@ -19,30 +19,26 @@
 
 
   "configurations": [
-    /* ----------------------------------------------------------------------
-     * WIN (WINDOWS/MINGW/MSYS/...)
-     * ----------------------------------------------------------------------
-     */
-
+    //+-----+----------------------------------------------------------------
+    //| WIN | WINDOWS/MINGW/MSYS/...
+    //+-----+----------------------------------------------------------------
+    /*
     {
       "name": "win-msvc-x64(debug)",
 
-      "includePath": [
-        "${cykoInc}"
-      ], "forcedInclude": [
-        "${cykoInc}/cyko/common/types.h"
-      ],
+      //"includePath": [ "${cykoInc}" ], "forcedInclude": [ "${cykoInc}/cyko/common/types.h" ],
 
       "defines": [
-        "CYKO_DEBUG",               // TARGET > Configuration
-        "CYKO_BUILD_COMPILER_MSVC", //   HOST > Microsoft VC (cl.exe)
-        "CYKO_BUILD_CODEBASE_MSVC", //   HOST > Microsoft VC (stdlib)
-        "CYKO_BUILD_X64",           //   HOST > Architecture
-        "CYKO_BUILD_WINDOWS",       // TARGET > OS
+        "CYKO_DEBUG",             // TARGET > Configuration
+        "CYKO_BUILD_TOOLSET_MSVC",//   HOST > Microsoft VC (cl.exe)
+        "CYKO_BUILD_CODESET_MSVC",//   HOST > Microsoft VC (stdlib)
+        "CYKO_BUILD_X64",         //   HOST > Architecture
+        "CYKO_BUILD_WINDOWS",     // TARGET > OS
+        "CYKO_BUILD_USE_STDINT",  // CONFIG > Use <cstdint> for size types
 
         "_CONSOLE",
         "_DEBUG",
-        "_UNICODE", "UNICODE"
+        "_UNICODE"
       ],
 
       "windowsSdkVersion": "10.0.22000.0",
@@ -51,74 +47,36 @@
       "cppStandard": "c++20",
       "intelliSenseMode": "windows-msvc-x64"
     },
+    */
+    { // ------------------------------------------------------------------
+      "name": "win-x64(debug)",
 
-    /*
-     * TODO ...
-     */
-
-    {
-      "name": "win-clang-x64(debug)",
-
-      "includePath": [
-        "${cykoInc}"
-      ], "forcedInclude": [
+      "includePath": [ "${cykoInc}" ], "forcedInclude": [
         "${cykoInc}/cyko/common/types.h"
       ],
 
       "defines": [
         "CYKO_DEBUG",
-        "CYKO_BUILD_COMPILER_CLANG", // (clang-cl.exe)
-        "CYKO_BUILD_CODEBASE_MSVC",
+        "CYKO_BUILD_TOOLSET_MSVCLANG", // (clang-cl.exe)
+        "CYKO_BUILD_CODESET_MSVC",
         "CYKO_BUILD_X64",
         "CYKO_BUILD_WINDOWS",
+        "CYKO_BUILD_USE_STDINT",
 
         "_CONSOLE",
         "_DEBUG",
-        "_UNICODE", "UNICODE"
+        "_UNICODE"
       ],
 
       "windowsSdkVersion": "10.0.22000.0",
-      "compilerPath": "${compilerWinClangx64}",
-      "cStandard": "c17",
-      "cppStandard": "c++20",
-      "intelliSenseMode": "windows-clang-x64"
-    },
-
-    /*
-     * TODO ...
-     */
-
-    {
-      "name": "win-llvm-x64(debug)",
-
-      "includePath": [
-        "${cykoInc}"
-      ], "forcedInclude": [
-        "${cykoInc}/cyko/common/types.h"
-      ],
-
-      "defines": [
-        "CYKO_DEBUG",
-        "CYKO_BUILD_COMPILER_LLVM", // (clang.exe)
-        "CYKO_BUILD_CODEBASE_LLVM",
-        "CYKO_BUILD_X64",
-        "CYKO_BUILD_WINDOWS",
-
-        "_CONSOLE",
-        "_DEBUG",
-        "_UNICODE", "UNICODE"
-      ],
-
-      "windowsSdkVersion": "10.0.22000.0",
-      "compilerPath": "${compilerWinLLVMx64}",
+      "compilerPath": "${compilerWinMSVClangx64}",
       "cStandard": "c17",
       "cppStandard": "c++20",
       "intelliSenseMode": "windows-clang-x64"
     }
 
-    /* ----------------------------------------------------------------------
-     * NIX (LINUX/BSD/...)
-     * ----------------------------------------------------------------------
-     */
+    //+-----+----------------------------------------------------------------
+    //| NIX | LINUX/BSD/...
+    //+-----+----------------------------------------------------------------
   ]
 }

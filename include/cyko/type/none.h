@@ -1,5 +1,5 @@
-#ifndef CYKO_TYPE_IS_NONE_H
-#define CYKO_TYPE_IS_NONE_H
+#ifndef CYKO_TYPE_NONE_H
+#define CYKO_TYPE_NONE_H
 
 namespace cyko {
 namespace type

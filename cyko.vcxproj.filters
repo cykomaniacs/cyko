@@ -140,6 +140,12 @@
     <ClInclude Include="include\cyko\env.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\cyko\type\is_function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cyko\common\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\debug\x64\.gitkeep" />

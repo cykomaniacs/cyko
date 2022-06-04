@@ -1,9 +1,9 @@
 #.SYNOPSIS
-# Clean build files.
+# Build cleaner.
 # cykomaniacs development 2022.
 #
 #.DESCRIPTION
-# Generic nuker.
+# Generic clean script.
 #
 #.PARAMETER keep
 # List of file-names to keep.
@@ -24,6 +24,8 @@
 #
 #.NOTES
 # Powershell ftw!
+
+#using namespace System;
 
 param (
   [Parameter(Mandatory=$false, ParameterSetName="main")]
@@ -48,78 +50,115 @@ param (
 )
 
 # ---------------------------------------------------------------------------
-# helpers
+# helpers (classes, just for fun!)
+# ---------------------------------------------------------------------------
+
+class log {
+  static hidden $color = @{
+    name = [System.ConsoleColor]::Blue;
+    arch = [System.ConsoleColor]::Blue;
+    text = [System.ConsoleColor]::DarkGray;
+
+    pre  = [System.ConsoleColor]::DarkGray;
+    par  = [System.ConsoleColor]::Yellow;
+    sep  = [System.ConsoleColor]::DarkBlue;
+
+    keep = [System.ConsoleColor]::Green;
+    nuke = [System.ConsoleColor]::Red;
+    file = [System.ConsoleColor]::Gray;
+  }
+
+  static hidden [void]
+  mesg([string]$rgb, [string]$str, [switch]$end) {
+    Write-Host -ForegroundColor ([log]::color)[$rgb] $str -NoNewline
+    Write-Host "" -NoNewline:(!$end) # new-line / reset color
+  }
+
+  static [void] # print target info
+  head([string]$name, [string]$arch) {
+    [log]::mesg("pre",  "> ", $false)
+    [log]::mesg("name", "${name}", $false)
+    [log]::mesg("sep",  ":", $false)
+    [log]::mesg("arch", "${arch}", $false)
+    [log]::mesg("par",  "(", $false)
+    [log]::mesg("pre",  "nuke", $false)
+    [log]::mesg("par",  ")", $true)
+  }
+
+  static [void] # print file info
+  file([string]$path, [string]$name, [switch]$skip) {
+    $xx = $skip ? "*" : "-";
+    $xc = $skip ? "keep" : "nuke";
+    $fc = "file";
+
+    [log]::mesg($xc, "${xx} ", $false)
+    [log]::mesg($fc, "${path}/${name}", $true)
+  }
+}
+
+class app {
+  static hidden [bool]
+  keep([array]$list, [string]$file) {
+    $list.forEach({ if ("${_}" -eq "${file}") { return $true } })
+    return $false
+  }
+
+  static [void]
+  main() {
+
+  }
+}
+
+# ---------------------------------------------------------------------------
+# main > functions
 # ---------------------------------------------------------------------------
 
 function script:head {
-  param (
+  param(
     [Parameter(Mandatory)]
     [string] # target name
     $name,
-
     [Parameter(Mandatory)]
     [string] # target architecture
     $arch
   )
-  Write-Host -ForegroundColor DarkGray "> " -NoNewline
-  Write-Host -ForegroundColor Blue "$name" -NoNewline
-  Write-Host -ForegroundColor DarkCyan ":" -NoNewline
-  Write-Host -ForegroundColor Blue "$arch" -NoNewline
-  Write-Host -ForegroundColor DarkBlue "(" -NoNewline
-  Write-Host -ForegroundColor DarkGray "nuke" -NoNewline
-  Write-Host -ForegroundColor DarkBlue ")" -NoNewline
-  Write-Host "" # reset color
+
+  [log]::head($name, $arch)
 }
 
 function script:file {
-  param (
+  param(
     [Parameter(Mandatory)]
     [string] # base path
     $path,
-
-    [Parameter(Mandatory)]
-    [switch] # skip/keep
-    $skip,
-
     [Parameter(Mandatory)]
     [string] # file-name
-    $name
+    $name,
+    [Parameter(Mandatory=$false)]
+    [switch] # skip/keep
+    $skip = $false
   )
 
-  if ($skip)
-  {
-    Write-Host -ForegroundColor Green "* " -NoNewline
-    Write-Host -ForegroundColor Gray "$path/$name"
-  } else {
-    Write-Host -ForegroundColor Red "- " -NoNewline
-    Write-Host -ForegroundColor Gray "$path/$name"
-  } Write-Host "" -NoNewline # reset color
+  [log]::file($path, $name, $skip)
 }
 
-# ---------------------------------------------------------------------------
-# main function
-# ---------------------------------------------------------------------------
-
 function script:nuke {
-  param (
+  param(
     [Parameter(Mandatory=$false)]
-    [array] # skipped file-names
+    [array]  # skipped file-names
     $skip = $keep,
-
     [Parameter(Mandatory)]
     [string] # base path
     $path,
-
     [Parameter(Mandatory)]
     [string] # target name
     $name,
-
     [Parameter(Mandatory)]
     [string] # target architecture
     $arch
   )
 
-  function has($list, $item) {
+  function local:has($list, $item) {
     $list.forEach({ if ("$_" -eq "$item") { return $true } })
     return $false
   }
@@ -128,11 +167,11 @@ function script:nuke {
   $work = $path + '/' + $name + '/' + $arch
 
   $(Get-ChildItem "$work" -Name).forEach({
-    if (has $skip "$_")
+    if (local:has $skip "$_")
     {
-      script:file -path "$work" -skip:$true  -name "$_"
+      script:file -path "$work" -name "$_" -skip
     } else {
-      script:file -path "$work" -skip:$false -name "$_"
+      script:file -path "$work" -name "$_"
       Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "$work/$_"
     }
   })

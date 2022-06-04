@@ -9,7 +9,7 @@ namespace type
 
   template <typename T>
     struct is_enum
-    #ifdef CYKO_BUILD_CODEBASE_MSVC
+    #ifdef CYKO_BUILD_CODESET_MSVC
     : meta::bool_t<__is_enum(T)>
     {
       using self = is_enum<T>;

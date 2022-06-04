@@ -1,5 +1,5 @@
-#ifndef CYKO_TYPE_ENV_H
-#define CYKO_TYPE_ENV_H
+#ifndef CYKO_ENV_H
+#define CYKO_ENV_H
 
 /**
  * @b base common

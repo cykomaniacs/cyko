@@ -2,9 +2,9 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "debug-x64-msvc", "presentation": {
+      "name": "debug-x64", "presentation": {
         "hidden": false,
-        "group": "VC",
+        "group": "DEBUG",
         "order": 1
       },
 
@@ -18,9 +18,9 @@
       "stopAtEntry": false,
       "symbolSearchPath": "${workspaceFolder}/bin/debug/x64/",
     }, {
-      "name": "debug-x64(clean)", "presentation": {
+      "name": "debug-x64(nuke)", "presentation": {
         "hidden": false,
-        "group": "VC",
+        "group": "DEBUG",
         "order": 2
       },
 
@@ -38,7 +38,7 @@
 
 
     {
-      "name": "clean-all", "presentation": {
+      "name": "nuke", "presentation": {
         "hidden": false,
         "group": "X",
         "order": 1
@@ -49,8 +49,8 @@
       "cwd":     "${workspaceFolder}",
       "script":  "./nuke.ps1", "args": [
         "-base", "'./bin'",
-        "-name", "'debug, release'",
-        "-arch", "'x86, x64'"
+        "-name", "'debug', 'release'",
+        "-arch", "'x86', 'x64'"
       ],
 
       "createTemporaryIntegratedConsole": false,

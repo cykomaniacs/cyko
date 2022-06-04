@@ -4,9 +4,9 @@
   "version": "2.0.0",
   "tasks": [
 
-    /*
-     * CLEANERS
-     */
+    //+----------------------------------------------------------------------
+    //| CLEAN: POWERSHELL
+    //+----------------------------------------------------------------------
 
     {
       "label": "debug-x64(clean)",
@@ -17,21 +17,23 @@
         "focus": false,
         "panel": "shared",
         "showReuseMessage": false,
-        "clear": true,
+        "clear": false,
       },
 
       "options": { "cwd": "${workspaceFolder}" },
-      "command": "./nuke.ps1 -base './bin' -name 'debug' -arch 'x64'",
+      "command": "./nuke.ps1", "args": [
+        "-base", "'./bin'",
+        "-name", "'debug'",
+        "-arch", "'x64'"
+      ]
     },
 
-
-    /*
-     * MSVC (DEFAULT)
-     */
-
+    //+----------------------------------------------------------------------
+    //| BUILD: MSBUILD (VISUAL STUDIO CONFIG)
+    //+----------------------------------------------------------------------
 
     {
-      "label": "debug-x64-msvc",
+      "label": "debug-x64-msbuild",
       "type":  "cppbuild",
       "group": { "kind": "build", "isDefault": true, }, "presentation": {
         "echo": true,
@@ -42,154 +44,15 @@
         "clear": false,
       },
 
-      "command": "cl.exe", "args": [
-        "/options:strict", // unrecognized compiler options == error!!
-
-        /*
-         * preprocessing
-         */
-
-        "/DCYKO_BUILD_COMPILER_MSVC", // Microsoft VC
-        "/DCYKO_BUILD_CODEBASE_MSVC",
-        "/DCYKO_BUILD_X64",
-        "/DCYKO_BUILD_WINDOWS",
-        "/DCYKO_DEBUG",
-
-        "/D_CONSOLE",
-        //"/D_DEBUG", // linker errors!!!
-        "/D_UNICODE","/DUNICODE",
-
-        /*
-         * include paths/files
-         */
-
-        "/I${workspaceFolder}/include",
-        "/FI${workspaceFolder}/include/cyko/common/types.h",
-
-        /*
-         * c++ preferences
-         */
-
-        "/std:c++20",         // c++ standard version <c++(11|17|20)>
-      //"/Zc:auto",           // [-] enforce the new Standard C++ meaning for auto
-      //"/Zc:forScope",       // [-] enforce Standard C++ for scoping rules
-      //"/Zc:inline",         // [-] remove unreferenced function or data if it is COMDAT or has internal linkage only (off by default)
-      //"/Zc:lambda",         // [-] better lambda support by using the newer lambda processor (off by default)
-      //"/Zc:static_assert",  // [-] strict handling of 'static_assert' (implied by /permissive-)
-      //"/Zc:wchar_t",        // [-] wchar_t is the native type, not a typedef
-
-        /*
-        * unsorted...
-        */
-
-        "/EHsc",
-        "/nologo",
-        "/Gd",                // specifies the __cdecl (default) calling convention for all functions except C++ member functions and functions that are marked __stdcall, __fastcall, or __vectorcall.
-        "/Od",                // disable optimize
-      //"/Zi",                // enable debug information (masked by /ZI)
-        "/ZI",                // enable Edit and Continue debug info (overrides /Zi)
-      //"/JMC",               // [-] enable native Just-My-Code (debug?)
-        "/W3",                // warning level (<all>|[0-3])
-        "/WX",                // treat warnings as errors
-      //"/WL",                // enable one line diagnostics
-        "/fp:precise",        // floating-point model; results are predictable
-        "/Gm-",               // [-] enable minimal rebuild
-        "/GS",                // [-] enable security checks
-        "/utf-8",             // set source and execution character set to UTF-8
-        "/sdl",               // enable additional security features and warnings
-      //"/TP",                // compile all files as .cpp
-        "/permissive-",       // [-] enable some nonconforming code to compile (feature set subject to change) (on by default)
-
-        "/Fd:", "${workspaceFolder}/bin/debug/x64/vc143.pdb",
-        "/Fo:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.obj",
-        "/Fe:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe", "${file}"
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "msbuild.exe", "args": [
+        "cyko.sln",
+        "-p:Platform=x64",
+        "-p:Configuration=debug"
       ],
 
-      "problemMatcher": [ "$msCompile" ],
-      "dependsOn": [ "debug-x64(clean)" ],
-    },
-
-
-    /*
-     * MSVC CLANG
-     */
-
-
-    {
-      "label": "debug-x64(msvc:clang)", // link
-      "type":  "cppbuild",
-      "group": { "kind": "build", "isDefault": false, }, "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": true,
-        "clear": false,
-      },
-
-      "command": "clang-cl<linker>.exe", "args": [
-
-      ],
-
-      "problemMatcher": [ "$msCompile" ],
-      "dependsOn": [ "debug-x64(msvc:clang:build)" ],
-    }, {
-      "label": "debug-x64(msvc:clang:build)",
-      "type":  "cppbuild",
-      "group": { "kind": "build", "isDefault": false, }, "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": true,
-        "clear": false,
-      },
-
-      "command": "clang-cl.exe", "args": [
-        "/options:strict", // unrecognized compiler options == error!!
-
-        /*
-         * preprocessing
-         */
-
-        "/DCYKO_BUILD_TOOLCHAIN_MSVC", // Microsoft VC
-        "/DCYKO_BUILD_CODEBASE_MSVC",
-        "/DCYKO_BUILD_X64",
-        "/DCYKO_BUILD_WINDOWS",
-        "/DCYKO_DEBUG",
-
-        "/D_CONSOLE",
-      //"/D_DEBUG", // linker errors!!!
-        "/D_UNICODE","/DUNICODE",
-
-        /*
-         * include paths/files
-         */
-
-        "/I${workspaceFolder}/include",
-        "/FI${workspaceFolder}/include/cyko/common/types.h",
-
-        /*
-         * c++ preferences
-         */
-
-        "/c",
-        "/Z7",
-        "/nologo",
-        "/W3",
-        "/WX-",
-        "/diagnostics:column",
-        "/Od",
-        "/EHsc",
-        "/MDd",
-        "/GS",
-        "/fp:precise",
-        "/std:c++20",
-        "/FoD:\\o.workshop\\src\\cpp\\cyko\\bin\\debug\\x64\\", "/Gd", "/TP", "-m64", "D:\\o.workshop\\src\\cpp\\cyko\\src\\cyko.cpp"
-      ],
-
-      "problemMatcher": [ "$msCompile" ],
-      "dependsOn": [ "debug-x64(clean)" ],
-    },
+      "problemMatcher":"$msCompile",
+      "dependsOn": [ "debug-x64(clean)" ]
+    }
   ]
 }
