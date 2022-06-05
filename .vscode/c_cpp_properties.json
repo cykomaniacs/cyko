@@ -5,28 +5,28 @@
   "env": {
     "compilerWinMSVCx64":     "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
     "compilerWinMSVClangx64": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
-  //"compilerWinLLVMx64":     "",
-  //"compilerWinGCCx64":      "",
-  //"compilerNixLLVMx64":     "",
-  //"compilerNixGCCx64":      "",
+    "compilerWinClangx64":    "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang++.exe",
+    "compilerWinLLVMx64":     "",
+    "compilerWinGCCx64":      "",
+    "compilerNixLLVMx64":     "",
+    "compilerNixGCCx64":      "",
 
-    // cyko related...
+    // project...
     "cykoInc": "${workspaceFolder}/include",
     "cykoSrc": "${workspaceFolder}/src",
     "cykoBin": "${workspaceFolder}/bin"
   },
 
-
-
   "configurations": [
     //+-----+----------------------------------------------------------------
     //| WIN | WINDOWS/MINGW/MSYS/...
     //+-----+----------------------------------------------------------------
-    /*
-    {
-      "name": "win-msvc-x64(debug)",
 
-      //"includePath": [ "${cykoInc}" ], "forcedInclude": [ "${cykoInc}/cyko/common/types.h" ],
+    { "name": "win-debug-x64(msvc)",
+
+      "includePath": [ "${cykoInc}" ], "forcedInclude": [
+        "${cykoInc}/cyko/common/common.h"
+      ],
 
       "defines": [
         "CYKO_DEBUG",             // TARGET > Configuration
@@ -37,7 +37,6 @@
         "CYKO_BUILD_USE_STDINT",  // CONFIG > Use <cstdint> for size types
 
         "_CONSOLE",
-        "_DEBUG",
         "_UNICODE"
       ],
 
@@ -45,14 +44,12 @@
       "compilerPath": "${compilerWinMSVCx64}",
       "cStandard": "c17",
       "cppStandard": "c++20",
-      "intelliSenseMode": "windows-msvc-x64"
+      "intelliSenseMode": "msvc-x64"
     },
-    */
-    { // ------------------------------------------------------------------
-      "name": "win-x64(debug)",
+    { "name": "win-debug-x64(msvclang)",
 
       "includePath": [ "${cykoInc}" ], "forcedInclude": [
-        "${cykoInc}/cyko/common/types.h"
+        "${cykoInc}/cyko/common/common.h"
       ],
 
       "defines": [
@@ -64,7 +61,6 @@
         "CYKO_BUILD_USE_STDINT",
 
         "_CONSOLE",
-        "_DEBUG",
         "_UNICODE"
       ],
 
@@ -72,7 +68,31 @@
       "compilerPath": "${compilerWinMSVClangx64}",
       "cStandard": "c17",
       "cppStandard": "c++20",
-      "intelliSenseMode": "windows-clang-x64"
+      "intelliSenseMode": "clang-x64"
+    },
+    { "name": "win-debug-x64(clang)",
+
+      "includePath": [ "${cykoInc}" ], "forcedInclude": [
+        "${cykoInc}/cyko/common/common.h"
+      ],
+
+      "defines": [
+        "CYKO_DEBUG",
+        "CYKO_BUILD_TOOLSET_CLANG", // (clang-cl.exe)
+        "CYKO_BUILD_CODESET_MSVC",
+        "CYKO_BUILD_X64",
+        "CYKO_BUILD_WINDOWS",
+        "CYKO_BUILD_USE_STDINT",
+
+        "_CONSOLE",
+        "_UNICODE"
+      ],
+
+      "windowsSdkVersion": "10.0.22000.0",
+      "compilerPath": "${compilerWinClangx64}",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "clang-x64"
     }
 
     //+-----+----------------------------------------------------------------

@@ -33,7 +33,7 @@
   "workbench.sideBar.location": "right",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.tabSizing": "shrink",
-
+/*
   //+-----+-----------------------------------------------------------------
   //| CPP | OVERRIDES
   //+-----+-----------------------------------------------------------------
@@ -66,11 +66,14 @@
   "C_Cpp.codeAnalysis.clangTidy.enabled": true,
   "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
     "clang-analyzer-*",
-    "llvm-*", "misc-*"
+    "llvm-*",
+    "misc-*"
   ],
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
     "llvm-namespace-comment",
     "llvm-include-order",
+    "clang-diagnostic-ambiguous-ellipsis"
+
   ],
   //+-----+-----------------------------------------------------------------
   //| CPP | BUILD CONFIGURATION
@@ -95,7 +98,7 @@
   //| CPP | END!
   //+-----+-----------------------------------------------------------------
 
-
+*/
 
 
   //+-----------------------------------------------------------------------
@@ -105,6 +108,45 @@
     "cstddef": "cpp",
     "xtr1common": "cpp",
     "cstdint": "cpp",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "algorithm": "cpp",
+    "atomic": "cpp",
+    "bit": "cpp",
+    "cctype": "cpp",
+    "clocale": "cpp",
+    "cmath": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "cstdio": "cpp",
+    "cstdlib": "cpp",
+    "cstring": "cpp",
+    "ctime": "cpp",
+    "cwchar": "cpp",
+    "exception": "cpp",
+    "initializer_list": "cpp",
+    "ios": "cpp",
+    "iosfwd": "cpp",
+    "istream": "cpp",
+    "iterator": "cpp",
+    "limits": "cpp",
+    "memory": "cpp",
+    "new": "cpp",
+    "ostream": "cpp",
+    "stdexcept": "cpp",
+    "streambuf": "cpp",
+    "system_error": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "typeinfo": "cpp",
+    "utility": "cpp",
+    "xfacet": "cpp",
+    "xiosbase": "cpp",
+    "xlocale": "cpp",
+    "xlocinfo": "cpp",
+    "xlocnum": "cpp",
+    "xmemory": "cpp",
+    "xstddef": "cpp",
+    "xstring": "cpp",
+    "xutility": "cpp"
   }
 }

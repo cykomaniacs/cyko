@@ -1,6 +1,4 @@
-{
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
+{ // See https://go.microsoft.com/fwlink/?LinkId=733558
   "version": "2.0.0",
   "tasks": [
 
@@ -8,16 +6,37 @@
     //| CLEAN: POWERSHELL
     //+----------------------------------------------------------------------
 
-    {
-      "label": "debug-x64(clean)",
+    { "label": "clean",
       "type":  "shell",
       "group": { "kind": "none", "isDefault": false }, "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
         "panel": "shared",
+        "clear": true,
+        "echo":  true,
+        "close": false,
+        "focus": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
         "showReuseMessage": false,
-        "clear": false,
+      },
+
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "./nuke.ps1", "args": [
+        "-base", "'./bin'",
+        "-name", "'debug', 'release'",
+        "-arch", "'x64', 'x86'"
+      ]
+    },
+    { "label": "debug-x64(clean)",
+      "type":  "shell",
+      "group": { "kind": "none", "isDefault": false }, "presentation": {
+        "panel": "shared",
+        "clear": true,
+        "echo":  true,
+        "close": false,
+        "focus": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "showReuseMessage": false,
       },
 
       "options": { "cwd": "${workspaceFolder}" },
@@ -29,19 +48,172 @@
     },
 
     //+----------------------------------------------------------------------
+    //| BUILD: MANUAL CONFIG
+    //+----------------------------------------------------------------------
+
+    { "label": "win-debug-x64(msvc)",
+      "type":  "cppbuild",
+
+      "dependsOn": [
+        "clean"
+      ],
+
+      "group": { "kind": "build", "isDefault": true, }, "presentation": {
+        "panel": "shared",
+        "clear": false,
+        "echo":  true,
+        "close": false,
+        "focus": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "showReuseMessage": true,
+      },
+
+      "options": { "cwd": "${fileDirname}" },
+      "command": "cl.exe", "args": [
+        "/options:strict", // unrecognized compiler options = error!!
+        // ------------------------------------------------------------------
+        // prep : definitions
+        // ------------------------------------------------------------------
+        "/DCYKO_BUILD_TOOLSET_MSVC",
+        "/DCYKO_BUILD_CODESET_MSVC",
+        "/DCYKO_BUILD_X64",
+        "/DCYKO_BUILD_WINDOWS",
+        "/DCYKO_BUILD_USE_STDINT",
+        "/DCYKO_DEBUG",
+        "/D_CONSOLE",
+        "/D_UNICODE",
+        // ------------------------------------------------------------------
+        // prep : include paths/files
+        // ------------------------------------------------------------------
+        "/I${workspaceFolder}/include",
+        "/FI${workspaceFolder}/include/cyko/common/types.h",
+        // ------------------------------------------------------------------
+        // base
+        // ------------------------------------------------------------------
+        "/nologo",
+        "/EHsc",
+        // ------------------------------------------------------------------
+        // code
+        // ------------------------------------------------------------------
+        "/std:c++20",         // c++ standard version <c++(11|17|20)>
+        "/fp:precise",        // floating-point model; results are predictable
+        "/Gd",                // use __cdecl (default) calling convention for all functions except C++ member functions and functions that are marked __stdcall, __fastcall, or __vectorcall.
+        "/Gm-",               // [-] enable minimal rebuild
+        "/GS",                // [-] enable security checks
+        "/sdl",               // enable additional security features and warnings
+        "/utf-8",             // set source and execution character set to UTF-8
+        "/permissive-",       // [-] enable some nonconforming code to compile
+        // ------------------------------------------------------------------
+        // optimize / debug
+        // ------------------------------------------------------------------
+        "/Od",                // optimize level (disable: 0)
+        "/ZI",                // enable Edit and Continue debug info (overrides /Zi)
+        // ------------------------------------------------------------------
+        // diagnostics
+        // ------------------------------------------------------------------
+        "/Wall",              // warning level (<all>|[0-3])
+        "/WX-",               // [-] treat warnings as errors
+        // ------------------------------------------------------------------
+        // i/o
+        // ------------------------------------------------------------------
+        "/Fd:", "${workspaceFolder}/bin/debug/x64/vc143.pdb",
+        "/Fo:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.obj",
+        "/Fe:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe", "${file}"
+      ],
+
+      "problemMatcher": [
+        "$msCompile",
+      ]
+    },
+    { "label": "win-debug-x64(clang)",
+      "type":  "cppbuild",
+
+      "dependsOn": [
+        "clean"
+      ],
+
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
+        "panel": "shared",
+        "clear": false,
+        "echo":  true,
+        "close": false,
+        "focus": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "showReuseMessage": true
+      },
+
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "clang++.exe", "args": [
+        // ------------------------------
+        // definitions
+        // ------------------------------
+        "-DCYKO_BUILD_TOOLSET_CLANG",
+        "-DCYKO_BUILD_CODESET_MSVC",
+        "-DCYKO_BUILD_X64",
+        "-DCYKO_BUILD_WINDOWS",
+        "-DCYKO_BUILD_USE_STDINT",
+        "-DCYKO_DEBUG",
+        "-D_CONSOLE",
+        "-D_UNICODE",
+        // ------------------------------
+        // prep : include paths | files
+        // ------------------------------
+        "-I${workspaceFolder}/include",
+        "-include", "${workspaceFolder}/include/cyko/common/common.h",
+        // ------------------------------
+        // c/c++
+        // ------------------------------
+        "-std=c++20",
+        // ------------------------------
+        // diagnostics
+        // ------------------------------
+        "-fdiagnostics-color=always", "-fansi-escape-codes",
+        "-Wall",
+        "-Wextra",
+        "-Wno-unused-variable",
+        // ------------------------------
+        // optimization / debug
+        // ------------------------------
+        "-O",
+        "-g",
+        "-gfull",
+        // ------------------------------
+        // platform / architecture
+        // ------------------------------
+        "-m64",
+        // ------------------------------
+        // i/o
+        // ------------------------------
+        "${file}", "-o", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe"
+      ],
+
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+
+    //+----------------------------------------------------------------------
     //| BUILD: MSBUILD (VISUAL STUDIO CONFIG)
     //+----------------------------------------------------------------------
 
-    {
-      "label": "debug-x64-msbuild",
+    { "label": "win-debug-x64(msbuild)",
       "type":  "cppbuild",
-      "group": { "kind": "build", "isDefault": true, }, "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
+
+      "dependsOn": [
+        "clean"
+      ],
+
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
         "panel": "shared",
-        "showReuseMessage": true,
         "clear": false,
+        "echo":  true,
+        "close": false,
+        "focus": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "showReuseMessage": true
       },
 
       "options": { "cwd": "${workspaceFolder}" },
@@ -51,8 +223,97 @@
         "-p:Configuration=debug"
       ],
 
-      "problemMatcher":"$msCompile",
-      "dependsOn": [ "debug-x64(clean)" ]
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    },
+    { "label": "win-debug-x86(msbuild)",
+      "type":  "cppbuild",
+
+      "dependsOn": [
+        "clean"
+      ],
+
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
+        "panel": "shared",
+        "clear": false,
+        "echo":  true,
+        "close": false,
+        "focus": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "showReuseMessage": true
+      },
+
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "msbuild.exe", "args": [
+        "cyko.sln",
+        "-p:Platform=x86",
+        "-p:Configuration=debug"
+      ],
+
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    },
+    { "label": "win-release-x64(msbuild)",
+      "type":  "cppbuild",
+
+      "dependsOn": [
+        "clean"
+      ],
+
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
+        "panel": "shared",
+        "clear": false,
+        "echo":  true,
+        "close": false,
+        "focus": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "showReuseMessage": true
+      },
+
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "msbuild.exe", "args": [
+        "cyko.sln",
+        "-p:Platform=x64",
+        "-p:Configuration=release"
+      ],
+
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    },
+    { "label": "win-release-x86(msbuild)",
+      "type":  "cppbuild",
+
+      "dependsOn": [
+        "clean"
+      ],
+
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
+        "panel": "shared",
+        "clear": false,
+        "echo":  true,
+        "close": false,
+        "focus": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "showReuseMessage": true
+      },
+
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "msbuild.exe", "args": [
+        "cyko.sln",
+        "-p:Platform=x86",
+        "-p:Configuration=debug"
+      ],
+
+      "problemMatcher": [
+        "$msCompile"
+      ]
     }
+
   ]
 }

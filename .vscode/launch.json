@@ -1,8 +1,13 @@
 {
   "version": "0.2.0",
   "configurations": [
-    {
-      "name": "debug-x64", "presentation": {
+
+    //+----------------------------------------------------------------------
+    //| DEBUG
+    //+----------------------------------------------------------------------
+
+    { "name": "debug-x64",
+      "presentation": {
         "hidden": false,
         "group": "DEBUG",
         "order": 1
@@ -17,8 +22,9 @@
 
       "stopAtEntry": false,
       "symbolSearchPath": "${workspaceFolder}/bin/debug/x64/",
-    }, {
-      "name": "debug-x64(nuke)", "presentation": {
+    },
+    { "name": "debug-x64(nuke)",
+      "presentation": {
         "hidden": false,
         "group": "DEBUG",
         "order": 2
@@ -36,9 +42,12 @@
       "createTemporaryIntegratedConsole": false,
     },
 
+    //+----------------------------------------------------------------------
+    //| CLEAN
+    //+----------------------------------------------------------------------
 
-    {
-      "name": "nuke", "presentation": {
+    { "name": "nuke",
+      "presentation": {
         "hidden": false,
         "group": "X",
         "order": 1
