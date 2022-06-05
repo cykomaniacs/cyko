@@ -11,9 +11,9 @@ namespace cyko
 
 	using  bool_t = bool;
 	using  char_t = char;
-  #ifdef  CYKO_BUILD_USE_STDINT
+  #ifdef CYKO_BUILD_USE_STDINT
   using    int_t = std::int64_t;
-  #elif   CYKO_BUILD_TOOLSET_MSVC
+  #elif  CYKO_BUILD_TOOLSET_MSVC
   #ifdef CYKO_BUILD_X64
   using   int_t = long long int;          // 8 byte 64 bit
   #elif  CYKO_BUILD_X86

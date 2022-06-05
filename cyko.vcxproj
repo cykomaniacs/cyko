@@ -52,13 +52,16 @@
     <ClInclude Include="include\cyko\type\is_array.h" />
     <ClInclude Include="include\cyko\type\is_base_of.h" />
     <ClInclude Include="include\cyko\type\is_class.h" />
+    <ClInclude Include="include\cyko\type\is_const.h" />
     <ClInclude Include="include\cyko\type\is_enum.h" />
     <ClInclude Include="include\cyko\type\is_function.h" />
     <ClInclude Include="include\cyko\type\is_lvalue_reference.h" />
     <ClInclude Include="include\cyko\type\is_pointer.h" />
+    <ClInclude Include="include\cyko\type\is_reference.h" />
     <ClInclude Include="include\cyko\type\is_rvalue_reference.h" />
     <ClInclude Include="include\cyko\type\is_same.h" />
     <ClInclude Include="include\cyko\type\is_union.h" />
+    <ClInclude Include="include\cyko\type\is_volatile.h" />
     <ClInclude Include="include\cyko\type\list.h" />
     <ClInclude Include="include\cyko\type\none.h" />
     <ClInclude Include="include\cyko\type\rank.h" />

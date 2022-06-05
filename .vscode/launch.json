@@ -9,7 +9,7 @@
     { "name": "debug-x64",
       "presentation": {
         "hidden": false,
-        "group": "DEBUG",
+        "group": "A.DEBUG",
         "order": 1
       },
 
@@ -23,11 +23,70 @@
       "stopAtEntry": false,
       "symbolSearchPath": "${workspaceFolder}/bin/debug/x64/",
     },
-    { "name": "debug-x64(nuke)",
+
+    //+----------------------------------------------------------------------
+    //| CLEAN
+    //+----------------------------------------------------------------------
+
+    { "name": "nuke!",
       "presentation": {
         "hidden": false,
-        "group": "DEBUG",
+        "group": "X.NUKE.A",
+        "order": 0
+      },
+
+      "type":    "PowerShell",
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "script":  "./nuke.ps1", "args": [
+        "-base", "'./bin'",
+        "-name", "'debug', 'release'",
+        "-arch", "'x86', 'x64'"
+      ],
+
+      "createTemporaryIntegratedConsole": false,
+    },
+    { "name": "nuke:debug",
+      "presentation": {
+        "hidden": false,
+        "group": "X.NUKE.B",
+        "order": 1
+      },
+
+      "type":    "PowerShell",
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "script":  "./nuke.ps1", "args": [
+        "-base", "'./bin'",
+        "-name", "'debug'",
+        "-arch", "'x86','x64'"
+      ],
+
+      "createTemporaryIntegratedConsole": false,
+    },
+    { "name": "nuke:debug:x86",
+      "presentation": {
+        "hidden": false,
+        "group": "X.NUKE.B",
         "order": 2
+      },
+
+      "type":    "PowerShell",
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "script":  "./nuke.ps1", "args": [
+        "-base", "'./bin'",
+        "-name", "'debug'",
+        "-arch", "'x86'"
+      ],
+
+      "createTemporaryIntegratedConsole": false,
+    },
+    { "name": "nuke:debug:x64",
+      "presentation": {
+        "hidden": false,
+        "group": "X.NUKE.B",
+        "order": 3
       },
 
       "type":    "PowerShell",
@@ -41,16 +100,11 @@
 
       "createTemporaryIntegratedConsole": false,
     },
-
-    //+----------------------------------------------------------------------
-    //| CLEAN
-    //+----------------------------------------------------------------------
-
-    { "name": "nuke",
+    { "name": "nuke:release",
       "presentation": {
         "hidden": false,
-        "group": "X",
-        "order": 1
+        "group": "X.NUKE.C",
+        "order": 4
       },
 
       "type":    "PowerShell",
@@ -58,8 +112,44 @@
       "cwd":     "${workspaceFolder}",
       "script":  "./nuke.ps1", "args": [
         "-base", "'./bin'",
-        "-name", "'debug', 'release'",
+        "-name", "'release'",
         "-arch", "'x86', 'x64'"
+      ],
+
+      "createTemporaryIntegratedConsole": false,
+    },
+    { "name": "nuke:release:x86",
+      "presentation": {
+        "hidden": false,
+        "group": "X.NUKE.C",
+        "order": 5
+      },
+
+      "type":    "PowerShell",
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "script":  "./nuke.ps1", "args": [
+        "-base", "'./bin'",
+        "-name", "'release'",
+        "-arch", "'x86'"
+      ],
+
+      "createTemporaryIntegratedConsole": false,
+    },
+    { "name": "nuke:release:x64",
+      "presentation": {
+        "hidden": false,
+        "group": "X.NUKE.C",
+        "order": 6
+      },
+
+      "type":    "PowerShell",
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "script":  "./nuke.ps1", "args": [
+        "-base", "'./bin'",
+        "-name", "'release'",
+        "-arch", "'x64'"
       ],
 
       "createTemporaryIntegratedConsole": false,

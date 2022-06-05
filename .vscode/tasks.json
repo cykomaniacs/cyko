@@ -58,7 +58,7 @@
         "clean"
       ],
 
-      "group": { "kind": "build", "isDefault": true, }, "presentation": {
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
         "panel": "shared",
         "clear": false,
         "echo":  true,
@@ -133,7 +133,7 @@
         "clean"
       ],
 
-      "group": { "kind": "build", "isDefault": false, }, "presentation": {
+      "group": { "kind": "build", "isDefault": true, }, "presentation": {
         "panel": "shared",
         "clear": false,
         "echo":  true,
@@ -176,9 +176,9 @@
         // ------------------------------
         // optimization / debug
         // ------------------------------
-        "-O",
+        "-O0", // vsdebug requires -O0
         "-g",
-        "-gfull",
+        //"-gfull",
         // ------------------------------
         // platform / architecture
         // ------------------------------

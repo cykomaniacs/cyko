@@ -33,6 +33,8 @@
   "workbench.sideBar.location": "right",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.tabSizing": "shrink",
+
+  "C_Cpp.default.enableConfigurationSquiggles": true,
 /*
   //+-----+-----------------------------------------------------------------
   //| CPP | OVERRIDES

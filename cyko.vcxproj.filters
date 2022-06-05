@@ -146,6 +146,15 @@
     <ClInclude Include="include\cyko\common\common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\cyko\type\is_const.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cyko\type\is_reference.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cyko\type\is_volatile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\debug\x64\.gitkeep" />
