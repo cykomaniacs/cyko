@@ -1,5 +1,4 @@
 ﻿#include <iostream>
-#include <cyko/env.h>
 
 int main()
 {
@@ -43,29 +42,33 @@ int main()
   remove_pointer<int const*> pg = 0;
   remove_pointer<int const**> ph = 0;
   */
-  std::cout << "Hello World!"
-  << std::endl << ':'
-  << sizeof(int)
-  << std::endl << ':'
-  << sizeof(cyko::int_t)
-  << std::endl << ':'
-  << sizeof(cyko::byte_t)
-  << std::endl << ':'
-  << sizeof(cyko::word_t)
-  << std::endl << ':'
-  << sizeof(cyko::dword_t)
-  << std::endl << ':'
-  << sizeof(cyko::qword_t);
+
+  std::cout << "Hello World!" << std::endl;
+  std::cout << conjunction<cyko::meta::bool_t<true>>::value << std::endl;
+  std::cout
+    << std::endl << ":   int   : "
+    << sizeof(int)
+    << std::endl << ":   int_t : "
+    << sizeof(cyko::int_t)
+    << std::endl << ":  byte_t : "
+    << sizeof(cyko::byte_t)
+    << std::endl << ":  word_t : "
+    << sizeof(cyko::word_t)
+    << std::endl << ": dword_t : "
+    << sizeof(cyko::dword_t)
+    << std::endl << ": qword_t : "
+    << sizeof(cyko::qword_t);
 
   std::cout
-  << std::endl
-  << std::endl << size<int>::value
-  << std::endl << size<char>::value
-  << std::endl << size<int, int>::value
-  << std::endl << size<int[]>::value
-  << std::endl << size<int[3][4]>::value
-  << std::endl << size<int[1][1][1][1]>::value
-  << std::endl << size<int[][6][4]>::value
-  << std::endl << size<int[5]>::value
-  << std::endl;
+    << std::endl << "qf = { &pa }" << qf[0]
+    << std::endl
+    << std::endl << size<int>::value
+    << std::endl << size<char>::value
+    << std::endl << size<int, int>::value
+    << std::endl << size<int[]>::value
+    << std::endl << size<int[3][4]>::value
+    << std::endl << size<int[1][1][1][1]>::value
+    << std::endl << size<int[][6][4]>::value
+    << std::endl << size<int[5]>::value
+    << std::endl;
 }

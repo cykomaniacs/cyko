@@ -71,31 +71,46 @@
 
       "options": { "cwd": "${fileDirname}" },
       "command": "cl.exe", "args": [
+        // ------------------------------------------------------------------
+        // #region : misc
+
         "/options:strict", // unrecognized compiler options = error!!
+
+        // #endregion
         // ------------------------------------------------------------------
-        // prep : definitions
-        // ------------------------------------------------------------------
-        "/DCYKO_BUILD_TOOLSET_MSVC",
-        "/DCYKO_BUILD_CODESET_MSVC",
+        // #region : definitions
+
+        "/DCYKO_DEBUG",
+        // ------------------------------
+        "/DCYKO_BUILD_TOOLKIT_MSVC",
+        "/DCYKO_BUILD_CRT_MSVC", // LIBC
+        "/DCYKO_BUILD_CXX_MSVC", // LIBCPP
         "/DCYKO_BUILD_X64",
         "/DCYKO_BUILD_WINDOWS",
         "/DCYKO_BUILD_USE_STDINT",
-        "/DCYKO_DEBUG",
+        // ------------------------------
         "/D_CONSOLE",
         "/D_UNICODE",
+
+        // #endregion
         // ------------------------------------------------------------------
-        // prep : include paths/files
-        // ------------------------------------------------------------------
+        // #region : includes
+
         "/I${workspaceFolder}/include",
-        "/FI${workspaceFolder}/include/cyko/common/types.h",
+        // ------------------------------
+        "/FI${workspaceFolder}/include/cyko/common/common.h",
+
+        // #endregion
         // ------------------------------------------------------------------
-        // base
-        // ------------------------------------------------------------------
+        // #region : base
+
         "/nologo",
         "/EHsc",
+
+        // #endregion
         // ------------------------------------------------------------------
-        // code
-        // ------------------------------------------------------------------
+        // #region : language
+
         "/std:c++20",         // c++ standard version <c++(11|17|20)>
         "/fp:precise",        // floating-point model; results are predictable
         "/Gd",                // use __cdecl (default) calling convention for all functions except C++ member functions and functions that are marked __stdcall, __fastcall, or __vectorcall.
@@ -104,29 +119,44 @@
         "/sdl",               // enable additional security features and warnings
         "/utf-8",             // set source and execution character set to UTF-8
         "/permissive-",       // [-] enable some nonconforming code to compile
+
+        // #endregion
         // ------------------------------------------------------------------
-        // optimize / debug
+        // #region : diagnostics
+
+        "/Wall", // warning level (<all>|[0-3])
+        "/WX-",  // [-] treat warnings as errors
+
+        // #endregion
         // ------------------------------------------------------------------
-        "/Od",                // optimize level (disable: 0)
-        "/ZI",                // enable Edit and Continue debug info (overrides /Zi)
+        // #region : optimization
+
+        "/Od", // optimize level (disable: 0)
+
+        // #endregion
         // ------------------------------------------------------------------
-        // diagnostics
+        // #region : debugging
+
+        "/ZI", // enable Edit and Continue debug info (overrides /Zi)
+
+        // #endregion
         // ------------------------------------------------------------------
-        "/Wall",              // warning level (<all>|[0-3])
-        "/WX-",               // [-] treat warnings as errors
+        // #region : architecture
+        // #endregion
         // ------------------------------------------------------------------
-        // i/o
-        // ------------------------------------------------------------------
+        // #region : i/o
+
         "/Fd:", "${workspaceFolder}/bin/debug/x64/vc143.pdb",
         "/Fo:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.obj",
         "/Fe:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe", "${file}"
+
+        // #endregion
+        // ------------------------------------------------------------------
       ],
 
-      "problemMatcher": [
-        "$msCompile",
-      ]
+      "problemMatcher": [ "$msCompile" ]
     },
-    { "label": "win-debug-x64(clang)",
+    { "label": "win-debug-x64(llvm)",
       "type":  "cppbuild",
 
       "dependsOn": [
@@ -146,52 +176,81 @@
 
       "options": { "cwd": "${workspaceFolder}" },
       "command": "clang++.exe", "args": [
+        // ------------------------------------------------------------------
+        // #region : misc
+        // #endregion
+        // ------------------------------------------------------------------
+        // #region : definitions
+
+        "-DCYKO_DEBUG",
         // ------------------------------
-        // definitions
-        // ------------------------------
-        "-DCYKO_BUILD_TOOLSET_CLANG",
-        "-DCYKO_BUILD_CODESET_MSVC",
+        "-DCYKO_BUILD_TOOLKIT_LLVM",
+        "-DCYKO_BUILD_CRT_LLVM", // LIBCRT
+        "-DCYKO_BUILD_CXX_MSVC", // LIBCPP
         "-DCYKO_BUILD_X64",
         "-DCYKO_BUILD_WINDOWS",
         "-DCYKO_BUILD_USE_STDINT",
-        "-DCYKO_DEBUG",
+        // ------------------------------
         "-D_CONSOLE",
         "-D_UNICODE",
-        // ------------------------------
-        // prep : include paths | files
-        // ------------------------------
+
+        // #endregion
+        // ------------------------------------------------------------------
+        // #region : includes
+
         "-I${workspaceFolder}/include",
+        // ------------------------------
         "-include", "${workspaceFolder}/include/cyko/common/common.h",
-        // ------------------------------
-        // c/c++
-        // ------------------------------
+
+        // #endregion
+        // ------------------------------------------------------------------
+        // #region : language
+
         "-std=c++20",
+
+        // #endregion
+        // ------------------------------------------------------------------
+        // #region : diagnostics
+
+        "-fansi-escape-codes", // dep: -fdiagnostics-color=always
+        "-fdiagnostics-color", // dep: -fansi-escape-codes
         // ------------------------------
-        // diagnostics
-        // ------------------------------
-        "-fdiagnostics-color=always", "-fansi-escape-codes",
         "-Wall",
         "-Wextra",
+        // ------------------------------
         "-Wno-unused-variable",
-        // ------------------------------
-        // optimization / debug
-        // ------------------------------
+
+        // #endregion
+        // ------------------------------------------------------------------
+        // #region : optimization
+
         "-O0", // vsdebug requires -O0
+
+        // #endregion
+        // ------------------------------------------------------------------
+        // #region : debugging
+
         "-g",
-        //"-gfull",
-        // ------------------------------
-        // platform / architecture
-        // ------------------------------
+        "-g3",
+        "-gfull",
+
+        // #endregion
+        // ------------------------------------------------------------------
+        // #region : architecture
+
         "-m64",
-        // ------------------------------
-        // i/o
-        // ------------------------------
+
+        // #endregion
+        // ------------------------------------------------------------------
+        // #region : i/o
+
         "${file}", "-o", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe"
+
+        // #endregion
+        // ------------------------------------------------------------------
       ],
 
-      "problemMatcher": [
-        "$gcc"
-      ]
+      "problemMatcher": [ "$gcc" ]
     },
 
     //+----------------------------------------------------------------------

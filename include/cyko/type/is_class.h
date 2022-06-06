@@ -9,7 +9,9 @@ namespace type
 
   template <typename T>
     struct is_class
-    #ifdef CYKO_BUILD_CODESET_MSVC
+    #if defined(CYKO_BUILD_TOOLKIT_MSVC) \
+     || defined(CYKO_BUILD_TOOLKIT_MSVCLANG) \
+     || defined(CYKO_BUILD_TOOLKIT_LLVM)
     : meta::bool_t<__is_class(T)>
     {
       using self = is_class<T>;

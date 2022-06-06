@@ -1,6 +1,6 @@
 {
   "version": 4,
-  "enableConfigurationSquiggles": true, // extension error reporting
+  "enableConfigurationSquiggles": true,
 
   "env": {
     "compilerWinMSVCx64":     "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
@@ -30,8 +30,9 @@
 
       "defines": [
         "CYKO_DEBUG",             // TARGET > Configuration
-        "CYKO_BUILD_TOOLSET_MSVC",//   HOST > Microsoft VC (cl.exe)
-        "CYKO_BUILD_CODESET_MSVC",//   HOST > Microsoft VC (stdlib)
+        "CYKO_BUILD_TOOLKIT_MSVC",//   HOST > Microsoft VC (cl.exe)
+        "CYKO-BUILD_CRT_MSVC",    // LIBC   MSVCRT C RUNTIME LIB
+        "CYKO_BUILD_CXX_MSVC",    // LIBCPP STL STANDARD CPP LIB
         "CYKO_BUILD_X64",         //   HOST > Architecture
         "CYKO_BUILD_WINDOWS",     // TARGET > OS
         "CYKO_BUILD_USE_STDINT",  // CONFIG > Use <cstdint> for size types
@@ -54,8 +55,9 @@
 
       "defines": [
         "CYKO_DEBUG",
-        "CYKO_BUILD_TOOLSET_MSVCLANG", // (clang-cl.exe)
-        "CYKO_BUILD_CODESET_MSVC",
+        "CYKO_BUILD_TOOLKIT_MSVCLANG",
+        "CYKO-BUILD_CRT_LLVM", // LIBC
+        "CYKO_BUILD_CXX_MSVC", // LIBCPP
         "CYKO_BUILD_X64",
         "CYKO_BUILD_WINDOWS",
         "CYKO_BUILD_USE_STDINT",
@@ -70,7 +72,7 @@
       "cppStandard": "c++20",
       "intelliSenseMode": "clang-x64"
     },
-    { "name": "win-debug-x64(clang)",
+    { "name": "win-debug-x64(llvm)",
 
       "includePath": [ "${cykoInc}" ], "forcedInclude": [
         "${cykoInc}/cyko/common/common.h"
@@ -78,8 +80,9 @@
 
       "defines": [
         "CYKO_DEBUG",
-        "CYKO_BUILD_TOOLSET_CLANG", // (clang-cl.exe)
-        "CYKO_BUILD_CODESET_MSVC",
+        "CYKO_BUILD_TOOLKIT_LLVM",
+        "CYKO-BUILD_CRT_LLVM", // LIBC
+        "CYKO_BUILD_CXX_MSVC", // LIBCPP
         "CYKO_BUILD_X64",
         "CYKO_BUILD_WINDOWS",
         "CYKO_BUILD_USE_STDINT",

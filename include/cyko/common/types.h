@@ -9,38 +9,36 @@
 namespace cyko
 {
 
-	using  bool_t = bool;
-	using  char_t = char;
+	using bool_t = bool;
+	using char_t = char;
   #ifdef CYKO_BUILD_USE_STDINT
-  using    int_t = std::int64_t;
-  #elif  CYKO_BUILD_TOOLSET_MSVC
   #ifdef CYKO_BUILD_X64
-  using   int_t = long long int;          // 8 byte 64 bit
+  using  int_t = std::int64_t;
   #elif  CYKO_BUILD_X86
-  using   int_t = long int;               // 4 byte 32 bit
+  using  int_t = std::int32_t;
   #endif
-  #elif  CYKO_BUILD_TOOLSET_MSVCLANG
+  #elif  CYKO_BUILD_TOOLKIT_MSVC
   #ifdef CYKO_BUILD_X64
-  using   int_t = long long int;          // 8 byte 64 bit
+  using  int_t = long long int;          // 8 byte 64 bit
   #elif  CYKO_BUILD_X86
-  using   int_t = long int;               // 4 byte 32 bit
+  using  int_t = long int;               // 4 byte 32 bit
   #endif
-  #elif  CYKO_BUILD_TOOLSET_GCC
+  #elif  CYKO_BUILD_TOOLKIT_MSVCLANG
   #ifdef CYKO_BUILD_X64
-  using   int_t = long long int;          // 8 byte 64 bit
+  using  int_t = long long int;          // 8 byte 64 bit
   #elif  CYKO_BUILD_X86
-  using   int_t = long int;               // 4 byte 32 bit
+  using  int_t = long int;               // 4 byte 32 bit
   #endif
-  #elif  CYKO_BUILD_TOOLSET_LLVM
+  #elif  CYKO_BUILD_TOOLKIT_CLANG
   #ifdef CYKO_BUILD_X64
-  using   int_t = long long int;          // 8 byte 64 bit
+  using  int_t = long long int;          // 8 byte 64 bit
   #elif  CYKO_BUILD_X86
-  using   int_t = long int;               // 4 byte 32 bit
+  using  int_t = long int;               // 4 byte 32 bit
   #endif
-  #endif // CYKO_BUILD_USE_STDINT
-	using  size_t = std::size_t;
-	using  void_t = void;
-	using  null_t = std::nullptr_t;
+  #endif
+	using size_t = std::size_t;
+	using void_t = void;
+	using null_t = std::nullptr_t;
 
   /**
    * @todo make cross-platform.

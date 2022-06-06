@@ -33,7 +33,8 @@ namespace internal
 
   template <typename C, typename T, typename F>
     struct conditional
-    : meta::expression<typename internal::conditional_help<C::value, T, F>::type, internal::conditional_help<C::value, T, F>::value>
+    : meta::expression<decltype(internal::conditional_help<static_cast<cyko::bool_t>(C::value), T, F>::value),
+                                internal::conditional_help<static_cast<cyko::bool_t>(C::value), T, F>::value>
     {
       using self = conditional<C, T, F>;
     };

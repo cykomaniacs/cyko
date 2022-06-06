@@ -34,10 +34,10 @@
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.tabSizing": "shrink",
 
-  "C_Cpp.default.enableConfigurationSquiggles": true,
-/*
+
+
   //+-----+-----------------------------------------------------------------
-  //| CPP | OVERRIDES
+  //| CXX | OVERRIDES
   //+-----+-----------------------------------------------------------------
   "[cpp]":
   {
@@ -53,8 +53,9 @@
     "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
   },
   //+-----+-----------------------------------------------------------------
-  //| CPP | GENERAL
+  //| CXX | GENERAL
   //+-----+-----------------------------------------------------------------
+  "C_Cpp.default.enableConfigurationSquiggles": true,
   "C_Cpp.autoAddFileAssociations": true,
   "C_Cpp.autocomplete": "Default",
   "C_Cpp.dimInactiveRegions": true,
@@ -63,7 +64,26 @@
   "C_Cpp.intelliSenseEngine": "Default",
   "C_Cpp.suggestSnippets": true,
   //+-----+-----------------------------------------------------------------
-  //| CPP | TIDY (LINT)
+  //| CXX | BUILD CONFIGURATION
+  //+-----+-----------------------------------------------------------------
+  "C_Cpp.default.compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang++.exe",
+  "C_Cpp.default.cStandard": "c17",
+  "C_Cpp.default.cppStandard": "c++20",
+  "C_Cpp.default.defines": [
+    "CYKO_BUILD_TOOLKIT_LLVM",
+    "CYKO_BUILD_CRT_LLVM",
+    "CYKO_BUILD_CXX_MSVC",
+    "CYKO_BUILD_X64",
+    "CYKO_BUILD_USE_STDINT",
+  ],
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/include"
+  ],
+  "C_Cpp.default.forcedInclude": [
+    "${workspaceFolder}/include/common/common.h"
+  ],
+  //+-----+-----------------------------------------------------------------
+  //| CXX | TIDY (LINT)
   //+-----+-----------------------------------------------------------------
   "C_Cpp.codeAnalysis.clangTidy.enabled": true,
   "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
@@ -74,22 +94,10 @@
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
     "llvm-namespace-comment",
     "llvm-include-order",
-    "clang-diagnostic-ambiguous-ellipsis"
-
+    //"clang-diagnostic-ambiguous-ellipsis"
   ],
   //+-----+-----------------------------------------------------------------
-  //| CPP | BUILD CONFIGURATION
-  //+-----+-----------------------------------------------------------------
-  "C_Cpp.default.cStandard": "c17",
-  "C_Cpp.default.cppStandard": "c++20",
-  "C_Cpp.default.includePath": [
-    "${workspaceFolder}/include"
-  ],
-  "C_Cpp.default.forcedInclude": [
-    "${workspaceFolder}/include/common/common.h"
-  ],
-  //+-----+-----------------------------------------------------------------
-  //| CPP | LOGGING (OUTPUT TAB)
+  //| CXX | LOGGING (OUTPUT TAB)
   //+-----+-----------------------------------------------------------------
 //"C_Cpp.loggingLevel": "Debug",
   "C_Cpp.loggingLevel": "Information",
@@ -97,10 +105,10 @@
 //"C_Cpp.loggingLevel": "Error",
 //"C_Cpp.loggingLevel": "None",
   //+-----+-----------------------------------------------------------------
-  //| CPP | END!
+  //| CXX | END!
   //+-----+-----------------------------------------------------------------
 
-*/
+
 
 
   //+-----------------------------------------------------------------------

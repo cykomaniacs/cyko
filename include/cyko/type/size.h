@@ -60,7 +60,7 @@ namespace internal
     : meta::size_t<internal::size_help<T...>::value>
     { };
 
-  size_t xd[] = {
+  static constexpr cyko::size_t xd[] = {
     size<int>::value,
     size<char>::value,
     size<int, int>::value,

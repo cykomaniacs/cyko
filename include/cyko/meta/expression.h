@@ -108,7 +108,12 @@ namespace internal
 
   template <typename T>
     struct is_expression
-    #ifdef CYKO_BUILD_CODESET_MSVC
+    #ifdef CYKO_BUILD_TOOLKIT_MSVC
+    : meta::bool_t<__is_base_of(internal::expression_tag, T)>
+    {
+      using self = is_expression<T>;
+    };
+    #elif  CYKO_BUILD_TOOLKIT_LLVM
     : meta::bool_t<__is_base_of(internal::expression_tag, T)>
     {
       using self = is_expression<T>;

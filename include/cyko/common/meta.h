@@ -1,13 +1,11 @@
-#ifndef CYKO_ENV_H
-#define CYKO_ENV_H
+#ifndef CYKO_COMMON_META_H
+#define CYKO_COMMON_META_H
 
-/**
- * @b base common
- */
 
 /**
  * @b meta
  */
+
 #include <cyko/meta/expression.h>
 #include <cyko/meta/conditional.h>
 #include <cyko/meta/decrease.h>
@@ -48,8 +46,10 @@
 #include <cyko/type/is_union.h>
 
 #include <cyko/type/is_array.h>
+#include <cyko/type/is_function.h>
 #include <cyko/type/is_pointer.h>
 #include <cyko/type/is_lvalue_reference.h>
+#include <cyko/type/is_reference.h>
 #include <cyko/type/is_rvalue_reference.h>
 
 #include <cyko/type/is_base_of.h>
@@ -62,5 +62,4 @@
 #include <cyko/type/list.h>
 #include <cyko/type/size.h>
 #include <cyko/type/none.h> // void_t
-
 #endif

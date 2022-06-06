@@ -20,17 +20,9 @@ namespace type
       using type = Head;
       using head = Head;
       using tail = list<Tail...>;
-    //using size = meta::plus<meta::size_t<1>, typename tail::size>;
       using size = meta::size_t<1>::template plus<typename tail::size>;
     };
-/*
-  template <typename T>
-    struct list<T>
-    : list<>
-    {
 
-    };
-*/
   template <>
     struct list<>
     {
@@ -64,19 +56,6 @@ namespace internal
       using result = typename L::head;
     };
 
-/*
-  template <class I, class L, bool_t = I::zero::value>
-    struct select_impl
-    : select_impl<typename I::decrease,
-                  typename L::tail>
-    { };
-
-  template <class I, class L>
-    struct select_impl<I, L, true>
-    {
-      using result = typename L::head;
-    };
-*/
 } // namespace cyko::type::internal
 
   template <typename L, cyko::size_t I>
