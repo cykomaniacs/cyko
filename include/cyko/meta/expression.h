@@ -10,9 +10,9 @@ namespace internal
 
 } // namespace cyko::meta::internal
 
-  template <typename, typename, typename...>
+  template <typename...>
     struct eller;
-  template <typename, typename, typename...>
+  template <typename...>
     struct och;
   template <typename, typename, typename>
     struct conditional;
@@ -57,26 +57,32 @@ namespace internal
 
       /*
        + ----------
-       | LIBRARY
+       | UTILITIES
        + -----
        */
 
+      /// @b 1:unary
       using decrease = cyko::meta::decrease <self>;
       using increase = cyko::meta::increase <self>;
       using negate   = cyko::meta::negate   <self>;
       using zero     = cyko::meta::zero     <self>;
 
+      /// @b 2:binary
       template <typename B> using equal    = cyko::meta::equal    <self, B>;
-      template <typename B> using divide   = cyko::meta::divide   <self, B>;
-      template <typename B> using greater  = cyko::meta::greater  <self, B>;
       template <typename B> using less     = cyko::meta::less     <self, B>;
+      template <typename B> using greater  = cyko::meta::greater  <self, B>;
+      /// @b 2:binary
+      template <typename B> using divide   = cyko::meta::divide   <self, B>;
       template <typename B> using minus    = cyko::meta::minus    <self, B>;
       template <typename B> using multiply = cyko::meta::multiply <self, B>;
       template <typename B> using plus     = cyko::meta::plus     <self, B>;
 
-      template <typename B, typename... C> using eller       = cyko::meta::eller       <self, B, C...>;
-      template <typename B, typename... C> using och         = cyko::meta::och         <self, B, C...>;
-      template <typename B, typename    C> using conditional = cyko::meta::conditional <self, B, C>;
+      /// @b 3:ternary
+      template <typename B, typename C> using conditional = cyko::meta::conditional <self, B, C>;
+
+      /// @b X:variadic
+      template <typename... Pack> using eller = cyko::meta::eller <self, Pack...>;
+      template <typename... Pack> using och   = cyko::meta::och   <self, Pack...>;
     };
 
   template <cyko::bool_t V>
@@ -100,20 +106,18 @@ namespace internal
       using self = size_t<V>;
     };
 
-
-
   /**
    * @todo implement requirement / constraint / concept
    */
 
   template <typename T>
     struct is_expression
-    #ifdef CYKO_BUILD_TOOLKIT_MSVC
+    #ifdef CYKO_BUILD_CXX_MSVC
     : meta::bool_t<__is_base_of(internal::expression_tag, T)>
     {
       using self = is_expression<T>;
     };
-    #elif  CYKO_BUILD_TOOLKIT_LLVM
+    #elif  CYKO_BUILD_CXX_LLVM
     : meta::bool_t<__is_base_of(internal::expression_tag, T)>
     {
       using self = is_expression<T>;

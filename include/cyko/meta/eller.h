@@ -9,21 +9,29 @@ namespace meta {
 namespace internal
 {
 
-  template <typename Head, typename... Tail>
-    struct eller_help
-    : meta::conditional<Head, meta::bool_t<true>, eller_help<Tail...>>
+  template <typename...>
+    struct eller_help;
+
+  template <typename T, typename... Tail>
+    struct eller_help<T, Tail...>
+    : meta::conditional<T, meta::bool_t<true>, eller_help<T, Tail...>>
     { };
 
-  template <typename Head>
-    struct eller_help<Head>
-    : meta::bool_t<Head::value>
+  template <typename T>
+    struct eller_help<T>
+    : meta::bool_t<T::value>
+    { };
+
+  template <>
+    struct eller_help<>
+    : meta::bool_t<false>
     { };
 
 } // namespace cyko::meta::internal
 
-  template <typename T, typename U, typename... Tail>
+  template <typename... T>
     struct eller
-    : meta::bool_t<internal::eller_help<T, U, Tail...>::value>
+    : meta::bool_t<internal::eller_help<T...>::value>
     { };
 
 } // namespace cyko::meta

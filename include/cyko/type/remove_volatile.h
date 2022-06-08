@@ -21,8 +21,8 @@ namespace internal
 } // namespace cyko::type::internal
 
   /**
-   * @brief Removes the @b volatile attribute from a type.
-   * @remark Removes @e top-level attributes (see the example code).
+   * @brief Removes the top-level @b volatile qualifier from a type.
+   * @see The example code.
    * @code {.cpp}
    * cyko::type::remove_volatile<int   volatile>   // int
    * cyko::type::remove_volatile<int   volatile&&> // int volatile&&

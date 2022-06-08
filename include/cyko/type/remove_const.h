@@ -21,16 +21,14 @@ namespace internal
 } // namespace cyko::type::internal
 
   /**
-   * @brief Removes the @b const attribute from a type.
-   * @remark Removes @e top-level attributes (see the example code).
+   * @brief Removes the top-level @b const qualifier from a type.
+   * @see The example code.
    * @code {.cpp}
-   * cyko::type::remove_const<int   const>   // int
-   * cyko::type::remove_const<int   const&&> // int const&&
-   * cyko::type::remove_const<int   const&>  // int const&
-   * cyko::type::remove_const<int   const*>  // int const*
-   * cyko::type::remove_const<int*  const>   // int*
-   * cyko::type::remove_const<int&  const>   // int&
-   * cyko::type::remove_const<int&& const>   // int&&
+   * cyko::type::remove_const<int  const>   // int
+   * cyko::type::remove_const<int  const&&> // int const&&
+   * cyko::type::remove_const<int  const&>  // int const&
+   * cyko::type::remove_const<int  const*>  // int const*
+   * cyko::type::remove_const<int* const>   // int*
    * @endcode
    * @tparam T The type.
    */

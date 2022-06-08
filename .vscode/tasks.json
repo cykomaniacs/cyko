@@ -186,7 +186,7 @@
         // ------------------------------
         "-DCYKO_BUILD_TOOLKIT_LLVM",
         "-DCYKO_BUILD_CRT_LLVM", // LIBCRT
-        "-DCYKO_BUILD_CXX_MSVC", // LIBCPP
+        "-DCYKO_BUILD_CXX_MSVC", // LIBC++
         "-DCYKO_BUILD_X64",
         "-DCYKO_BUILD_WINDOWS",
         "-DCYKO_BUILD_USE_STDINT",

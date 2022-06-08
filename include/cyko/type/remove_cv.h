@@ -9,16 +9,16 @@ namespace type
 {
 
   /**
-   * @brief Removes the @b const and / or @b volatile attributes from a type.
-   * @remark Removes @e top-level attributes (see the example code).
+   * @brief Removes the top-level @b const and / or @b volatile qualifiers from a type.
+   * @see The example code.
    * @code {.cpp}
    * cyko::type::remove_cv<int   const volatile>   // int
    * cyko::type::remove_cv<int   const volatile&&> // int const volatile&&
    * cyko::type::remove_cv<int   const volatile&>  // int const volatile&
    * cyko::type::remove_cv<int   const volatile*>  // int const volatile*
    * cyko::type::remove_cv<int*  const volatile>   // int*
-   * cyko::type::remove_cv<int&  const volatile>   // int&
-   * cyko::type::remove_cv<int&& const volatile>   // int&&
+   * cyko::type::remove_cv<int&  volatile>   // int&
+   * cyko::type::remove_cv<int&& volatile>   // int&&
    * @endcode
    * @tparam T The type.
    */

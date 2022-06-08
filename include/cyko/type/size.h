@@ -11,20 +11,19 @@ namespace type {
 namespace internal
 {
 
-  template <typename... Args>
-	  struct size_impl//<Args...>
-	  : meta::size_t<sizeof...(Args)>
+  template <typename... Pack>
+	  struct size_impl
+	  : meta::size_t<sizeof...(Pack)>
 	  { };
+
   template <typename T>
 		struct size_impl<T>
 		: meta::size_t<sizeof(T)>
 		{ };
 
-
-
-  template <typename ...Args>
+  template <typename... Pack>
     struct size_help
-    : size_impl<Args...>
+    : size_impl<Pack...>
     { };
 
   template <typename T>
@@ -35,32 +34,29 @@ namespace internal
 
 } // namespace cyko::type::internal
 
-/*
-	template <typename...>
-		struct list;
-
-	template <typename T>
-		struct size
-		: meta::size_t<sizeof(T)>
-		{ };
-
-	template <typename... Args>
-	  struct size<Args...>
-	  : meta::size_t<sizeof...(Args)>
-	  { };
-
-	template <typename... Args>
-		struct size<list<Args...>>
-		: meta::size_t<sizeof...(Args)>
-		{ };
-*/
-
   template <typename... T>
     struct size
     : meta::size_t<internal::size_help<T...>::value>
     { };
 
-  static constexpr cyko::size_t xd[] = {
+} // namespace cyko::type
+} // namespace cyko
+
+#ifdef CYKO_DEBUG
+namespace debug
+{
+  using namespace cyko::type;
+
+  static_assert(size<char>::value          == sizeof(char));
+  static_assert(size<short int>::value     == sizeof(short int));
+  static_assert(size<int>::value           == sizeof(int));
+  static_assert(size<long int>::value      == sizeof(long int));
+  static_assert(size<long long int>::value == sizeof(long long int));
+  static_assert(size<float>::value         == sizeof(float));
+  static_assert(size<double>::value        == sizeof(double));
+  static_assert(size<long double>::value   == sizeof(long double));
+
+  static constexpr cyko::size_t x[] = {
     size<int>::value,
     size<char>::value,
     size<int, int>::value,
@@ -70,8 +66,7 @@ namespace internal
     size<int[][6][4]>::value,
     size<int[5]>::value,
   };
-
-} // namespace cyko::type
-} // namespace cyko
+}
+#endif
 
 #endif
