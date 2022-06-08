@@ -61,29 +61,31 @@ namespace internal
        + -----
        */
 
-      /// @b 1:unary
+      /// @b 1:unary arithmetic
       using decrease = cyko::meta::decrease <self>;
       using increase = cyko::meta::increase <self>;
+      /// @b 1:unary logical
       using negate   = cyko::meta::negate   <self>;
       using zero     = cyko::meta::zero     <self>;
 
-      /// @b 2:binary
+      /// @b 2:binary logical
       template <typename B> using equal    = cyko::meta::equal    <self, B>;
       template <typename B> using less     = cyko::meta::less     <self, B>;
       template <typename B> using greater  = cyko::meta::greater  <self, B>;
-      /// @b 2:binary
+      /// @b 2:binary arithmetic
       template <typename B> using divide   = cyko::meta::divide   <self, B>;
       template <typename B> using minus    = cyko::meta::minus    <self, B>;
       template <typename B> using multiply = cyko::meta::multiply <self, B>;
       template <typename B> using plus     = cyko::meta::plus     <self, B>;
 
-      /// @b 3:ternary
+      /// @b 3:ternary logical
       template <typename B, typename C> using conditional = cyko::meta::conditional <self, B, C>;
 
-      /// @b X:variadic
+      /// @b X:variadic logical
       template <typename... Pack> using eller = cyko::meta::eller <self, Pack...>;
       template <typename... Pack> using och   = cyko::meta::och   <self, Pack...>;
     };
+
 
   template <cyko::bool_t V>
     struct bool_t

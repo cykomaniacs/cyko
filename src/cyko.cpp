@@ -44,7 +44,7 @@ int main()
   */
 
   std::cout << "Hello World!" << std::endl;
-  std::cout << conjunction<cyko::meta::bool_t<true>>::value << std::endl;
+
   std::cout
     << std::endl << ":   int   : "
     << sizeof(int)

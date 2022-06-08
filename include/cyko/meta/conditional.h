@@ -24,11 +24,11 @@ namespace internal
 } // namespace cyko::meta::internal
 
   /**
-   * @brief Selects one of two values, depending on the specified condition.
+   * @brief Conditional expression.
    *
-   * @tparam C The @anchor condition.
-   * @tparam T The value ( @link cyko::meta::expression @endlink ) selected if the @ref condition is true.
-   * @tparam F The value ( @link cyko::meta::expression @endlink ) selected if the @ref condition is false.
+   * @tparam C The condition.
+   * @tparam T Selected if the condition is: true.
+   * @tparam F Selected if the condition is: false.
    */
 
   template <typename C, typename T, typename F>

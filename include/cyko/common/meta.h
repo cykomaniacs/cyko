@@ -1,11 +1,9 @@
 #ifndef CYKO_COMMON_META_H
 #define CYKO_COMMON_META_H
 
-
 /**
  * @b meta
  */
-
 #include <cyko/meta/expression.h>
 #include <cyko/meta/conditional.h>
 #include <cyko/meta/decrease.h>
@@ -47,6 +45,7 @@
 
 #include <cyko/type/is_array.h>
 #include <cyko/type/is_function.h>
+#include <cyko/type/is_object.h>
 #include <cyko/type/is_pointer.h>
 #include <cyko/type/is_lvalue_reference.h>
 #include <cyko/type/is_reference.h>
@@ -54,12 +53,12 @@
 
 #include <cyko/type/is_base_of.h>
 #include <cyko/type/is_same.h>
-
-#include <cyko/type/rank.h>
 /**
  * @b type (!)
  */
+#include <cyko/type/rank.h>
 #include <cyko/type/list.h>
 #include <cyko/type/size.h>
 #include <cyko/type/none.h> // void_t
+
 #endif
