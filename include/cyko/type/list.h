@@ -64,4 +64,22 @@ namespace internal
 } // namespace cyko::type
 } // namespace cyko
 
+#ifdef CYKO_DEBUG
+#include<cyko/type/is_same.h>
+namespace debug
+{
+  using namespace cyko;
+  using namespace cyko::type;
+
+  static_assert(cyko::type::list<
+    char,
+    int,
+    short,
+    long,
+    float,
+    double>::size::value == 6
+  );
+}
+#endif
+
 #endif

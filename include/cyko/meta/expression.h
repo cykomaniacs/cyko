@@ -26,7 +26,7 @@ namespace internal
     struct less;
   template <typename, typename>
     struct minus;
-  template <typename, typename>
+  template <typename, typename...>
     struct multiply;
   template <typename, typename>
     struct plus;
@@ -72,11 +72,13 @@ namespace internal
       template <typename B> using equal    = cyko::meta::equal    <self, B>;
       template <typename B> using less     = cyko::meta::less     <self, B>;
       template <typename B> using greater  = cyko::meta::greater  <self, B>;
-      /// @b 2:binary arithmetic
+      /// @b 2:binary arithmetic @todo
       template <typename B> using divide   = cyko::meta::divide   <self, B>;
       template <typename B> using minus    = cyko::meta::minus    <self, B>;
-      template <typename B> using multiply = cyko::meta::multiply <self, B>;
       template <typename B> using plus     = cyko::meta::plus     <self, B>;
+      template <typename B> using times    = cyko::meta::multiply <self, B>;
+      /// @b 2:binary arithmetic
+      template <typename B, typename... Pack> using multiply = cyko::meta::multiply <self, B, Pack...>;
 
       /// @b 3:ternary logical
       template <typename B, typename C> using conditional = cyko::meta::conditional <self, B, C>;
