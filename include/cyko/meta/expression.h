@@ -10,32 +10,27 @@ namespace internal
 
 } // namespace cyko::meta::internal
 
-  template <typename...>
-    struct eller;
-  template <typename...>
-    struct och;
-  template <typename, typename, typename>
-    struct conditional;
-  template <typename, typename>
-    struct divide;
-  template <typename, typename>
-    struct equal;
-  template <typename, typename>
-    struct greater;
-  template <typename, typename>
-    struct less;
-  template <typename, typename>
-    struct minus;
-  template <typename, typename...>
-    struct multiply;
-  template <typename, typename>
-    struct plus;
+  template <typename, typename...> struct plus;
+  template <typename, typename...> struct minus;
+  template <typename, typename...> struct multiply;
+  template <typename, typename...> struct divide;
+
+
+  template <typename...> struct eller;
+  template <typename...> struct och;
+  template <typename, typename, typename> struct conditional;
+
+
+  template <typename, typename> struct equal;
+  template <typename, typename> struct greater;
+  template <typename, typename> struct less;
+  template <typename>           struct zero;
+
   template <typename>
     struct increase;
   template <typename>
     struct decrease;
-  template <typename>
-    struct zero;
+
   template <typename>
     struct negate;
 
@@ -61,29 +56,27 @@ namespace internal
        + -----
        */
 
-      /// @b 1:unary arithmetic
+      /// @b 1:unary @e arithmetic
       using decrease = cyko::meta::decrease <self>;
       using increase = cyko::meta::increase <self>;
-      /// @b 1:unary logical
+      /// @b 1:unary @e logical
       using negate   = cyko::meta::negate   <self>;
       using zero     = cyko::meta::zero     <self>;
 
-      /// @b 2:binary logical
+      /// @b 2:binary @e logical
       template <typename B> using equal    = cyko::meta::equal    <self, B>;
       template <typename B> using less     = cyko::meta::less     <self, B>;
       template <typename B> using greater  = cyko::meta::greater  <self, B>;
-      /// @b 2:binary arithmetic @todo
-      template <typename B> using divide   = cyko::meta::divide   <self, B>;
-      template <typename B> using minus    = cyko::meta::minus    <self, B>;
-      template <typename B> using plus     = cyko::meta::plus     <self, B>;
-      template <typename B> using times    = cyko::meta::multiply <self, B>;
-      /// @b 2:binary arithmetic
+      /// @b 2:binary @e arithmetic @todo @b test
+      template <typename B, typename... Pack> using plus     = cyko::meta::plus     <self, B, Pack...>;
+      template <typename B, typename... Pack> using minus    = cyko::meta::minus    <self, B, Pack...>;
       template <typename B, typename... Pack> using multiply = cyko::meta::multiply <self, B, Pack...>;
+      template <typename B, typename... Pack> using divide   = cyko::meta::divide   <self, B, Pack...>;
 
-      /// @b 3:ternary logical
+      /// @b 3:ternary @e logical
       template <typename B, typename C> using conditional = cyko::meta::conditional <self, B, C>;
 
-      /// @b X:variadic logical
+      /// @b #:variadic @e logical
       template <typename... Pack> using eller = cyko::meta::eller <self, Pack...>;
       template <typename... Pack> using och   = cyko::meta::och   <self, Pack...>;
     };
@@ -127,7 +120,9 @@ namespace internal
       using self = is_expression<T>;
     };
     #else
-    { static_assert(false, "unimplemented!"); };
+    {
+      static_assert(false, "unimplemented!");
+    };
     #endif
 
 

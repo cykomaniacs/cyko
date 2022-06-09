@@ -8,12 +8,21 @@ namespace meta {
 namespace internal
 {
 
+  /// @b base:expression
+
+  template <typename T>
+    struct multiply_base
+    : meta::expression<decltype(T::value), T::value>
+    { };
+
+  /// @b base:operator
+
   template <typename T, typename U>
     struct multiply_tool
     : meta::expression<decltype(T::value * U::value), (T::value * U::value)>
     { };
 
-
+  /// @b impl:specialization
 
   template <typename, typename...>
     struct multiply_impl;
@@ -30,7 +39,7 @@ namespace internal
 
   template <typename T>
     struct multiply_impl<T>
-    : meta::expression<decltype(T::value), T::value>
+    : multiply_base<T>
     { };
 
 } // namespace cyko::meta::internal
