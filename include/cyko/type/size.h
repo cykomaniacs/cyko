@@ -93,11 +93,11 @@ namespace debug
   static_assert(size<void,char,int>      ::equal<list<void,char,int>::size>::value);
   static_assert(size<void,char,int,short>::equal<list<void,char,int,short>::size>::value);
 
-  static constexpr auto a = sizeof(int[1]);
-  static constexpr auto a = sizeof(int[2]);
-  static constexpr auto a = sizeof(int[2][2]);
-  static constexpr auto a = sizeof(int[1][2]);
-  static constexpr auto b = meta::size_t<sizeof(int)>::multiply<meta::size_t<4>>::value;
+  static constexpr auto aa = sizeof(int[1]);
+  static constexpr auto ab = sizeof(int[2]);
+  static constexpr auto ac = sizeof(int[2][2]);
+  static constexpr auto ad = sizeof(int[1][2]);
+  static constexpr auto ae = meta::size_t<sizeof(int)>::multiply<meta::size_t<4>>::value;
   /// @b rank
 
   //static_assert(size<int[]>       ::equal<meta::size_t<1>>::value);
