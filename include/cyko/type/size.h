@@ -114,9 +114,9 @@ namespace debug
     > >::value
   );
 
-  static_assert(size<int[2]>      ::equal< size<int>::times<meta::int_t<2>> >::value);
-  static_assert(size<int[2][3]>   ::equal< size<int>::times<meta::int_t<2>>::times<meta::int_t<3>> >::value);
-  static_assert(size<int[2][3][4]>::equal< size<int>::times<meta::int_t<2>>::times<meta::int_t<3>>::times<meta::int_t<4>> >::value);
+  static_assert(size<int[2]>      ::equal< size<int>::multiply<meta::int_t<2>> >::value);
+  static_assert(size<int[2][3]>   ::equal< size<int>::multiply<meta::int_t<2>, meta::int_t<3>> >::value);
+  static_assert(size<int[2][3][4]>::equal< size<int>::multiply<meta::int_t<2>, meta::int_t<3>, meta::int_t<4>> >::value);
 }
 #endif
 

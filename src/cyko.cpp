@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 
-int main()
+auto main()
+  -> int
 {
   cyko::size_t x = 1337;
   cyko::size_t z = 1337;
@@ -11,9 +12,9 @@ int main()
   add_cv<int[]> c = { 33, 44, 55 };
 
   remove_pointer<int*> pa = 1;
-  remove_pointer<int**> pb = NULL;
+  remove_pointer<int**> pb = nullptr;
   remove_pointer<int const*const> pc = NULL;
-  remove_pointer<int const*const*volatile*const volatile> pd = NULL;
+  remove_pointer<int const*const*volatile*const volatile> pd = nullptr;
   remove_pointer<int*, true> qa = 1;
   remove_pointer<int**const, true> qb = NULL;
   remove_pointer<int const*const, true> qc = NULL;
@@ -65,10 +66,10 @@ int main()
     << std::endl << size<int>::value
     << std::endl << size<char>::value
     << std::endl << size<int, int>::value
-    << std::endl << size<int[]>::value
+    << std::endl << size<int[3]>::value
     << std::endl << size<int[3][4]>::value
     << std::endl << size<int[1][1][1][1]>::value
-    << std::endl << size<int[][6][4]>::value
+    << std::endl << size<int[2][6][4]>::value
     << std::endl << size<int[5]>::value
     << std::endl;
 }

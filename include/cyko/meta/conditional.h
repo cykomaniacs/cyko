@@ -8,35 +8,39 @@ namespace meta {
 namespace internal
 {
 
-  template <cyko::bool_t, typename T, typename F>
+  /// @b help @e declaration
+
+  template <typename C, typename, typename, auto = static_cast<cyko::bool_t>(C::value)>
     struct conditional_help;
 
-  template <typename T, typename F>
-    struct conditional_help<false, T, F>
-    : meta::expression<typename F::type, F::value>
+  /// @b help @e specialization
+
+  template <typename C, typename L, typename R>
+    struct conditional_help<C, L, R, false>
+    : meta::expression<decltype(R::value), R::value>
     { };
 
-  template <typename T, typename F>
-    struct conditional_help<true,  T, F>
-    : meta::expression<typename T::type, T::value>
+  template <typename C, typename L, typename R>
+    struct conditional_help<C, L, R, true>
+    : meta::expression<decltype(L::value), L::value>
     { };
 
 } // namespace cyko::meta::internal
 
   /**
-   * @brief Conditional expression.
+   * @brief The conditional / ternary operator.
    *
    * @tparam C The condition.
-   * @tparam T Selected if the condition is: true.
-   * @tparam F Selected if the condition is: false.
+   * @tparam L @b L as in @e LHS. Selected if the @e condition is @e true.
+   * @tparam R @b R as in @e RHS. Selected if the @e condition is @e false.
    */
 
-  template <typename C, typename T, typename F>
+  template <typename C, typename L, typename R>
     struct conditional
-    : meta::expression<decltype(internal::conditional_help<static_cast<cyko::bool_t>(C::value), T, F>::value),
-                                internal::conditional_help<static_cast<cyko::bool_t>(C::value), T, F>::value>
+    : meta::expression<decltype(internal::conditional_help<C, L, R>::value),
+                                internal::conditional_help<C, L, R>::value>
     {
-      using self = conditional<C, T, F>;
+      using self = conditional<C, L, R>;
     };
 
 } // namespace cyko::meta

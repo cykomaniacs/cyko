@@ -10,7 +10,7 @@ namespace meta
 
   template <typename T>
     struct increase
-    : meta::plus<T, meta::int_t<1>>
+    : meta::int_t<1>::plus<T>
     {
       using self = increase<T>;
     };

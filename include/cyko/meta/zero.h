@@ -9,7 +9,8 @@ namespace meta
 
   template <typename T>
     struct zero
-    : meta::equal<T, meta::int_t<0>>
+    : meta::int_t<0>::equal<T>
+  //: meta::equal<T, meta::int_t<0>>
     {
       using self = zero<T>;
     };

@@ -7,6 +7,17 @@ namespace internal
 {
 
   struct expression_tag { };
+  template <typename T, T V>
+    struct constant
+    {
+      using type = T;
+      using tag  = expression_tag;
+
+      static constexpr T value = V;
+
+      constexpr explicit operator T()      { return value; }
+      constexpr auto     operator()() -> T { return value; }
+    };
 
 } // namespace cyko::meta::internal
 
@@ -18,28 +29,25 @@ namespace internal
 
   template <typename...> struct eller;
   template <typename...> struct och;
+
   template <typename, typename, typename> struct conditional;
 
 
   template <typename, typename> struct equal;
+  template <typename>           struct zero;
   template <typename, typename> struct greater;
   template <typename, typename> struct less;
-  template <typename>           struct zero;
 
-  template <typename>
-    struct increase;
-  template <typename>
-    struct decrease;
-
-  template <typename>
-    struct negate;
+  template <typename> struct increase;
+  template <typename> struct decrease;
+  template <typename> struct negate;
 
 
 
   template <typename T, T V>
     struct expression
-    : internal::expression_tag
-    {
+    : internal::constant<T, V>
+    { /*
       using type = T;
       using tag  = internal::expression_tag;
       using self = expression<T, V>;
@@ -47,8 +55,11 @@ namespace internal
 
       static constexpr T value = V;
 
-      constexpr   operator T() { return value; }
-      constexpr T operator()() { return value; }
+      constexpr      operator T()      { return value; }
+      constexpr auto operator()() -> T { return value; }
+      */
+
+     using self = expression<T, V>;
 
       /*
        + ----------
@@ -70,7 +81,7 @@ namespace internal
       /// @b 2:binary @e arithmetic @todo @b test
       template <typename B, typename... Pack> using plus     = cyko::meta::plus     <self, B, Pack...>;
       template <typename B, typename... Pack> using minus    = cyko::meta::minus    <self, B, Pack...>;
-      template <typename B, typename... Pack> using multiply = cyko::meta::multiply <self, B, Pack...>;
+      template <typename B, typename... Pack> using multiply = multiply <self, B, Pack...>;
       template <typename B, typename... Pack> using divide   = cyko::meta::divide   <self, B, Pack...>;
 
       /// @b 3:ternary @e logical
@@ -80,7 +91,6 @@ namespace internal
       template <typename... Pack> using eller = cyko::meta::eller <self, Pack...>;
       template <typename... Pack> using och   = cyko::meta::och   <self, Pack...>;
     };
-
 
   template <cyko::bool_t V>
     struct bool_t
@@ -102,6 +112,25 @@ namespace internal
     {
       using self = size_t<V>;
     };
+
+  /**
+   * @todo implement @b number and @b boolean expressions.
+   */
+
+  template <cyko::bool_t V>
+    struct boolean
+    : meta::expression<cyko::bool_t, V>
+    {
+      using self = boolean<V>;
+    };
+
+  template <cyko::int_t V>
+    struct number
+    : meta::expression<cyko::int_t, V>
+    {
+      using self = number<V>;
+    };
+
 
   /**
    * @todo implement requirement / constraint / concept

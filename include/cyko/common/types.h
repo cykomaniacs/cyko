@@ -21,7 +21,6 @@ namespace cyko
 
 	using size_t = std::size_t;
 	using void_t = void;
-	using null_t = std::nullptr_t;
 
   /**
    * @brief The regular int type: cyko::int_t
@@ -79,21 +78,40 @@ namespace cyko
   using qword_t = unsigned long long int;
   #endif
 
+  /**
+   * @brief The type of the null pointer literal @e cyko::null (nullptr).
+   *
+   * @details It is a distinct type that is not itself a @e pointer type or a
+   * @e pointer-to-member type. Its values are null pointer constants (NULL),
+   * and can be implicitly converted to any @e pointer and / or
+   * @e pointer-to-member type.
+   *
+   * @remarks If two or more overloads accept different pointer types, an
+   * overload for @e null_t is necessary to accept a null pointer argument.
+   */
+
+  using null_t = decltype(nullptr);
+
 } // namespace cyko
 
 #ifdef CYKO_DEBUG
 namespace debug
 {
+  /// -----------------------------------------------------------------------
+  /// @test @b size @e int standard
+  /// -----------------------------------------------------------------------
   #ifdef CYKO_BUILD_X64
-  static_assert(sizeof(cyko::int_t) == 8); // 8 byte > 64 bit!
+  static_assert(sizeof(::cyko::int_t) == 8); /** @b 8 byte @e 64 bit */
   #elif  CYKO_BUILD_X86
-  static_assert(sizeof(cyko::int_t) == 4); // 4 byte > 32 bit!
+  static_assert(sizeof(::cyko::int_t) == 4); /** @b 4 byte @e 32 bit */
   #endif
-
-  static_assert(sizeof(cyko:: byte_t) == 1); // 1 byte >  8 bit!
-  static_assert(sizeof(cyko:: word_t) == 2); // 2 byte > 16 bit!
-  static_assert(sizeof(cyko::dword_t) == 4); // 4 byte > 32 bit!
-  static_assert(sizeof(cyko::qword_t) == 8); // 8 byte > 64 bit!
+  /// -----------------------------------------------------------------------
+  /// @test @b size @e int specials
+  /// -----------------------------------------------------------------------
+  static_assert(sizeof(::cyko:: byte_t) == 1); /** @b 1 byte @e  8 bit */
+  static_assert(sizeof(::cyko:: word_t) == 2); /** @b 2 byte @e 16 bit */
+  static_assert(sizeof(::cyko::dword_t) == 4); /** @b 4 byte @e 32 bit */
+  static_assert(sizeof(::cyko::qword_t) == 8); /** @b 8 byte @e 64 bit */
 }
 #endif
 

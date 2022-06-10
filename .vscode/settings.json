@@ -1,24 +1,44 @@
 {
+  //-------------------------------------------------------------------------
+  // #region: EDITOR | WORKBENCH
+  //-------------------------------------------------------------------------
+  "workbench.tree.renderIndentGuides": "always", // file explorer
+  "workbench.sideBar.location": "right",
+  "workbench.editor.highlightModifiedTabs": true,
+  "workbench.editor.tabSizing": "shrink",
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+  // #region: EDITOR | HIGHLIGHTING
+  //-------------------------------------------------------------------------
   "editor.roundedSelection": true,
-  "editor.guides.bracketPairs": "active",
-  //"editor.guides.bracketPairs": true, // "active" (cursor) | true (always)
-  "editor.matchBrackets": "near",
-  //"editor.matchBrackets": "always", // "near" (cursor) | "always"
+  "editor.guides.bracketPairs": "active", // "active" (cursor)
+  "editor.matchBrackets": "near", // "near" (cursor)
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairsHorizontal": true,
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "editor.language.brackets": [
-    [ "[", "]" ],
-    [ "{", "}" ],
-    [ "<", ">" ],
     [ "(", ")" ],
-    [ "\"","\""],
-    [ "'", "'" ],
+    [ "{", "}" ],
+    [ "[", "]" ],
+    [ "<", ">" ],
   ],
 
   "editor.guides.highlightActiveBracketPair": true,
-  "editor.guides.highlightActiveIndentation": "always", // "always" (+bracket)
+  "editor.guides.highlightActiveIndentation": "always",
 
+  "editor.renderLineHighlight": "all", // highlight current line
+  "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+
+
+
+  //-------------------------------------------------------------------------
+  // #region: CODELENS | GIT
+  //-------------------------------------------------------------------------
+  "gitlens.blame.compact": true,
   "gitlens.blame.highlight.enabled": true,
   "gitlens.blame.highlight.locations": [
     "gutter",
@@ -26,19 +46,21 @@
     "overview",
   ],
 
-  "editor.renderLineHighlight": "all", // highlight current line
-  "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
+  "gitlens.codeLens.enabled": false,
+  "gitlens.codeLens.scopes": [
+    "document",
+    "containers",
+    "blocks"
+  ],
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
 
-  "workbench.tree.renderIndentGuides": "always", // file explorer
-  "workbench.sideBar.location": "right",
-  "workbench.editor.highlightModifiedTabs": true,
-  "workbench.editor.tabSizing": "shrink",
 
 
-
-  //+-----+-----------------------------------------------------------------
-  //| CXX | OVERRIDES
-  //+-----+-----------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  // #region: CXX | OVERRIDES
+  //-------------------------------------------------------------------------
   "[cpp]":
   {
     "editor.wordBasedSuggestions": true, // suggestion popup based on history
@@ -52,9 +74,11 @@
     "editor.renderLineHighlight": "all", // highlight current line
     "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
   },
-  //+-----+-----------------------------------------------------------------
-  //| CXX | GENERAL
-  //+-----+-----------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+  // #region: CXX | GENERAL
+  //-------------------------------------------------------------------------
   "C_Cpp.default.enableConfigurationSquiggles": true,
   "C_Cpp.autoAddFileAssociations": true,
   "C_Cpp.autocomplete": "Default",
@@ -63,9 +87,11 @@
   "C_Cpp.errorSquiggles": "Enabled",
   "C_Cpp.intelliSenseEngine": "Default",
   "C_Cpp.suggestSnippets": true,
-  //+-----+-----------------------------------------------------------------
-  //| CXX | BUILD CONFIGURATION
-  //+-----+-----------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+  // #region: CXX | BUILD CONFIGURATION
+  //-------------------------------------------------------------------------
   "C_Cpp.default.compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang++.exe",
   "C_Cpp.default.cStandard": "c17",
   "C_Cpp.default.cppStandard": "c++20",
@@ -82,81 +108,57 @@
   "C_Cpp.default.forcedInclude": [
     "${workspaceFolder}/include/common/common.h"
   ],
-  //+-----+-----------------------------------------------------------------
-  //| CXX | TIDY (LINT)
-  //+-----+-----------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+  // #region: CXX | LINT (CLANG-TIDY)
+  //-------------------------------------------------------------------------
   "C_Cpp.codeAnalysis.clangTidy.enabled": true,
   "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
     "clang-analyzer-*",
+    "hicpp-*",
     "llvm-*",
-    "misc-*"
+    "misc-*",
+    "modernize-*",
+    "cppcoreguidelines-*",
   ],
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
-    "llvm-namespace-comment",
+    /// header-guards
+    "llvm-header-guard",
+    // includes
     "llvm-include-order",
-    //"clang-diagnostic-ambiguous-ellipsis"
+    /// arrays
+    "cppcoreguidelines-avoid-c-arrays",
+    "hicpp-avoid-c-arrays",
+    "modernize-avoid-c-arrays",
+    /// namespaces
+    "llvm-namespace-comment",
+    "modernize-concat-nested-namespaces",
+    /// misc
+    "cppcoreguidelines-avoid-magic-numbers",
   ],
-  //+-----+-----------------------------------------------------------------
-  //| CXX | LOGGING (OUTPUT TAB)
-  //+-----+-----------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+  // #region: CXX | LOGGING (OUTPUT TAB)
+  //-------------------------------------------------------------------------
 //"C_Cpp.loggingLevel": "Debug",
   "C_Cpp.loggingLevel": "Information",
 //"C_Cpp.loggingLevel": "Warning",
 //"C_Cpp.loggingLevel": "Error",
 //"C_Cpp.loggingLevel": "None",
-  //+-----+-----------------------------------------------------------------
-  //| CXX | END!
-  //+-----+-----------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
 
 
 
 
-  //+-----------------------------------------------------------------------
+  //+------------------------------------------------------------------------
   //| FILE-TYPES
-  //+-----------------------------------------------------------------------
+  //+------------------------------------------------------------------------
   "files.associations": {
-    "cstddef": "cpp",
-    "xtr1common": "cpp",
-    "cstdint": "cpp",
-    "iostream": "cpp",
-    "algorithm": "cpp",
-    "atomic": "cpp",
-    "bit": "cpp",
-    "cctype": "cpp",
-    "clocale": "cpp",
-    "cmath": "cpp",
-    "compare": "cpp",
-    "concepts": "cpp",
-    "cstdio": "cpp",
-    "cstdlib": "cpp",
-    "cstring": "cpp",
-    "ctime": "cpp",
-    "cwchar": "cpp",
-    "exception": "cpp",
-    "initializer_list": "cpp",
-    "ios": "cpp",
-    "iosfwd": "cpp",
-    "istream": "cpp",
-    "iterator": "cpp",
-    "limits": "cpp",
-    "memory": "cpp",
-    "new": "cpp",
-    "ostream": "cpp",
-    "stdexcept": "cpp",
-    "streambuf": "cpp",
-    "system_error": "cpp",
-    "tuple": "cpp",
-    "type_traits": "cpp",
-    "typeinfo": "cpp",
-    "utility": "cpp",
-    "xfacet": "cpp",
     "xiosbase": "cpp",
-    "xlocale": "cpp",
-    "xlocinfo": "cpp",
-    "xlocnum": "cpp",
-    "xmemory": "cpp",
-    "xstddef": "cpp",
-    "xstring": "cpp",
-    "xutility": "cpp"
+    "ostream": "cpp"
   }
 }
