@@ -24,4 +24,14 @@ namespace type
 } // namespace cyko::type
 } // namespace cyko
 
+#ifdef CYKO_DEBUG
+#include <type_traits>
+namespace debug
+{
+  using namespace ::cyko::type;
+
+  static_assert(is_const<std::add_const_t<int>>::value);
+}
+#endif
+
 #endif

@@ -41,6 +41,8 @@
  */
 
 #include <cyko/common/types.h>
-#include <cyko/common/meta.h>
+#include <cyko/common/const.h>
+
+#include <cyko/module/meta.h>
 
 #endif

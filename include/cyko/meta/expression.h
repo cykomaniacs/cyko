@@ -113,6 +113,13 @@ namespace internal
       using self = size_t<V>;
     };
 
+  template <typename... T>
+    struct void_t
+    : meta::expression<cyko::null_t, cyko::null>
+    {
+      using self = void_t<T...>;
+    };
+
   /**
    * @todo implement @b number and @b boolean expressions.
    */

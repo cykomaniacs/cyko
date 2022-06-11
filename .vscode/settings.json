@@ -21,7 +21,7 @@
     [ "(", ")" ],
     [ "{", "}" ],
     [ "[", "]" ],
-    [ "<", ">" ],
+    //[ "<", ">" ],
   ],
 
   "editor.guides.highlightActiveBracketPair": true,
@@ -38,7 +38,7 @@
   //-------------------------------------------------------------------------
   // #region: CODELENS | GIT
   //-------------------------------------------------------------------------
-  "gitlens.blame.compact": true,
+  "gitlens.blame.compact": false,
   "gitlens.blame.highlight.enabled": true,
   "gitlens.blame.highlight.locations": [
     "gutter",
@@ -46,12 +46,24 @@
     "overview",
   ],
 
-  "gitlens.codeLens.enabled": false,
+  "gitlens.codeLens.enabled": true,
   "gitlens.codeLens.scopes": [
     "document",
-    "containers",
-    "blocks"
+    //"containers",
+    "blocks",
   ],
+  "gitlens.codeLens.symbolScopes": [
+    "!namespace",
+    "!struct",
+    "!containers",
+    "!blocks"
+  ],
+
+  "gitlens.defaultDateStyle": "relative", // "absolute"
+  "gitlens.hovers.currentLine.enabled": true,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.hovers.currentLine.details": true,
+  "gitlens.hovers.currentLine.changes": true,
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
@@ -123,18 +135,22 @@
     "cppcoreguidelines-*",
   ],
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
-    /// header-guards
+    /// HEADER-GUARDS
     "llvm-header-guard",
-    // includes
+
+    /// INCLUDES
     "llvm-include-order",
-    /// arrays
+
+    /// ARRAYS
     "cppcoreguidelines-avoid-c-arrays",
     "hicpp-avoid-c-arrays",
     "modernize-avoid-c-arrays",
-    /// namespaces
+
+    /// NAMESPACES
     "llvm-namespace-comment",
     "modernize-concat-nested-namespaces",
-    /// misc
+
+    /// MISC
     "cppcoreguidelines-avoid-magic-numbers",
   ],
   //-------------------------------------------------------------------------
@@ -153,12 +169,14 @@
 
 
 
-
-  //+------------------------------------------------------------------------
-  //| FILE-TYPES
-  //+------------------------------------------------------------------------
+  //-------------------------------------------------------------------------
+  // #region: FILES | TYPES | ASSOCIATIONS
+  //-------------------------------------------------------------------------
   "files.associations": {
     "xiosbase": "cpp",
     "ostream": "cpp"
   }
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
 }

@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cyko\common\common.h" />
+    <ClInclude Include="include\cyko\common\const.h" />
     <ClInclude Include="include\cyko\common\types.h" />
     <ClInclude Include="include\cyko\env.h" />
     <ClInclude Include="include\cyko\meta\conditional.h" />
@@ -36,13 +37,16 @@
     <ClInclude Include="include\cyko\meta\eller.h" />
     <ClInclude Include="include\cyko\meta\equal.h" />
     <ClInclude Include="include\cyko\meta\expression.h" />
+    <ClInclude Include="include\cyko\meta\greater.h" />
     <ClInclude Include="include\cyko\meta\increase.h" />
+    <ClInclude Include="include\cyko\meta\less.h" />
     <ClInclude Include="include\cyko\meta\minus.h" />
     <ClInclude Include="include\cyko\meta\multiply.h" />
     <ClInclude Include="include\cyko\meta\negate.h" />
     <ClInclude Include="include\cyko\meta\och.h" />
     <ClInclude Include="include\cyko\meta\plus.h" />
     <ClInclude Include="include\cyko\meta\zero.h" />
+    <ClInclude Include="include\cyko\module\meta.h" />
     <ClInclude Include="include\cyko\type\add_const.h" />
     <ClInclude Include="include\cyko\type\add_cv.h" />
     <ClInclude Include="include\cyko\type\add_volatile.h" />
@@ -56,14 +60,17 @@
     <ClInclude Include="include\cyko\type\is_enum.h" />
     <ClInclude Include="include\cyko\type\is_function.h" />
     <ClInclude Include="include\cyko\type\is_lvalue_reference.h" />
+    <ClInclude Include="include\cyko\type\is_object.h" />
     <ClInclude Include="include\cyko\type\is_pointer.h" />
     <ClInclude Include="include\cyko\type\is_reference.h" />
     <ClInclude Include="include\cyko\type\is_rvalue_reference.h" />
     <ClInclude Include="include\cyko\type\is_same.h" />
     <ClInclude Include="include\cyko\type\is_union.h" />
+    <ClInclude Include="include\cyko\type\is_void.h" />
     <ClInclude Include="include\cyko\type\is_volatile.h" />
     <ClInclude Include="include\cyko\type\list.h" />
     <ClInclude Include="include\cyko\type\none.h" />
+    <ClInclude Include="include\cyko\type\pack.h" />
     <ClInclude Include="include\cyko\type\rank.h" />
     <ClInclude Include="include\cyko\type\remove_const.h" />
     <ClInclude Include="include\cyko\type\remove_cv.h" />

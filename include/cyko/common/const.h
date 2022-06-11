@@ -3,8 +3,9 @@
 
 namespace cyko
 {
-  /** *** *
+  /**
    * @brief The null pointer constant.
+   * @see nullptr @e (keyword).
    */
 
   static constexpr ::cyko::null_t null = nullptr;
@@ -14,9 +15,7 @@ namespace cyko
 #ifdef CYKO_DEBUG
 namespace debug
 {
-  /// -----------------------------------------------------------------------
   /// @test @b null @e size
-  /// -----------------------------------------------------------------------
   static_assert(sizeof(::cyko::null) == sizeof(nullptr));
 }
 #endif

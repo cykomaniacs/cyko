@@ -1,5 +1,5 @@
-#ifndef CYKO_COMMON_META_H
-#define CYKO_COMMON_META_H
+#ifndef CYKO_MODULE_META_H
+#define CYKO_MODULE_META_H
 
 /**
  * @b meta
@@ -36,6 +36,8 @@
 /**
  * @b type (?)
  */
+#include <cyko/type/is_const.h>
+
 #include <cyko/type/conditional.h>
 #include <cyko/type/enable_if.h>
 
@@ -58,6 +60,7 @@
  */
 #include <cyko/type/rank.h>
 #include <cyko/type/list.h>
+#include <cyko/type/pack.h>
 #include <cyko/type/size.h>
 #include <cyko/type/none.h> // void_t
 

@@ -36,34 +36,6 @@ namespace type
 } // namespace cyko::type
 } // namespace cyko
 
-
-namespace cyko {
-namespace type {
-namespace internal
-{
-
-  template <typename L, typename I, cyko::bool_t = meta::zero<I>::value>
-    struct element_impl;
-
-  template <typename L, typename I>
-    struct element_impl<L, I, false>
-    : element_impl<typename L::tail, meta::decrease<I>>
-    { };
-
-  template <typename L, typename I>
-    struct element_impl<L, I, true>
-    {
-      using result = typename L::head;
-    };
-
-} // namespace cyko::type::internal
-
-  template <typename L, cyko::size_t I>
-    using element = typename internal::element_impl<L, meta::size_t<I>>::result;
-
-} // namespace cyko::type
-} // namespace cyko
-
 #ifdef CYKO_DEBUG
 #include<cyko/type/is_same.h>
 namespace debug

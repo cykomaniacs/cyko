@@ -19,6 +19,7 @@
       "program": "${workspaceFolder}/bin/debug/x64/cyko.exe", "args": [],
 
       "console": "internalConsole", "environment": [],
+      "internalConsoleOptions": "openOnSessionStart",
 
       "stopAtEntry": false,
       "symbolSearchPath": "${workspaceFolder}/bin/debug/x64/",

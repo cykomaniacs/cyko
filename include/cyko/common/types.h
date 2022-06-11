@@ -91,25 +91,25 @@ namespace cyko
    */
 
   using null_t = decltype(nullptr);
+  using cull_t = decltype(NULL);
 
 } // namespace cyko
 
 #ifdef CYKO_DEBUG
 namespace debug
 {
-  /// -----------------------------------------------------------------------
-  /// @test @b size @e int standard
-  /// -----------------------------------------------------------------------
+  /// @test @b size @e integral
+
+  /// @e standard default
   #ifdef CYKO_BUILD_X64
-  static_assert(sizeof(::cyko::int_t) == 8); /** @b 8 byte @e 64 bit */
+  static_assert(sizeof(::cyko  ::int_t) == 8); /** @b 8 byte @e 64 bit */
   #elif  CYKO_BUILD_X86
-  static_assert(sizeof(::cyko::int_t) == 4); /** @b 4 byte @e 32 bit */
+  static_assert(sizeof(::cyko  ::int_t) == 4); /** @b 4 byte @e 32 bit */
   #endif
-  /// -----------------------------------------------------------------------
-  /// @test @b size @e int specials
-  /// -----------------------------------------------------------------------
-  static_assert(sizeof(::cyko:: byte_t) == 1); /** @b 1 byte @e  8 bit */
-  static_assert(sizeof(::cyko:: word_t) == 2); /** @b 2 byte @e 16 bit */
+
+  /// @e specials
+  static_assert(sizeof(::cyko ::byte_t) == 1); /** @b 1 byte @e  8 bit */
+  static_assert(sizeof(::cyko ::word_t) == 2); /** @b 2 byte @e 16 bit */
   static_assert(sizeof(::cyko::dword_t) == 4); /** @b 4 byte @e 32 bit */
   static_assert(sizeof(::cyko::qword_t) == 8); /** @b 8 byte @e 64 bit */
 }
