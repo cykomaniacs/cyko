@@ -25,6 +25,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X86;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|x64'">CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X64;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="src\meta.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cyko\common\common.h" />

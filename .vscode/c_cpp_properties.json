@@ -31,7 +31,7 @@
       "defines": [
         "CYKO_DEBUG",             // TARGET > Configuration
         "CYKO_BUILD_TOOLKIT_MSVC",//   HOST > Microsoft VC (cl.exe)
-        "CYKO-BUILD_CRT_MSVC",    // LIBC   > "CRT" MSVC C RUNTIME LIB
+        "CYKO_BUILD_CRT_MSVC",    // LIBC   > "CRT" MSVC C RUNTIME LIB
         "CYKO_BUILD_CXX_MSVC",    // LIBCXX > "STL" MSVC STANDARD CXX LIB
         "CYKO_BUILD_X64",         //   HOST > Architecture
         "CYKO_BUILD_WINDOWS",     // TARGET > OS
@@ -41,10 +41,26 @@
         "_UNICODE"
       ],
 
+      "compilerArgs": [
+        "/experimental:module"
+        /*
+        "/stdIfcDir", "C:/PROGRAM FILES/MICROSOFT VISUAL STUDIO/2022/COMMUNITY/VC/TOOLS/MSVC/14.33.31424/IFC/X64",
+        "/ifcOutput", "D:/O.WORKSHOP/SRC/CPP/CYKO/BIN/DEBUG/X64/NETA.IXX.IFC",
+        "/sourceDependencies:directives", "BIN/DEBUG/X64/",
+        "/FoBIN/DEBUG/X64/NETA.IXX.OBJ",
+        "/FdBIN/DEBUG/X64/VC143.PDB",
+        "/external:W3",
+        "/Gd",
+        "/interface", "/FID:/O.WORKSHOP/SRC/CPP/CYKO/INCLUDE/CYKO/COMMON/COMMON.H",
+        "/FC",
+        "/TP", "D:/O.WORKSHOP/SRC/CPP/CYKO/SRC/NETA.IXX"
+        */
+      ],
+
       "windowsSdkVersion": "10.0.22000.0",
       "compilerPath": "${compilerWinMSVCx64}",
       "cStandard": "c17",
-      "cppStandard": "c++20",
+      "cppStandard": "c++23",
       "intelliSenseMode": "msvc-x64"
     },
     { "name": "win-debug-x64(msvclang)",
@@ -56,7 +72,7 @@
       "defines": [
         "CYKO_DEBUG",
         "CYKO_BUILD_TOOLKIT_MSVCLANG",
-        "CYKO-BUILD_CRT_LLVM", // LIBC
+        "CYKO_BUILD_CRT_LLVM", // LIBC
         "CYKO_BUILD_CXX_MSVC", // LIBCPP
         "CYKO_BUILD_X64",
         "CYKO_BUILD_WINDOWS",
@@ -81,7 +97,7 @@
       "defines": [
         "CYKO_DEBUG",
         "CYKO_BUILD_TOOLKIT_LLVM",
-        "CYKO-BUILD_CRT_LLVM", // LIBC
+        "CYKO_BUILD_CRT_LLVM", // LIBC
         "CYKO_BUILD_CXX_MSVC", // LIBCXX
         "CYKO_BUILD_X64",
         "CYKO_BUILD_WINDOWS",
@@ -100,7 +116,7 @@
         //"-stdlib=libc++", // C++ standard library to use. <arg> must be ‘libc++ (GCC)’, ‘libstdc++ (LLVM)’ or ‘platform’."
         "-fcxx-modules",
         "-fmodules",
-        //"-fmodules-ts",
+        "-fmodules-ts",
 
         "-fimplicit-modules",     // automatically translates #include directives into import statements (i.e. headers into modules).
         "-fimplicit-module-maps", // tells the compiler to implicitly search the file system for module map files.

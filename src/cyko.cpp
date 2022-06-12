@@ -1,11 +1,11 @@
 ﻿//#include <iostream>
 import <iostream>;
-import neta;
+import meta;
 
 auto main()
   -> int
 {
-  mods::neta::testa<int>::type vhfjfe = 87;
+  //mods::neta::testa<int>::type vhfjfe = 87;
   cyko::size_t x = 1337;
   cyko::size_t z = 1337;
   using namespace cyko::type;
@@ -66,7 +66,7 @@ auto main()
   std::cout
     << std::endl << "qf = { &pa }" << qf[0]
     << std::endl
-    << std::endl << size<int>::value
+    << std::endl << ::meta::multiply<size<int>, meta::int_t<2>>::value
     << std::endl << size<char>::value
     << std::endl << size<int, int>::value
     << std::endl << size<int[3]>::value

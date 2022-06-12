@@ -111,7 +111,7 @@
         // ------------------------------------------------------------------
         // #region : language
 
-        "/std:c++20",         // c++ standard version <c++(11|17|20)>
+        "/std:c++23",         // c++ standard version <c++(11|17|20)>
         "/fp:precise",        // floating-point model; results are predictable
         "/Gd",                // use __cdecl (default) calling convention for all functions except C++ member functions and functions that are marked __stdcall, __fastcall, or __vectorcall.
         "/Gm-",               // [-] enable minimal rebuild
@@ -163,7 +163,7 @@
         "clean"
       ],
 
-      "group": { "kind": "build", "isDefault": true, }, "presentation": {
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
         "panel": "shared",
         "clear": false,
         "echo":  true,
@@ -185,7 +185,7 @@
         "-DCYKO_DEBUG",
         // ------------------------------
         "-DCYKO_BUILD_TOOLKIT_LLVM",
-        "-DCYKO_BUILD_CRT_LLVM", // LIBCRT
+        "-DCYKO_BUILD_CRT_LLVM", // LIBC
         "-DCYKO_BUILD_CXX_MSVC", // LIBC++
         "-DCYKO_BUILD_X64",
         "-DCYKO_BUILD_WINDOWS",
@@ -282,7 +282,7 @@
         "clean"
       ],
 
-      "group": { "kind": "build", "isDefault": false, }, "presentation": {
+      "group": { "kind": "build", "isDefault": true, }, "presentation": {
         "panel": "shared",
         "clear": false,
         "echo":  true,
@@ -301,7 +301,7 @@
       ],
 
       "problemMatcher": [
-        "$msCompile"
+        "$msCompile", "$gcc"
       ]
     },
     { "label": "win-debug-x86(msbuild)",

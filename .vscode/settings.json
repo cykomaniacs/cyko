@@ -101,7 +101,7 @@
   //-------------------------------------------------------------------------
   // #region: CXX | LINTERS
   //-------------------------------------------------------------------------
-  "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+  "C_Cpp.codeAnalysis.clangTidy.enabled": false,
   "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
     "clang-analyzer-*",
     "hicpp-*",
