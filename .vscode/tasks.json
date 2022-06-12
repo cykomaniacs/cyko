@@ -177,7 +177,10 @@
       "options": { "cwd": "${workspaceFolder}" },
       "command": "clang++.exe", "args": [
         // ------------------------------------------------------------------
-        // #region : misc
+        // #region : clang
+
+        "-Xclang", "-stdlib=libc++",
+
         // #endregion
         // ------------------------------------------------------------------
         // #region : definitions
@@ -206,15 +209,7 @@
         // ------------------------------------------------------------------
         // #region : language
 
-        "-std=c++2a",
-        // C++ standard library to use. <arg> must be ‘libc++ (GCC)’, ‘libstdc++ (LLVM)’ or ‘platform’."
-        "-fcxx-modules",
-        "-fmodules",
-        "-fmodules-ts",
-        "-fimplicit-modules", // automatically translates #include directives into import statements (i.e. headers into modules).
-        "-fimplicit-module-maps", // tells the compiler to implicitly search the file system for module map files.
-        // A module map file is a file containing the mapping between existing headers and the logical structure of a module.
-
+        "-std=c++2b",
 
         // #endregion
         // ------------------------------------------------------------------
@@ -242,17 +237,7 @@
         "-g",
         "-g3",
         "-gfull",
-        "-gmodules",
         "-glldb",
-
-        //"-fdebug-info-for-profiling",
-        //"-fdebug-macro",
-        //"-fdebug-pass-arguments",
-        //"-fdebug-pass-structure",
-
-        //-module-dependency-dir <arg> Directory to dump module dependencies to
-        //-fdebug-compilation-dir=<arg>, -fdebug-compilation-dir <arg> The compilation directory to embed in the debug info
-        // #endregion
         // ------------------------------------------------------------------
         // #region : architecture
 
@@ -262,7 +247,7 @@
         // ------------------------------------------------------------------
         // #region : i/o
 
-        "${file}", "-Xclang", "-stdlib=libc++", "-o", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe"
+        "${file}",  "-o", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe"
 
         // #endregion
         // ------------------------------------------------------------------

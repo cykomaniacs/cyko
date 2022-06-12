@@ -34,6 +34,7 @@
 
 
 
+
   //-------------------------------------------------------------------------
   // #region: GIT + GITLENS (CODELENS)
   //-------------------------------------------------------------------------
@@ -104,11 +105,11 @@
   "C_Cpp.codeAnalysis.clangTidy.enabled": true,
   "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
     "clang-analyzer-*",
+    "cppcoreguidelines-*",
     "hicpp-*",
     "llvm-*",
     "misc-*",
     "modernize-*",
-    "cppcoreguidelines-*",
   ],
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
     /// HEADER-GUARDS
@@ -132,7 +133,7 @@
   //-------------------------------------------------------------------------
   "C_Cpp.default.compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang++.exe",
   "C_Cpp.default.cStandard": "c17",
-  "C_Cpp.default.cppStandard": "c++20",
+  "C_Cpp.default.cppStandard": "c++23",
   "C_Cpp.default.defines": [
     "CYKO_BUILD_TOOLKIT_LLVM",
     "CYKO_BUILD_CRT_LLVM",
@@ -162,13 +163,15 @@
 
 
 
+
   //-------------------------------------------------------------------------
   // #region: +
   //-------------------------------------------------------------------------
-  "[cpp_embedded_latex]": { "breadcrumbs.showNamespaces": true},
+
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
+
 
 
 

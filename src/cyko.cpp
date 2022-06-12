@@ -1,11 +1,8 @@
-﻿//#include <iostream>
-import <iostream>;
-import neta;
+﻿#include <iostream>
 
 auto main()
   -> int
 {
-  mods::neta::testa<int>::type vhfjfe = 87;
   cyko::size_t x = 1337;
   cyko::size_t z = 1337;
   using namespace cyko::type;

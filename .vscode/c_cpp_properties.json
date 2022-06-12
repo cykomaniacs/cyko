@@ -4,9 +4,8 @@
 
   "env": {
     "compilerWinMSVCx64":     "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
-    "compilerWinMSVClangx64": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
-    "compilerWinClangx64":    "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang++.exe",
-    "compilerWinLLVMx64":     "",
+    "compilerWinMSVCLANGx64": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+    "compilerWinLLVMx64":     "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang++.exe",
     "compilerWinGCCx64":      "",
     "compilerNixLLVMx64":     "",
     "compilerNixGCCx64":      "",
@@ -42,10 +41,10 @@
       ],
 
       "windowsSdkVersion": "10.0.22000.0",
-      "compilerPath": "${compilerWinMSVCx64}",
       "cStandard": "c17",
-      "cppStandard": "c++20",
-      "intelliSenseMode": "msvc-x64"
+      "cppStandard": "c++23",
+      "intelliSenseMode": "msvc-x64",
+      "compilerPath": "${compilerWinMSVCx64}" //, "compilerArgs": []
     },
     { "name": "win-debug-x64(msvclang)",
 
@@ -57,7 +56,7 @@
         "CYKO_DEBUG",
         "CYKO_BUILD_TOOLKIT_MSVCLANG",
         "CYKO-BUILD_CRT_LLVM", // LIBC
-        "CYKO_BUILD_CXX_MSVC", // LIBCPP
+        "CYKO_BUILD_CXX_MSVC", // LIBC++
         "CYKO_BUILD_X64",
         "CYKO_BUILD_WINDOWS",
         "CYKO_BUILD_USE_STDINT",
@@ -67,10 +66,10 @@
       ],
 
       "windowsSdkVersion": "10.0.22000.0",
-      "compilerPath": "${compilerWinMSVClangx64}",
       "cStandard": "c17",
-      "cppStandard": "c++20",
-      "intelliSenseMode": "clang-x64"
+      "cppStandard": "c++23",
+      "intelliSenseMode": "clang-x64",
+      "compilerPath": "${compilerWinMSVCLANGx64}" //, "compilerArgs": []
     },
     { "name": "win-debug-x64(llvm)",
 
@@ -78,11 +77,21 @@
         "${cykoInc}/cyko/common/common.h"
       ],
 
+      /*
+        "CYKO_BUILD_CRT_LLVM", // LIBC (LLVM libc)
+        "CYKO_BUILD_CRT_MSVC", // LIBC (MSVC CRT)
+        "CYKO_BUILD_CRT_GCC",  // LIBC (GNU glibc)
+
+        "CYKO_BUILD_CXX_MSVC", // LIBC++ (MSVC STL)
+        "CYKO_BUILD_CXX_GCC",  // LIBC++ (GCC  libstdc++)
+        "CYKO_BUILD_CXX_LLVM", // LIBC++ (LLVM libc++)
+      */
+
       "defines": [
         "CYKO_DEBUG",
         "CYKO_BUILD_TOOLKIT_LLVM",
-        "CYKO-BUILD_CRT_LLVM", // LIBC
-        "CYKO_BUILD_CXX_MSVC", // LIBCXX
+        "CYKO_BUILD_CRT_LLVM",
+        "CYKO_BUILD_CXX_MSVC",
         "CYKO_BUILD_X64",
         "CYKO_BUILD_WINDOWS",
         "CYKO_BUILD_USE_STDINT",
@@ -92,20 +101,13 @@
       ],
 
       "windowsSdkVersion": "10.0.22000.0",
-      "compilerPath": "${compilerWinClangx64}",
       "cStandard": "c17",
       "cppStandard": "c++23",
-      "intelliSenseMode": "clang-x64", "compilerArgs": [
+      "intelliSenseMode": "clang-x64",
+      "compilerPath": "${compilerWinLLVMx64}", "compilerArgs": [
+        "-m64",
         "-std=c++2b",
-        //"-stdlib=libc++", // C++ standard library to use. <arg> must be ‘libc++ (GCC)’, ‘libstdc++ (LLVM)’ or ‘platform’."
-        "-fcxx-modules",
-        "-fmodules",
-        //"-fmodules-ts",
-
-        "-fimplicit-modules",     // automatically translates #include directives into import statements (i.e. headers into modules).
-        "-fimplicit-module-maps", // tells the compiler to implicitly search the file system for module map files.
-                                  // A module map file is a file containing the mapping between existing headers and the logical structure of a module.
-        "-m64"
+        "-Xclang", "-stdlib=libc++"
       ]
     }
 

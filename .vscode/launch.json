@@ -2,31 +2,11 @@
   "version": "0.2.0",
   "configurations": [
 
+    //-----------------------------------------------------------------------
+    // #region: DEBUG
+    //-----------------------------------------------------------------------
 
-    //+----------------------------------------------------------------------
-    //| DEBUG
-    //+----------------------------------------------------------------------
-    { "name": "debug-x64(lldb)",
-      "presentation": {
-        "hidden": false,
-        "group": "A.DEBUG",
-        "order": 2
-      },
-
-      "type": "lldb",
-      "request": "custom",
-      "targetCreateCommands": [
-        "target create ${workspaceFolder}/bin/debug/x64/cyko.exe"
-      ],
-      "processCreateCommands": [
-        "settings set target.run-args value1 value2 value3",
-        "process launch"
-      ],
-
-      "internalConsoleOptions": "openOnSessionStart"
-    },
-
-    { "name": "debug-x64",
+    { "name": "debug-x64(vsdb)", // extension : C/C++
       "presentation": {
         "hidden": false,
         "group": "A.DEBUG",
@@ -44,19 +24,40 @@
       "stopAtEntry": false,
       "symbolSearchPath": "${workspaceFolder}/bin/debug/x64/",
     },
+    { "name": "debug-x64(lldb)", // extension : CodeLLDB
+      "presentation": {
+        "hidden": false,
+        "group": "A.DEBUG",
+        "order": 2
+      },
 
-    //+----------------------------------------------------------------------
-    //| CLEAN
-    //+----------------------------------------------------------------------
+      "type":    "lldb",
+      "request": "custom",
 
-    { "name": "nuke!",
+      "targetCreateCommands": [
+        "target create ${workspaceFolder}/bin/debug/x64/cyko.exe"
+      ],
+      "processCreateCommands": [
+        "settings set target.run-args value1 value2 value3",
+        "process launch"
+      ],
+
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+
+    //-----------------------------------------------------------------------
+    // #endregion
+    //-----------------------------------------------------------------------
+    // #region: BUILD | CLEAN
+    //-----------------------------------------------------------------------
+
+    { "type": "PowerShell", "name": "nuke!",
       "presentation": {
         "hidden": false,
         "group": "X.NUKE.A",
         "order": 0
       },
 
-      "type":    "PowerShell",
       "request": "launch",
       "cwd":     "${workspaceFolder}",
       "script":  "./nuke.ps1", "args": [
@@ -67,14 +68,13 @@
 
       "createTemporaryIntegratedConsole": false,
     },
-    { "name": "nuke:debug",
+    { "type": "PowerShell", "name": "nuke:debug",
       "presentation": {
         "hidden": false,
         "group": "X.NUKE.B",
         "order": 1
       },
 
-      "type":    "PowerShell",
       "request": "launch",
       "cwd":     "${workspaceFolder}",
       "script":  "./nuke.ps1", "args": [
@@ -85,14 +85,13 @@
 
       "createTemporaryIntegratedConsole": false,
     },
-    { "name": "nuke:debug:x86",
+    { "type": "PowerShell", "name": "nuke:debug-x86",
       "presentation": {
         "hidden": false,
         "group": "X.NUKE.B",
         "order": 2
       },
 
-      "type":    "PowerShell",
       "request": "launch",
       "cwd":     "${workspaceFolder}",
       "script":  "./nuke.ps1", "args": [
@@ -103,14 +102,13 @@
 
       "createTemporaryIntegratedConsole": false,
     },
-    { "name": "nuke:debug:x64",
+    { "type": "PowerShell", "name": "nuke:debug-x64",
       "presentation": {
         "hidden": false,
         "group": "X.NUKE.B",
         "order": 3
       },
 
-      "type":    "PowerShell",
       "request": "launch",
       "cwd":     "${workspaceFolder}",
       "script":  "./nuke.ps1", "args": [
@@ -121,14 +119,13 @@
 
       "createTemporaryIntegratedConsole": false,
     },
-    { "name": "nuke:release",
+    { "type": "PowerShell", "name": "nuke:release",
       "presentation": {
         "hidden": false,
         "group": "X.NUKE.C",
         "order": 4
       },
 
-      "type":    "PowerShell",
       "request": "launch",
       "cwd":     "${workspaceFolder}",
       "script":  "./nuke.ps1", "args": [
@@ -139,14 +136,13 @@
 
       "createTemporaryIntegratedConsole": false,
     },
-    { "name": "nuke:release:x86",
+    { "type": "PowerShell", "name": "nuke:release-x86",
       "presentation": {
         "hidden": false,
         "group": "X.NUKE.C",
         "order": 5
       },
 
-      "type":    "PowerShell",
       "request": "launch",
       "cwd":     "${workspaceFolder}",
       "script":  "./nuke.ps1", "args": [
@@ -157,14 +153,13 @@
 
       "createTemporaryIntegratedConsole": false,
     },
-    { "name": "nuke:release:x64",
+    { "type": "PowerShell", "name": "nuke:release-x64",
       "presentation": {
         "hidden": false,
         "group": "X.NUKE.C",
         "order": 6
       },
 
-      "type":    "PowerShell",
       "request": "launch",
       "cwd":     "${workspaceFolder}",
       "script":  "./nuke.ps1", "args": [
@@ -175,5 +170,9 @@
 
       "createTemporaryIntegratedConsole": false,
     }
+
+    //-----------------------------------------------------------------------
+    // #endregion
+    //-----------------------------------------------------------------------
   ]
 }

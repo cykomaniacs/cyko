@@ -1,4 +1,6 @@
+# visual studio (misc/cache)
 .vs
+# build output
 bin/**/*
 !bin/debug/x64/.gitkeep
 !bin/debug/x86/.gitkeep
