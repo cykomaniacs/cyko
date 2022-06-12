@@ -65,7 +65,7 @@ namespace internal
     struct pack<>
     {
       using self = pack<>;
-      using head = self;// element / item
+      using head = self;// element
       using tail = self;
       using size = meta::size_t<0>;
 
@@ -77,7 +77,8 @@ namespace internal
 
 
 #ifdef CYKO_DEBUG
-#include<cyko/type/is_same.h>
+#include <cyko/meta/expression.h>
+#include <cyko/type/is_same.h>
 namespace debug
 {
   using namespace ::cyko::type;

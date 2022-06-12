@@ -9,12 +9,9 @@ namespace type
 
   template <typename T>
     struct is_union
-    #ifdef CYKO_BUILD_TOOLKIT_MSVC
-    : meta::bool_t<__is_union(T)>
-    {
-      using self = is_union<T>;
-    };
-    #elif  CYKO_BUILD_TOOLKIT_LLVM
+    #if defined(CYKO_BUILD_CXX_MSVC) \
+     || defined(CYKO_BUILD_CXX_GCC) \
+     || defined(CYKO_BUILD_CXX_LLVM)
     : meta::bool_t<__is_union(T)>
     {
       using self = is_union<T>;

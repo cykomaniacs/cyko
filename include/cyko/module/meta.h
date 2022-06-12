@@ -59,7 +59,6 @@
  * @b type (!)
  */
 #include <cyko/type/rank.h>
-#include <cyko/type/list.h>
 #include <cyko/type/pack.h>
 #include <cyko/type/size.h>
 #include <cyko/type/none.h> // void_t

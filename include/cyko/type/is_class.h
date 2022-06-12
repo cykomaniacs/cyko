@@ -9,9 +9,9 @@ namespace type
 
   template <typename T>
     struct is_class
-    #if defined(CYKO_BUILD_TOOLKIT_MSVC) \
-     || defined(CYKO_BUILD_TOOLKIT_MSVCLANG) \
-     || defined(CYKO_BUILD_TOOLKIT_LLVM)
+    #if defined(CYKO_BUILD_CXX_MSVC) \
+     || defined(CYKO_BUILD_CXX_GCC) \
+     || defined(CYKO_BUILD_CXX_LLVM)
     : meta::bool_t<__is_class(T)>
     {
       using self = is_class<T>;
@@ -19,7 +19,6 @@ namespace type
     #else
     { static_assert(false, "unimplemented!"); };
     #endif
-
 
 } // namespace cyko::type
 } // namespace cyko

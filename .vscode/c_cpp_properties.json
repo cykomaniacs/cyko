@@ -30,7 +30,7 @@
       "defines": [
         "CYKO_DEBUG",             // TARGET > Configuration
         "CYKO_BUILD_TOOLKIT_MSVC",//   HOST > Microsoft VC (cl.exe)
-        "CYKO-BUILD_CRT_MSVC",    // LIBC   > "CRT" MSVC C RUNTIME LIB
+        "CYKO_BUILD_CRT_MSVC",    // LIBC   > "CRT" MSVC C RUNTIME LIB
         "CYKO_BUILD_CXX_MSVC",    // LIBCXX > "STL" MSVC STANDARD CXX LIB
         "CYKO_BUILD_X64",         //   HOST > Architecture
         "CYKO_BUILD_WINDOWS",     // TARGET > OS
@@ -55,7 +55,7 @@
       "defines": [
         "CYKO_DEBUG",
         "CYKO_BUILD_TOOLKIT_MSVCLANG",
-        "CYKO-BUILD_CRT_LLVM", // LIBC
+        "CYKO_BUILD_CRT_LLVM", // LIBC
         "CYKO_BUILD_CXX_MSVC", // LIBC++
         "CYKO_BUILD_X64",
         "CYKO_BUILD_WINDOWS",

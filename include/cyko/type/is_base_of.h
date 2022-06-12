@@ -4,7 +4,8 @@
 #include <cyko/meta/expression.h>
 
 namespace cyko {
-namespace type {
+namespace type
+{
 
   /**
    * @tparam B The base type.
@@ -13,12 +14,9 @@ namespace type {
 
   template <typename B, typename D>
     struct is_base_of
-    #ifdef CYKO_BUILD_TOOLKIT_MSVC
-    : meta::bool_t<__is_base_of(B, D)>
-    {
-      using self = is_base_of<B, D>;
-    };
-    #elif  CYKO_BUILD_TOOLKIT_LLVM
+    #if defined(CYKO_BUILD_CXX_MSVC) \
+     || defined(CYKO_BUILD_CXX_GCC) \
+     || defined(CYKO_BUILD_CXX_LLVM)
     : meta::bool_t<__is_base_of(B, D)>
     {
       using self = is_base_of<B, D>;
