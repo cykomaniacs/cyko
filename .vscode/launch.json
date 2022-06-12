@@ -2,9 +2,29 @@
   "version": "0.2.0",
   "configurations": [
 
+
     //+----------------------------------------------------------------------
     //| DEBUG
     //+----------------------------------------------------------------------
+    { "name": "debug-x64(lldb)",
+      "presentation": {
+        "hidden": false,
+        "group": "A.DEBUG",
+        "order": 2
+      },
+
+      "type": "lldb",
+      "request": "custom",
+      "targetCreateCommands": [
+        "target create ${workspaceFolder}/bin/debug/x64/cyko.exe"
+      ],
+      "processCreateCommands": [
+        "settings set target.run-args value1 value2 value3",
+        "process launch"
+      ],
+
+      "internalConsoleOptions": "openOnSessionStart"
+    },
 
     { "name": "debug-x64",
       "presentation": {

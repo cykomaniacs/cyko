@@ -186,5 +186,7 @@
     <None Include="nuke.ps1" />
     <None Include="LICENSE" />
     <None Include=".gitignore" />
+    <None Include="bak\debug\x64\.gitkeep" />
+    <None Include="bak\debug\x86\.gitkeep" />
   </ItemGroup>
 </Project>

@@ -20,10 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cyko.cpp">
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|x64'">CYKO_BUILD_TOOLSET_MSVCLANG;CYKO_BUILD_CODSET_MSVC;CYKO_BUILD_X64;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;CYKO_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">CYKO_BUILD_TOOLSET_MSVCLANG;CYKO_BUILD_CODSET_MSVC;CYKO_BUILD_X86;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;CYKO_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">CYKO_BUILD_TOOLSET_MSVCLANG;CYKO_BUILD_CODSET_MSVC;CYKO_BUILD_X86;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|x64'">CYKO_BUILD_TOOLSET_MSVCLANG;CYKO_BUILD_CODSET_MSVC;CYKO_BUILD_X64;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|x64'">CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X64;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;CYKO_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X86;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;CYKO_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X86;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|x64'">CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X64;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+    <None Include="bak\debug\x64\.gitkeep" />
+    <None Include="bak\debug\x86\.gitkeep" />
     <None Include="bin\debug\x64\.gitkeep" />
     <None Include="bin\debug\x86\.gitkeep" />
     <None Include="bin\release\x64\.gitkeep" />
@@ -101,7 +103,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>ClangCL</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <VCToolsVersion>14.33.31424</VCToolsVersion>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
@@ -109,7 +111,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>ClangCL</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <VCToolsVersion>14.33.31424</VCToolsVersion>
     <PreferredToolArchitecture>x86</PreferredToolArchitecture>
@@ -117,7 +119,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>ClangCL</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <VCToolsVersion>14.33.31424</VCToolsVersion>
@@ -126,7 +128,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>ClangCL</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <VCToolsVersion>14.33.31424</VCToolsVersion>
@@ -178,13 +180,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CYKO_BUILD_TOOLSET_MSVCLANG;CYKO_BUILD_CODESET_MSVC;CYKO_BUILD_X64;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;CYKO_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X64;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;CYKO_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
       <ForcedIncludeFiles>$(ProjectDir)include\$(ProjectName)\common\common.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -195,7 +198,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CYKO_BUILD_TOOLSET_MSVCLANG;CYKO_BUILD_CODESET_MSVC;CYKO_BUILD_X86;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;CYKO_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X86;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;CYKO_DEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -214,7 +217,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CYKO_BUILD_TOOLSET_MSVCLANG;CYKO_BUILD_CODESET_MSVC;CYKO_BUILD_X64;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X64;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -235,7 +238,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>CYKO_BUILD_TOOLSET_MSVCLANG;CYKO_BUILD_CODESET_MSVC;CYKO_BUILD_X86;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>CYKO_BUILD_TOOLKIT_MSVC;CYKO_BUILD_CRT_MSVC;CYKO_BUILD_CXX_MSVC;CYKO_BUILD_X86;CYKO_BUILD_WINDOWS;CYKO_BUILD_USE_STDINT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>

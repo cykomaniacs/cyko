@@ -6,29 +6,28 @@
   "workbench.sideBar.location": "right",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.tabSizing": "shrink",
+  "breadcrumbs.enabled": true,
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
-  // #region: EDITOR | HIGHLIGHTING
+  // #region: EDITOR | VISUALS
   //-------------------------------------------------------------------------
-  "editor.roundedSelection": true,
   "editor.guides.bracketPairs": "active", // "active" (cursor)
   "editor.matchBrackets": "near", // "near" (cursor)
-  "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairsHorizontal": true,
+  "editor.bracketPairColorization.enabled": true,
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "editor.language.brackets": [
     [ "(", ")" ],
     [ "{", "}" ],
     [ "[", "]" ],
-    //[ "<", ">" ],
+    [ "<", ">" ],
   ],
-
   "editor.guides.highlightActiveBracketPair": true,
   "editor.guides.highlightActiveIndentation": "always",
-
   "editor.renderLineHighlight": "all", // highlight current line
   "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
+  "editor.roundedSelection": true,
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
@@ -36,37 +35,25 @@
 
 
   //-------------------------------------------------------------------------
-  // #region: CODELENS | GIT
+  // #region: GIT + GITLENS (CODELENS)
   //-------------------------------------------------------------------------
-  "gitlens.blame.compact": false,
-  "gitlens.blame.highlight.enabled": true,
-  "gitlens.blame.highlight.locations": [
-    "gutter",
-    "line",
-    "overview",
-  ],
-
+  "gitlens.defaultDateStyle": "absolute", // <absolute|relative>
+  "gitlens.currentLine.enabled": true,
+  "gitlens.hovers.currentLine.enabled": true,
+  "gitlens.hovers.currentLine.over": "annotation", // <annotation|line>
+  "gitlens.hovers.currentLine.changes": true,
+  "gitlens.hovers.currentLine.details": false,
   "gitlens.codeLens.enabled": true,
-  "gitlens.codeLens.scopes": [
-    "document",
-    //"containers",
-    "blocks",
-  ],
   "gitlens.codeLens.symbolScopes": [
     "!namespace",
     "!struct",
     "!containers",
     "!blocks"
   ],
-
-  "gitlens.defaultDateStyle": "relative", // "absolute"
-  "gitlens.hovers.currentLine.enabled": true,
-  "gitlens.hovers.currentLine.over": "line",
-  "gitlens.hovers.currentLine.details": true,
-  "gitlens.hovers.currentLine.changes": true,
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
+
 
 
 
@@ -91,7 +78,7 @@
   //-------------------------------------------------------------------------
   // #region: CXX | GENERAL
   //-------------------------------------------------------------------------
-  "C_Cpp.default.enableConfigurationSquiggles": true,
+  "C_Cpp.default.enableConfigurationSquiggles": true, "C_Cpp.vcpkg.enabled": false,
   "C_Cpp.autoAddFileAssociations": true,
   "C_Cpp.autocomplete": "Default",
   "C_Cpp.dimInactiveRegions": true,
@@ -99,6 +86,45 @@
   "C_Cpp.errorSquiggles": "Enabled",
   "C_Cpp.intelliSenseEngine": "Default",
   "C_Cpp.suggestSnippets": true,
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+  // #region: CXX | LOGGING (OUTPUT TAB)
+  //-------------------------------------------------------------------------
+//"C_Cpp.loggingLevel": "Debug",
+  "C_Cpp.loggingLevel": "Information",
+//"C_Cpp.loggingLevel": "Warning",
+//"C_Cpp.loggingLevel": "Error",
+//"C_Cpp.loggingLevel": "None",
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+  // #region: CXX | LINTERS
+  //-------------------------------------------------------------------------
+  "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+  "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
+    "clang-analyzer-*",
+    "hicpp-*",
+    "llvm-*",
+    "misc-*",
+    "modernize-*",
+    "cppcoreguidelines-*",
+  ],
+  "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
+    /// HEADER-GUARDS
+    "llvm-header-guard",
+    /// INCLUDES
+    "llvm-include-order",
+    /// ARRAYS
+    "cppcoreguidelines-avoid-c-arrays",
+    "hicpp-avoid-c-arrays",
+    "modernize-avoid-c-arrays",
+    /// NAMESPACES
+    "llvm-namespace-comment",
+    "modernize-concat-nested-namespaces",
+    /// MISC
+    "cppcoreguidelines-avoid-magic-numbers",
+  ],
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
@@ -123,46 +149,13 @@
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
-  // #region: CXX | LINT (CLANG-TIDY)
+  // #region: CXX + DEBUG (LLVM/LLDB)
   //-------------------------------------------------------------------------
-  "C_Cpp.codeAnalysis.clangTidy.enabled": true,
-  "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
-    "clang-analyzer-*",
-    "hicpp-*",
-    "llvm-*",
-    "misc-*",
-    "modernize-*",
-    "cppcoreguidelines-*",
-  ],
-  "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
-    /// HEADER-GUARDS
-    "llvm-header-guard",
-
-    /// INCLUDES
-    "llvm-include-order",
-
-    /// ARRAYS
-    "cppcoreguidelines-avoid-c-arrays",
-    "hicpp-avoid-c-arrays",
-    "modernize-avoid-c-arrays",
-
-    /// NAMESPACES
-    "llvm-namespace-comment",
-    "modernize-concat-nested-namespaces",
-
-    /// MISC
-    "cppcoreguidelines-avoid-magic-numbers",
-  ],
-  //-------------------------------------------------------------------------
-  // #endregion
-  //-------------------------------------------------------------------------
-  // #region: CXX | LOGGING (OUTPUT TAB)
-  //-------------------------------------------------------------------------
-//"C_Cpp.loggingLevel": "Debug",
-  "C_Cpp.loggingLevel": "Information",
-//"C_Cpp.loggingLevel": "Warning",
-//"C_Cpp.loggingLevel": "Error",
-//"C_Cpp.loggingLevel": "None",
+  "lldb.launch.terminal": "integrated",
+  "lldb.displayFormat": "auto",
+  "lldb.showDisassembly": "auto",
+  "lldb.dereferencePointers": true,
+  "lldb.consoleMode": "commands",
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
@@ -170,12 +163,22 @@
 
 
   //-------------------------------------------------------------------------
-  // #region: FILES | TYPES | ASSOCIATIONS
+  // #region: +
+  //-------------------------------------------------------------------------
+  "[cpp_embedded_latex]": { "breadcrumbs.showNamespaces": true},
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+
+
+
+  //-------------------------------------------------------------------------
+  // #region: EDITOR | FILE/LANG ASSOCIATIONS
   //-------------------------------------------------------------------------
   "files.associations": {
     "xiosbase": "cpp",
     "ostream": "cpp"
-  }
+  },
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 #ifndef CYKO_TYPE_LIST_H
 #define CYKO_TYPE_LIST_H
 
+#include <cyko/meta/expression.h>
 #include <cyko/meta/decrease.h>
 #include <cyko/meta/plus.h>
 #include <cyko/meta/zero.h>

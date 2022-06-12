@@ -91,7 +91,7 @@ namespace cyko
    */
 
   using null_t = decltype(nullptr);
-  using cull_t = decltype(NULL);
+  //using cull_t = decltype(NULL);
 
 } // namespace cyko
 
