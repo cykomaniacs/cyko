@@ -25,7 +25,7 @@
 #.NOTES
 # Powershell ftw!
 
-param(
+param (
   [Parameter(Mandatory=$false, ParameterSetName="main")]
   [ValidateNotNullOrEmpty()]
   [array]
@@ -47,162 +47,252 @@ param(
   $arch
 )
 
-# ---------------------------------------------------------------------------
-# namespaces
-# ---------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+#region: namespace color(log)
+#-----------------
 
-class log {
-  static hidden $color = @{ #[hashtable]
-    name = [System.ConsoleColor]::Blue;
-    arch = [System.ConsoleColor]::Blue;
-    text = [System.ConsoleColor]::DarkGray;
+class color {
+  static $name = [System.ConsoleColor]::Blue
+  static $arch = [System.ConsoleColor]::Blue
+  static $text = [System.ConsoleColor]::DarkGray
 
-    pre  = [System.ConsoleColor]::DarkGray; #prefix
-    par  = [System.ConsoleColor]::Yellow;   #pairs
-    sep  = [System.ConsoleColor]::DarkBlue; #separator
+  static $std  = [System.ConsoleColor]::White    #standard
+  static $pre  = [System.ConsoleColor]::DarkGray #prefix
+  static $par  = [System.ConsoleColor]::Yellow   #pairs
+  static $sep  = [System.ConsoleColor]::DarkBlue #separator
 
-    keep = [System.ConsoleColor]::Green;    #file:delete(no!)
-    nuke = [System.ConsoleColor]::Red;      #file:delete
-    file = [System.ConsoleColor]::Gray;     #file:name
-  }
-
-  static hidden [void]
-  main([string]$rgb, [string]$str, [switch]$end) {
-    Write-Host -ForegroundColor ([log]::color)[$rgb] $str -NoNewline
-    Write-Host "" -NoNewline:(!$end) # reset color & new-line?
-  }
-
-  static [void] # print target info
-  head([string]$name, [string]$arch) {
-    [log]::main("pre",  "> ", $false)
-    [log]::main("name", "${name}", $false)
-    [log]::main("sep",  ":", $false)
-    [log]::main("arch", "${arch}", $false)
-    [log]::main("par",  "(", $false)
-    [log]::main("pre",  "nuke", $false)
-    [log]::main("par",  ")", $true)
-  }
-
-  static [void] # print file info
-  file([string]$path, [string]$name, [switch]$skip) {
-    $xx = $skip ? "*" : "-";
-    $xc = $skip ? "keep" : "nuke";
-    $fc = "file";
-
-    [log]::main($xc, "${xx} ", $false)
-    [log]::main($fc, "${path}/${name}", $true)
-  }
+  static $keep = [System.ConsoleColor]::Green    #file:delete(no!)
+  static $nuke = [System.ConsoleColor]::Red      #file:delete
+  static $file = [System.ConsoleColor]::Gray     #file:name
 }
 
-class app {
-  static hidden [bool]
-  keep([array]$list, [string]$file) {
-    $list.forEach({ if ("${_}" -eq "${file}") { return $true } })
-    return $false
-  }
+#endregion ------------------------------------------------------------------
+#region: namespace log
+#-----------------
 
-  static [void]
-  main() {
+function log:host {
+  param (
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor]
+    $color = [color]::std,
+    [Parameter(Mandatory=$false)]
+    [string[]] # output: ...
+    $out,
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [switch] #-# output: end-of-line?
+    $eol
+  )
 
-  }
+  Write-Host -ForegroundColor $color $out -NoNewline
+  Write-Host -NoNewline:(!$eol) # reset-color & line-feed?
 }
 
-# ---------------------------------------------------------------------------
-# functions
-# ---------------------------------------------------------------------------
-
-function script:head {
-  param(
+function log:head {
+  param (
     [Parameter(Mandatory)]
-    [string] # target name
+    [ValidateNotNullOrEmpty()]
+    [string] # target: name
     $name,
     [Parameter(Mandatory)]
-    [string] # target architecture
+    [ValidateNotNullOrEmpty()]
+    [string] # target: architecture
     $arch
   )
 
-  [log]::head($name, $arch)
+  log:host -color ([color]::pre)  "> "
+  log:host -color ([color]::name) "${name}"
+  log:host -color ([color]::sep)  ":"
+  log:host -color ([color]::arch) "${arch}"
+  log:host -color ([color]::par)  "("
+  log:host -color ([color]::text) "nuke"
+  log:host -color ([color]::par)  ")" -eol
 }
 
-function script:file {
-  param(
+function log:file {
+  param (
     [Parameter(Mandatory)]
-    [string] # base path
+    [ValidateNotNullOrEmpty()]
+    [string] # file-path
     $path,
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string] # file-name
     $name,
     [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
     [switch] # skip/keep
-    $skip = $false
+    $keep
   )
 
-  [log]::file($path, $name, $skip)
+  $xx = $keep ? "*" : "-"
+  $xc = $keep ? [color]::keep : [color]::nuke
+  $fc = [color]::file
+
+  log:host -color $xc "${xx} "
+  log:host -color $fc "${path}/${name}" -eol
 }
 
-function script:nuke {
-  param(
-    [Parameter(Mandatory=$false)]
-    [switch] # dry-run (dont delete anything)
-    $test = $false,
+#endregion ------------------------------------------------------------------
+
+
+
+
+#----------------------------------------------------------------------------
+#region: namespace app
+#-----------------
+
+function app:keep { # determines whether to keep the file or not.
+  param (
     [Parameter(Mandatory)]
-    [array]  # skipped file-names
-    $skip,
+    [ValidateNotNullOrEmpty()]
+    [array]  # file-names
+    $list,
     [Parameter(Mandatory)]
-    [string] # base path
+    [ValidateNotNullOrEmpty()]
+    [string] # file-name
+    $file
+  )
+
+  $list.foreach({ if ("${_}" -eq "${file}") { return $true } })
+  return $false
+}
+
+function app:nuke { # deleter!
+  param (
+    [Parameter(Mandatory)]
+    [string] # file-path(excluding file-name)
     $path,
     [Parameter(Mandatory)]
+    [string] # file-name
+    $node,
+    [Parameter(Mandatory)]
+    [switch] # nuke?
+    $fake
+  )
+
+  if (!$fake) {
+    Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "${path}/${node}"
+  }
+}
+
+function app:main { # called upon script entry
+  param (
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [switch] # see configuration (nuke.psd1)
+    $test = $false,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [array]  # list of ignored file-names
+    $skip,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string] # base/work path
+    $path,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string] # target name
     $name,
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string] # target architecture
     $arch
   )
-
-  function local:has($list, $item) {
-    $list.forEach({ if ("$_" -eq "$item") { return $true } })
-    return $false
-  }
 
   # ex: ./bin/debug/x64
   $work = $path + '/' + $name + '/' + $arch
 
   $(Get-ChildItem "$work" -Name).forEach({
-    if (local:has $skip "$_")
+
+    if (app:keep -list $skip -file "${_}")
     {
-      script:file -path "$work" -name "$_" -skip
+      log:file -path "${work}" -name "${_}" -keep:$true
     } else {
-      script:file -path "$work" -name "$_"
-      if (!$test) {
-        Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "$work/$_"
-      }
+      log:file -path "${work}" -name "${_}" -keep:$false
+      app:nuke -path "${work}" -node "${_}" -fake:$test
     }
   })
 }
 
-# ---------------------------------------------------------------------------
-# script :: entry (starts here)
-# ---------------------------------------------------------------------------
-# script :: configuration
-# ---------------------------------------------------------------------------
+#endregion ------------------------------------------------------------------
 
-# todo: fail handling
-# todo: real implementation!
 
-$mod = Import-PowerShellDataFile -Path "./nuke.psd1"
 
-$cfg = @{
-  test = $false
-  keep = $keep + $mod.keep
+
+#----------------------------------------------------------------------------
+#region: namespace cfg (see nuke.psd1)
+#-----------------
+
+#----------------------------------------------------------------------------
+#region: namespace key(cfg)
+#-----------------
+# each key refers to a specific configuration variable.
+# case-sensitive!
+#-----------------
+
+class key {
+  static [string] $test = "test"
+  static [string] $keep = "keep"
 }
 
-# ---------------------------------------------------------------------------
-# script :: execution
-# ---------------------------------------------------------------------------
+#endregion ------------------------------------------------------------------
+#region: namespace mod(cfg)
+#-----------------
+# todo: fail handling
+# todo: real implementation!
+#-----------------
+
+# source/import
+$mod = Import-PowerShellDataFile -Path "./nuke.psd1"
+
+function mod:has {
+  param(
+    [Parameter(Mandatory)]
+    [string]
+    $key
+  )
+
+  return $mod.ContainsKey($key)
+}
+
+function mod:get {
+  param(
+    [Parameter(Mandatory)]
+    [string]
+    $key,
+    [Parameter(Mandatory)]
+    [object]
+    $default
+  )
+
+  return ((mod:has -key $key) ? $mod[$key] : $default)
+}
+
+#endregion ------------------------------------------------------------------
+
+$cfg = @{
+  test =  (mod:get -key ([key]::test) -default $true)
+  keep = @(mod:get -key ([key]::keep) -default $keep) + $keep
+}
+
+#endregion ------------------------------------------------------------------
+
+
+
+
+#----------------------------------------------------------------------------
+#region: script execution
+#-----------------
+# TODO: SORT EVERYTHING INTO NAMESPACES!!
+#----------------------------------------------------------------------------
 
 $name.forEach({ $t = $_
   $arch.ForEach({
-    script:head -name "$t" -arch "$_"
-    script:nuke -test:$cfg.test -skip $cfg.keep -path "$base" -name "$t" -arch "$_"
+    log:head -name "$t" -arch "$_"
+    app:main -test:$cfg.test -skip $cfg.keep -path "$base" -name "$t" -arch "$_"
   })
 })
+
+#endregion ------------------------------------------------------------------
