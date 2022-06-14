@@ -1,8 +1,8 @@
 ﻿#ifndef CYKO_COMMON_TYPES_H
 #define CYKO_COMMON_TYPES_H
 
-#include <cstddef>
-#include <cstdint>
+#include <cstddef> // std::(nullptr_t | ptrdiff_t)
+#include <cstdint> // std::(*int#*_t)
 
 namespace cyko
 {
@@ -122,11 +122,14 @@ namespace debug
   static_assert(sizeof( int64_t ) == 8); /** @b 8 byte @e 64 bit */
 
   /// @test @b size @e extensions
+  static_assert(sizeof(  diff_t ) >= sizeof( decltype(INTMAX_MAX) ));
+  /// @test @b size @e extensions:null
+  /// NOLINTBEGIN(*nullptr*)
   static_assert(sizeof(  null_t ) == sizeof( ::std::nullptr_t ));
   static_assert(sizeof(  null_t ) >= sizeof( nullptr ));
   static_assert(sizeof(  null_t ) >= sizeof( NULL ));
   static_assert(sizeof(  null_t ) >= sizeof( static_cast<void*>(0) ));
-  static_assert(sizeof(  diff_t ) == sizeof( ::std::ptrdiff_t ));
+  /// NOLINTEND(*nullptr*)
   /// @test @b size @e extensions:units
   static_assert(sizeof(  byte_t ) == SIZE::BYTE);
   static_assert(sizeof(  word_t ) == SIZE::WORD);
