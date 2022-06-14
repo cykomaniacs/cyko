@@ -16,8 +16,8 @@ namespace internal
 
       static constexpr T value = V;
 
-      constexpr      operator T() const noexcept      { return value; }
-      constexpr auto operator()() const noexcept -> T { return value; }
+      constexpr explicit operator T() const noexcept      { return value; }
+      constexpr auto     operator()() const noexcept -> T { return value; }
     };
 
 } // namespace cyko::meta::internal

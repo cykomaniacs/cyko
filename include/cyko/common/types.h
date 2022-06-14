@@ -1,6 +1,7 @@
 ﻿#ifndef CYKO_COMMON_TYPES_H
 #define CYKO_COMMON_TYPES_H
 
+#include <cstddef>
 #include <cstdint>
 
 namespace cyko
@@ -60,7 +61,7 @@ namespace cyko
    * - @b null_t @e std::nullptr_t
    */
 
-  using size_t = decltype(sizeof(void));
+  using size_t = decltype(sizeof(int));
   using diff_t = decltype(INTMAX_MAX);
   using null_t = decltype(nullptr);
 
@@ -109,7 +110,6 @@ namespace debug
   /// @test @b size @e basics
   static_assert(sizeof(  bool_t ) == sizeof( bool ));
   static_assert(sizeof(  char_t ) == sizeof( char ));
-  static_assert(sizeof(  void_t ) == sizeof( void ));
 
   /// @test @b size @e integers
   static_assert(sizeof( short_t ) == SIZE::HWORD);

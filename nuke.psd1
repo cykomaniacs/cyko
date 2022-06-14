@@ -7,10 +7,9 @@
 
 @{
 
-  # ignored files (ie. don't delete)
-  keep = @(
-    ".gitkeep", "cyko.exe"
-  )
+# ignored files (ie. don't delete)
+keep = @(
+  ".gitkeep"
+)
 
-  testv = "fdffdf"
 }

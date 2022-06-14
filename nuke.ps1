@@ -142,9 +142,12 @@ function script:file {
 
 function script:nuke {
   param(
+    [Parameter(Mandatory=$false)]
+    [switch] # dry-run (dont delete anything)
+    $test = $false,
     [Parameter(Mandatory)]
     [array]  # skipped file-names
-    $skip, # = $keep + $cfg.keep,
+    $skip,
     [Parameter(Mandatory)]
     [string] # base path
     $path,
@@ -170,25 +173,36 @@ function script:nuke {
       script:file -path "$work" -name "$_" -skip
     } else {
       script:file -path "$work" -name "$_"
-      #Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "$work/$_"
+      if (!$test) {
+        Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "$work/$_"
+      }
     }
   })
 }
 
 # ---------------------------------------------------------------------------
-# configuration
+# script :: entry (starts here)
 # ---------------------------------------------------------------------------
-# todo: error handling
+# script :: configuration
+# ---------------------------------------------------------------------------
 
-$cfg = Import-PowerShellDataFile -Path "./nuke.psd1"
+# todo: fail handling
+# todo: real implementation!
+
+$mod = Import-PowerShellDataFile -Path "./nuke.psd1"
+
+$cfg = @{
+  test = $false
+  keep = $keep + $mod.keep
+}
 
 # ---------------------------------------------------------------------------
-# entry
+# script :: execution
 # ---------------------------------------------------------------------------
 
 $name.forEach({ $t = $_
   $arch.ForEach({
     script:head -name "$t" -arch "$_"
-    script:nuke -skip ($keep + $cfg.keep) -path "$base" -name "$t" -arch "$_"
+    script:nuke -test:$cfg.test -skip $cfg.keep -path "$base" -name "$t" -arch "$_"
   })
 })

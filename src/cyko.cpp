@@ -55,10 +55,10 @@ auto main()
     << sizeof(cyko::byte_t)
     << std::endl << ":  word_t : "
     << sizeof(cyko::word_t)
-    << std::endl << ": dword_t : "
-    << sizeof(cyko::dword_t)
-    << std::endl << ": qword_t : "
-    << sizeof(cyko::qword_t);
+    << std::endl << ":  word_t : "
+    << sizeof(cyko::word_t)
+    << std::endl << ":  word_t : "
+    << sizeof(cyko::word_t);
 
   std::cout
     << std::endl << "qf = { &pa }" << qf[0]
