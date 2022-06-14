@@ -7,6 +7,11 @@ namespace cyko {
 namespace type
 {
 
+  /**
+   * Type @b T is an @e lvalue reference?
+   *
+   * @tparam T The type to check.
+   */
   template <typename T>
     struct is_lvalue_reference
     : meta::bool_t<false>

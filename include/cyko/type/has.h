@@ -13,16 +13,22 @@ namespace type
    * member type _NTYPE.
    */
 
-  #define _GLIBCXX_HAS_NESTED_TYPE(_NTYPE)                        \
-  template<typename _Tp, typename = type::none<>>                 \
-    struct __has_##_NTYPE                                         \
-    : meta::bool_t<false>                                         \
-    { };								                                          \
-  template<typename _Tp>                                          \
-    struct __has_##_NTYPE<_Tp, type::none<typename _Tp::_NTYPE>>  \
-    : meta::bool_t<true>                                          \
+  /**
+   * COPY/PASTE SFINAE
+   */
+
+  // NOLINTNEXTLINE(*macro*)
+  #define __HAS_NESTED_TYPE(__T) \
+  template<typename T, typename = type::none<>> \
+    struct has_##__T \
+    : meta::bool_t<false> \
+    { }; \
+  template<typename T> \
+    struct has_##__T<T, type::none<typename T::__T>>  \
+    : meta::bool_t<true> \
     { };
 
+  __HAS_NESTED_TYPE(tag)
 
 } // namespace cyko::type
 } // namespace cyko

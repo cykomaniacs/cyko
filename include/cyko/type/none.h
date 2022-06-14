@@ -9,7 +9,6 @@ namespace type
    * @brief std::void_t implementation.
    * @tparam X ignored.
    */
-
   template <typename... X>
     using none = cyko::void_t;
 

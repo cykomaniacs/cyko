@@ -9,10 +9,10 @@ namespace type
 {
 
   /**
-   * @brief Type is void?
-   * @remark Ignores const / volatile qualifications.
+   * Type @b T is the @e void type?
+   *
+   * @tparam T The type to check.
    */
-
   template <typename T>
     struct is_void
     : type::is_same<type::remove_cv<T>, cyko::void_t>

@@ -6,7 +6,11 @@
 namespace cyko {
 namespace type
 {
-
+  /**
+   * Type @b T is a class type?
+   *
+   * @tparam T The type to check.
+   */
   template <typename T>
     struct is_class
     #if defined(CYKO_BUILD_CXX_MSVC) \

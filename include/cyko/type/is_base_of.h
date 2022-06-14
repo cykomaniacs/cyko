@@ -8,23 +8,23 @@ namespace type
 {
 
   /**
-   * @tparam B The base type.
-   * @tparam D The derived type.
+   * Type @b T is the base of type @b U ?
+   *
+   * @tparam T The base type.
+   * @tparam U The derived type.
    */
-
-  template <typename B, typename D>
+  template <typename T, typename U>
     struct is_base_of
     #if defined(CYKO_BUILD_CXX_MSVC) \
      || defined(CYKO_BUILD_CXX_GCC) \
      || defined(CYKO_BUILD_CXX_LLVM)
-    : meta::bool_t<__is_base_of(B, D)>
+    : meta::bool_t<__is_base_of(T, U)>
     {
-      using self = is_base_of<B, D>;
+      using self = is_base_of<T, U>;
     };
     #else
     { static_assert(false, "unimplemented!"); };
     #endif
-
 
 } // namespace cyko::type
 } // namespace cyko

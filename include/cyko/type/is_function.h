@@ -10,11 +10,12 @@ namespace type
 {
 
   /**
-   * Only function and reference types can't be const-qualified!
+   * Type @b T is a function type?
+   *
+   * @tparam T The type to check.
    */
-
   template <typename T>
-    struct is_function
+    struct is_function // Only function and reference types can't be const-qualified!
     : meta::och<typename type::is_const<T const>::negate, typename type::is_reference<T>::negate>
     {
       using self = is_function<T>;

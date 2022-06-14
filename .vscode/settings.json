@@ -192,7 +192,12 @@
     "xlocale": "cpp",
     "xlocinfo": "cpp",
     "xmemory": "cpp",
-    "xstring": "cpp"
+    "xstring": "cpp",
+    "utility": "cpp",
+    "compare": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "xtr1common": "cpp"
   },
   //-------------------------------------------------------------------------
   // #endregion

@@ -7,6 +7,11 @@ namespace cyko {
 namespace type
 {
 
+  /**
+   * Type @b T is volatile qualified?
+   *
+   * @tparam T The type to check.
+   */
   template <typename T>
     struct is_volatile
     : meta::bool_t<false>

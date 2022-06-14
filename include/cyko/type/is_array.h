@@ -25,6 +25,11 @@ namespace internal
 
 } // namespace cyko::type::internal
 
+  /**
+   * Type @b T is an array type?
+   *
+   * @tparam T The type to check.
+   */
   template <typename T>
     struct is_array
     : meta::bool_t<internal::is_array_impl<T>::value>

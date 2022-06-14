@@ -8,15 +8,11 @@ namespace type
 {
 
   /**
-   * @brief Type comparison.
-   * @remark Includes const / volatile qualifiers (see example code).
-   * @code {.cpp}
-   * cyko::type::is_same<int,                int const> // false
-   * cyko::type::is_same<int const,          int const> // true
-   * cyko::type::is_same<int const volatile, int const> // false
-   * @endcode
+   * Type @b T and type @b U is the same type?
+   *
+   * @tparam T Type to compare against type @b U.
+   * @tparam U Type to compare against type @b T.
    */
-
   template <typename T, typename U>
     struct is_same
     : meta::bool_t<false>

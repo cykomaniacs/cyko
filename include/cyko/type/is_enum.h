@@ -7,6 +7,11 @@ namespace cyko {
 namespace type
 {
 
+  /**
+   * Type @b T is a enumurator type?
+   *
+   * @tparam T The type to check.
+   */
   template <typename T>
     struct is_enum
     #if defined(CYKO_BUILD_CXX_MSVC) \
