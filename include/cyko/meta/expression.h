@@ -7,6 +7,7 @@ namespace internal
 {
 
   struct expression_tag { };
+
   template <typename T, T V>
     struct constant
     {
@@ -15,8 +16,8 @@ namespace internal
 
       static constexpr T value = V;
 
-      constexpr explicit operator T()      { return value; }
-      constexpr auto     operator()() -> T { return value; }
+      constexpr      operator T() const noexcept      { return value; }
+      constexpr auto operator()() const noexcept -> T { return value; }
     };
 
 } // namespace cyko::meta::internal
@@ -81,7 +82,7 @@ namespace internal
       /// @b 2:binary @e arithmetic @todo @b test
       template <typename B, typename... Pack> using plus     = cyko::meta::plus     <self, B, Pack...>;
       template <typename B, typename... Pack> using minus    = cyko::meta::minus    <self, B, Pack...>;
-      template <typename B, typename... Pack> using multiply = multiply <self, B, Pack...>;
+      template <typename B, typename... Pack> using multiply = cyko::meta::multiply <self, B, Pack...>;
       template <typename B, typename... Pack> using divide   = cyko::meta::divide   <self, B, Pack...>;
 
       /// @b 3:ternary @e logical
@@ -145,20 +146,15 @@ namespace internal
 
   template <typename T>
     struct is_expression
-    #ifdef CYKO_BUILD_CXX_MSVC
-    : meta::bool_t<__is_base_of(internal::expression_tag, T)>
-    {
-      using self = is_expression<T>;
-    };
-    #elif  CYKO_BUILD_CXX_LLVM
+    #if defined(CYKO_BUILD_CXX_MSVC) \
+     || defined(CYKO_BUILD_CXX_GCC) \
+     || defined(CYKO_BUILD_CXX_LLVM)
     : meta::bool_t<__is_base_of(internal::expression_tag, T)>
     {
       using self = is_expression<T>;
     };
     #else
-    {
-      static_assert(false, "unimplemented!");
-    };
+    { static_assert(false, "unimplemented!"); };
     #endif
 
 

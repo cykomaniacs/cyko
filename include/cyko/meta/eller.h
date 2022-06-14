@@ -37,4 +37,37 @@ namespace internal
 } // namespace cyko::meta
 } // namespace cyko
 
+
+namespace cyko {
+namespace meta {
+namespace internal
+{
+  /// @b impl @e decl
+
+  template </*typename T, */typename... Tail>
+    struct disjunction_impl;
+
+  /// @b impl @e spec
+
+  template <typename T, typename... Tail>
+    struct disjunction_impl<T, Tail...>
+    : meta::conditional<T, T, disjunction_impl<Tail...>>
+    { };
+
+  template <typename T>
+    struct disjunction_impl<T>
+    : T
+    { };
+
+}
+
+  template <typename... T>
+    struct discjunction
+    : meta::bool_t<internal::disjunction_impl<meta::bool_t<false>, T...>::value>
+    {
+      using self = discjunction<T...>;
+    };
+
+}
+}
 #endif

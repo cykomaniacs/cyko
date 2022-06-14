@@ -91,7 +91,7 @@ namespace debug
   static_assert(size< pack<void,char>                 >::equal< meta::size_t<2> >::value);
   static_assert(size< pack<void,char,int>             >::equal< meta::size_t<3> >::value);
   static_assert(size< pack<pack<void,char,int>,short> >::equal< meta::size_t<2> >::value);
-  /// @test @b pack @e length equal @b size
+  /// @test @b pack @e length equals @b size
   static_assert(size<                                 >::equal< pack<>::size                    >::value);
   static_assert(size< void,char                       >::equal< pack<void,char>::size           >::value);
   static_assert(size< void,char,int                   >::equal< pack<void,char,int>::size       >::value);

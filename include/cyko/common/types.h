@@ -1,117 +1,135 @@
 ﻿#ifndef CYKO_COMMON_TYPES_H
 #define CYKO_COMMON_TYPES_H
 
-#include <cstddef>
-#ifdef CYKO_BUILD_USE_STDINT
 #include <cstdint>
-#endif
 
 namespace cyko
 {
-
   /**
-   * @brief Base types.
+   * @brief Basics
    *
-   * @todo make cross-platform.
-   * @todo make platform / architecture dependent.
+   * - @b bool_t @e bool
+   * - @b char_t @e char
+   * - @b void_t @e void
+   * - @b null_t @e std::nullptr_t
    */
 
 	using bool_t = bool;
 	using char_t = char;
-
-	using size_t = std::size_t;
 	using void_t = void;
 
   /**
-   * @brief The regular int type: cyko::int_t
-   * @remarks 8 bytes(64 bits) on 64-bit systems.
-   * @remarks 4 bytes(32 bits) on 32-bit systems.
+   * @brief Integers
+   *
+   * - @b short_t @e word / 2
+   * - @b int_t   @e word
+   * - @b long_t  @e word * 2
+   *
+   * @e word The optimal number of bits the processor handles as a unit.
    */
 
-  #ifdef CYKO_BUILD_USE_STDINT
   #ifdef CYKO_BUILD_X64
-  using  int_t = std::int64_t;
+  using short_t = ::std::int32_t;
+  using   int_t = ::std::int64_t;
+  using  long_t = ::std::int64_t;
   #elif  CYKO_BUILD_X86
-  using  int_t = std::int32_t;
-  #endif
-  #elif  CYKO_BUILD_CXX_MSVC
-  #ifdef CYKO_BUILD_X64
-  using  int_t = long long int;
-  #elif  CYKO_BUILD_X86
-  using  int_t = long int;
-  #endif
-  #elif  CYKO_BUILD_CXX_GCC
-  #ifdef CYKO_BUILD_X64
-  using  int_t = long long int;
-  #elif  CYKO_BUILD_X86
-  using  int_t = long int;
-  #endif
-  #elif  CYKO_BUILD_CXX_LLVM
-  #ifdef CYKO_BUILD_X64
-  using  int_t = long long int;
-  #elif  CYKO_BUILD_X86
-  using  int_t = long int;
-  #endif
+  using short_t = ::std::int16_t;
+  using   int_t = ::std::int32_t;
+  using  long_t = ::std::int64_t;
   #endif
 
   /**
-   * @brief Types named by the size they refer to.
-   * @remarks Each type is unsigned.
-   * @code {.cpp}
-   * cyko::byte_t  // 1 byte >  8 bit
-   * cyko::word_t  // 2 byte > 16 bit
-   * cyko::dword_t // 4 byte > 32 bit (double word)
-   * cyko::qword_t // 8 byte > 64 bit (quad word)
-   * @endcode
+   * @brief Integers : sizes
+   *
+   * - @b int8_t  : @e 1 byte @e  8 bit
+   * - @b int16_t : @e 2 byte @e 16 bit
+   * - @b int32_t : @e 4 byte @e 32 bit
+   * - @b int64_t : @e 8 byte @e 64 bit
    */
 
-  #ifdef CYKO_BUILD_USE_STDINT
-  using  byte_t = std:: uint8_t;
-  using  word_t = std::uint16_t;
-  using dword_t = std::uint32_t;
-  using qword_t = std::uint64_t;
-  // std::[u]intptr_t;
-  #else
-  using  byte_t = unsigned char;
-  using  word_t = unsigned short int;
-  using dword_t = unsigned long  int;
-  using qword_t = unsigned long long int;
-  #endif
+  using  int8_t = ::std ::int8_t;
+  using int16_t = ::std::int16_t;
+  using int32_t = ::std::int32_t;
+  using int64_t = ::std::int64_t;
 
   /**
-   * @brief The type of the null pointer literal @e cyko::null (nullptr).
+   * @brief Extensions
    *
-   * @details It is a distinct type that is not itself a @e pointer type or a
-   * @e pointer-to-member type. Its values are null pointer constants (NULL),
-   * and can be implicitly converted to any @e pointer and / or
-   * @e pointer-to-member type.
-   *
-   * @remarks If two or more overloads accept different pointer types, an
-   * overload for @e null_t is necessary to accept a null pointer argument.
+   * - @b size_t @e std::size_t
+   * - @b diff_t @e std::ptrdiff_t
+   * - @b null_t @e std::nullptr_t
    */
 
+  using size_t = decltype(sizeof(void));
+  using diff_t = decltype(INTMAX_MAX);
   using null_t = decltype(nullptr);
-  //using cull_t = decltype(NULL);
 
-} // namespace cyko
+  /**
+   * @brief Extensions : Units
+   *
+   * - @b byte_t : @e byte (8 bits)
+   * - @b word_t : @e word (optimal number-of-bits / size handled by the proc)
+   */
+
+  using byte_t = ::std ::int8_t; /** @b 1 byte @e  8 bit */
+  #ifdef CYKO_BUILD_X64
+  using word_t = ::std::int64_t; /** @b 8 byte @e 64 bit */
+  #elif  CYKO_BUILD_X86
+  using word_t = ::std::int32_t; /** @b 4 byte @e 32 bit */
+  #endif
+
+
+
+}
 
 #ifdef CYKO_DEBUG
 namespace debug
 {
-  /// @test @b size @e integral
+  using namespace cyko;
 
-  /// @e standard default
-  #ifdef CYKO_BUILD_X64
-  static_assert(sizeof(::cyko  ::int_t) == 8); /** @b 8 byte @e 64 bit */
-  #elif  CYKO_BUILD_X86
-  static_assert(sizeof(::cyko  ::int_t) == 4); /** @b 4 byte @e 32 bit */
-  #endif
+  enum SIZE
+  {
+     BYTE = 1, /** @b 1 byte @e  8 bit @b architecture-independent */
+    #ifdef CYKO_BUILD_X64
+    HWORD = 4, /** @b 4 byte @e 32 bit @b x64 */
+     WORD = 8, /** @b 8 byte @e 64 bit @b x64 */
+    DWORD = 8, /** @b 8 byte @e 64 bit @b x64 */
+    #elif  CYKO_BUILD_X86
+    HWORD = 2, /** @b 2 byte @e 16 bit @b x86 */
+     WORD = 4, /** @b 4 byte @e 32 bit @b x86 */
+    DWORD = 8, /** @b 8 byte @e 64 bit @b x86 */
+    #endif
+  };
 
-  /// @e specials
-  static_assert(sizeof(::cyko ::byte_t) == 1); /** @b 1 byte @e  8 bit */
-  static_assert(sizeof(::cyko ::word_t) == 2); /** @b 2 byte @e 16 bit */
-  static_assert(sizeof(::cyko::dword_t) == 4); /** @b 4 byte @e 32 bit */
-  static_assert(sizeof(::cyko::qword_t) == 8); /** @b 8 byte @e 64 bit */
+  /// @test @b size @e standard:relationships
+  static_assert(sizeof(  char_t ) <= sizeof( short_t ));
+  static_assert(sizeof( short_t ) <= sizeof(   int_t ));
+  static_assert(sizeof(   int_t ) <= sizeof(  long_t ));
+
+  /// @test @b size @e basics
+  static_assert(sizeof(  bool_t ) == sizeof( bool ));
+  static_assert(sizeof(  char_t ) == sizeof( char ));
+  static_assert(sizeof(  void_t ) == sizeof( void ));
+
+  /// @test @b size @e integers
+  static_assert(sizeof( short_t ) == SIZE::HWORD);
+  static_assert(sizeof(   int_t ) == SIZE::WORD);
+  static_assert(sizeof(  long_t ) == SIZE::DWORD);
+  /// @test @b size @e integers:sizes
+  static_assert(sizeof(  int8_t ) == 1); /** @b 1 byte @e  8 bit */
+  static_assert(sizeof( int16_t ) == 2); /** @b 2 byte @e 16 bit */
+  static_assert(sizeof( int32_t ) == 4); /** @b 4 byte @e 32 bit */
+  static_assert(sizeof( int64_t ) == 8); /** @b 8 byte @e 64 bit */
+
+  /// @test @b size @e extensions
+  static_assert(sizeof(  null_t ) == sizeof( ::std::nullptr_t ));
+  static_assert(sizeof(  null_t ) >= sizeof( nullptr ));
+  static_assert(sizeof(  null_t ) >= sizeof( NULL ));
+  static_assert(sizeof(  null_t ) >= sizeof( static_cast<void*>(0) ));
+  static_assert(sizeof(  diff_t ) == sizeof( ::std::ptrdiff_t ));
+  /// @test @b size @e extensions:units
+  static_assert(sizeof(  byte_t ) == SIZE::BYTE);
+  static_assert(sizeof(  word_t ) == SIZE::WORD);
 }
 #endif
 

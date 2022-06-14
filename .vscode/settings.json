@@ -47,9 +47,10 @@
   "gitlens.codeLens.enabled": true,
   "gitlens.codeLens.symbolScopes": [
     "!namespace",
-    "!struct",
     "!containers",
-    "!blocks"
+    "!blocks",
+    "!enum",
+    "!struct",
   ],
   //-------------------------------------------------------------------------
   // #endregion
@@ -181,7 +182,17 @@
   "files.associations": {
     "xiosbase": "cpp",
     "ostream": "cpp",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "cstddef": "cpp",
+    "algorithm": "cpp",
+    "atomic": "cpp",
+    "memory": "cpp",
+    "xutility": "cpp",
+    "iterator": "cpp",
+    "xlocale": "cpp",
+    "xlocinfo": "cpp",
+    "xmemory": "cpp",
+    "xstring": "cpp"
   },
   //-------------------------------------------------------------------------
   // #endregion

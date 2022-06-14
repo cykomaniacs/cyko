@@ -3,7 +3,7 @@
 # cykomaniacs development 2022.
 #
 #.DESCRIPTION
-# Generic clean script.
+# Generic cleaner.
 #
 #.PARAMETER keep
 # List of file-names to keep.
@@ -25,9 +25,7 @@
 #.NOTES
 # Powershell ftw!
 
-#using namespace System;
-
-param (
+param(
   [Parameter(Mandatory=$false, ParameterSetName="main")]
   [ValidateNotNullOrEmpty()]
   [array]
@@ -50,39 +48,39 @@ param (
 )
 
 # ---------------------------------------------------------------------------
-# helpers (classes, just for fun!)
+# namespaces
 # ---------------------------------------------------------------------------
 
 class log {
-  static hidden $color = @{
+  static hidden $color = @{ #[hashtable]
     name = [System.ConsoleColor]::Blue;
     arch = [System.ConsoleColor]::Blue;
     text = [System.ConsoleColor]::DarkGray;
 
-    pre  = [System.ConsoleColor]::DarkGray;
-    par  = [System.ConsoleColor]::Yellow;
-    sep  = [System.ConsoleColor]::DarkBlue;
+    pre  = [System.ConsoleColor]::DarkGray; #prefix
+    par  = [System.ConsoleColor]::Yellow;   #pairs
+    sep  = [System.ConsoleColor]::DarkBlue; #separator
 
-    keep = [System.ConsoleColor]::Green;
-    nuke = [System.ConsoleColor]::Red;
-    file = [System.ConsoleColor]::Gray;
+    keep = [System.ConsoleColor]::Green;    #file:delete(no!)
+    nuke = [System.ConsoleColor]::Red;      #file:delete
+    file = [System.ConsoleColor]::Gray;     #file:name
   }
 
   static hidden [void]
-  mesg([string]$rgb, [string]$str, [switch]$end) {
+  main([string]$rgb, [string]$str, [switch]$end) {
     Write-Host -ForegroundColor ([log]::color)[$rgb] $str -NoNewline
-    Write-Host "" -NoNewline:(!$end) # new-line / reset color
+    Write-Host "" -NoNewline:(!$end) # reset color & new-line?
   }
 
   static [void] # print target info
   head([string]$name, [string]$arch) {
-    [log]::mesg("pre",  "> ", $false)
-    [log]::mesg("name", "${name}", $false)
-    [log]::mesg("sep",  ":", $false)
-    [log]::mesg("arch", "${arch}", $false)
-    [log]::mesg("par",  "(", $false)
-    [log]::mesg("pre",  "nuke", $false)
-    [log]::mesg("par",  ")", $true)
+    [log]::main("pre",  "> ", $false)
+    [log]::main("name", "${name}", $false)
+    [log]::main("sep",  ":", $false)
+    [log]::main("arch", "${arch}", $false)
+    [log]::main("par",  "(", $false)
+    [log]::main("pre",  "nuke", $false)
+    [log]::main("par",  ")", $true)
   }
 
   static [void] # print file info
@@ -91,8 +89,8 @@ class log {
     $xc = $skip ? "keep" : "nuke";
     $fc = "file";
 
-    [log]::mesg($xc, "${xx} ", $false)
-    [log]::mesg($fc, "${path}/${name}", $true)
+    [log]::main($xc, "${xx} ", $false)
+    [log]::main($fc, "${path}/${name}", $true)
   }
 }
 
@@ -110,7 +108,7 @@ class app {
 }
 
 # ---------------------------------------------------------------------------
-# main > functions
+# functions
 # ---------------------------------------------------------------------------
 
 function script:head {
@@ -144,9 +142,9 @@ function script:file {
 
 function script:nuke {
   param(
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory)]
     [array]  # skipped file-names
-    $skip = $keep,
+    $skip, # = $keep + $cfg.keep,
     [Parameter(Mandatory)]
     [string] # base path
     $path,
@@ -172,18 +170,25 @@ function script:nuke {
       script:file -path "$work" -name "$_" -skip
     } else {
       script:file -path "$work" -name "$_"
-      Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "$work/$_"
+      #Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "$work/$_"
     }
   })
 }
 
 # ---------------------------------------------------------------------------
-# main / entry
+# configuration
+# ---------------------------------------------------------------------------
+# todo: error handling
+
+$cfg = Import-PowerShellDataFile -Path "./nuke.psd1"
+
+# ---------------------------------------------------------------------------
+# entry
 # ---------------------------------------------------------------------------
 
 $name.forEach({ $t = $_
   $arch.ForEach({
     script:head -name "$t" -arch "$_"
-    script:nuke -path "$base" -name "$t" -arch "$_"
+    script:nuke -skip ($keep + $cfg.keep) -path "$base" -name "$t" -arch "$_"
   })
 })
