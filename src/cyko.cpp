@@ -23,6 +23,7 @@ auto main()
   remove_pointer<int*[], true> qf = { &pa };
   cyko::type::add_const<int> xjj = 1;
 
+  remove_const<int const volatile> g = 1;
   /*
   remove_const<int const volatile&&const volatile> e = 3;
   remove_const<int const volatile&const volatile> e = e;

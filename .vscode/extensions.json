@@ -1,0 +1,33 @@
+{
+  "recommendations": [
+    "beardedbear.beardedicons",
+    "beardedbear.beardedtheme",
+
+    "jonathanharty.gruvbox-material-icon-theme",
+    "gulajavaministudio.mayukaithemevsc",
+    "monokai.theme-monokai-pro-vscode",
+    "liviuschera.noctis",
+    "daylerees.rainglow",
+    "rastikerdar.vscode-seedling-icon-theme",
+
+
+    "ms-vscode.cpptools",
+    "ms-vscode.cpptools-themes",
+    "ms-vscode.cmake-tools",
+    "ms-vscode.hexeditor",
+    "ms-vscode.powershell",
+    "ms-vscode-remote.remote-containers",
+    "visualstudioexptteam.vscodeintellicode",
+
+    "cschlosser.doxdocgen",
+    "twxs.cmake",
+    "vadimcn.vscode-lldb",
+    "tabnine.tabnine-vscode",
+    "github.codespaces",
+    "eamodio.gitlens",
+    "jeff-hykin.better-cpp-syntax",
+    "peaceshi.syntax-highlight",
+    "ahgood.set-syntax",
+    "llvm-vs-code-extensions.vscode-clangd",
+  ]
+}
