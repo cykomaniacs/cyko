@@ -1,9 +1,8 @@
 #.SYNOPSIS
 # Build cleaner.
-# cykomaniacs development 2022.
 #
 #.DESCRIPTION
-# Generic cleaner.
+# Generic build cleaner for Windows.
 #
 #.PARAMETER keep
 # List of file-names to keep.
@@ -13,11 +12,23 @@
 # Target names (ex: "debug", "release")
 #.PARAMETER arch
 # Target architectures (ex: "x64", "x86")
+#.PARAMETER help
+# Print usage and description to stdout.
+#.PARAMETER info
+# Print description to stdout.
+#.PARAMETER version
+# Print the version number to stdout.
 #
 #.EXAMPLE
 # ./nuke.ps1 -base "./bin" -name "debug" -arch "x86"
 #.EXAMPLE
 # ./nuke.ps1 -base "./bin" -name "debug, "release" -arch "x86", "x64"
+#.EXAMPLE
+# ./nuke.ps1 -help
+#.EXAMPLE
+# ./nuke.ps1 -info|desc
+#.EXAMPLE
+# ./nuke.ps1 -version
 #
 #.LINK
 # cyko@eggheadedmonkey.com
@@ -26,25 +37,55 @@
 # Powershell ftw!
 
 param (
-  [Parameter(Mandatory=$false, ParameterSetName="main")]
+  #region parameters: "main"
+  [Parameter(ParameterSetName="1.0")]
   [ValidateNotNullOrEmpty()]
   [array]
   $keep = ( ".gitkeep" ),
-
-  [Parameter(Mandatory, ParameterSetName="main")]
+  [Parameter(ParameterSetName="1.0", Mandatory)]
   [ValidateNotNullOrEmpty()]
   [string]
   $base,
-
-  [Parameter(Mandatory, ParameterSetName="main")]
+  [Parameter(ParameterSetName="1.0", Mandatory)]
   [ValidateNotNullOrEmpty()]
   [string[]]
   $name,
-
-  [Parameter(Mandatory, ParameterSetName="main")]
+  [Parameter(ParameterSetName="1.0", Mandatory)]
   [ValidateNotNullOrEmpty()]
   [string[]]
-  $arch
+  $arch,
+  #endregion
+
+  #region parameters: "help"
+  [Parameter(ParameterSetName="2.0", Mandatory)]
+  [Parameter(ParameterSetName="2.1", Mandatory)]
+  [Parameter(ParameterSetName="2.2", Mandatory)]
+  [Parameter(ParameterSetName="2.3", Mandatory)]
+  [Alias("h")]
+  [switch]
+  $help,
+  [Parameter(ParameterSetName="2.1", Position=1, Mandatory)]
+  [switch]
+  $detailed,
+  [Parameter(ParameterSetName="2.2", Position=1, Mandatory)]
+  [switch]
+  $examples,
+  [Parameter(ParameterSetName="2.3", Position=1, Mandatory)]
+  [switch]
+  $complete,
+  #endregion
+
+  #region parameters: "info"
+  [Parameter(ParameterSetName="3.0", Mandatory)]
+  [Parameter(ParameterSetName="3.0.0")]
+  [Alias("desc")]
+  [switch]
+  $info,
+  [Parameter(ParameterSetName="3.1", Mandatory)]
+  [Alias("v")]
+  [switch]
+  $version
+  #endregion
 )
 
 #----------------------------------------------------------------------------
@@ -87,6 +128,21 @@ function log:host {
 
   Write-Host -ForegroundColor $color $out -NoNewline
   Write-Host -NoNewline:(!$eol) # reset-color & line-feed?
+}
+
+function log:line {
+  param (
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor]
+    $color = [System.ConsoleColor]::Magenta,
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [switch] #-# output: end-of-line?
+    $eol
+  )
+
+  log:host -color:$color -out "--------------------" -eol:$eol
 }
 
 function log:head {
@@ -135,8 +191,6 @@ function log:file {
 }
 
 #endregion ------------------------------------------------------------------
-
-
 
 
 #----------------------------------------------------------------------------
@@ -219,8 +273,6 @@ function app:main { # called upon script entry
 #endregion ------------------------------------------------------------------
 
 
-
-
 #----------------------------------------------------------------------------
 #region: namespace cfg (see nuke.psd1)
 #-----------------
@@ -246,6 +298,8 @@ class key {
 
 # source/import
 $mod = Import-PowerShellDataFile -Path "./nuke.psd1"
+#Import-PowerShellDataFile -Path "./nuke.psd1"
+
 
 function mod:has {
   param(
@@ -263,6 +317,7 @@ function mod:get {
     [string]
     $key,
     [Parameter(Mandatory)]
+    [AllowNull()]
     [object]
     $default
   )
@@ -275,24 +330,162 @@ function mod:get {
 $cfg = @{
   test =  (mod:get -key ([key]::test) -default $true)
   keep = @(mod:get -key ([key]::keep) -default $keep) + $keep
+
+  info = mod:get -key "info" -default $null
+  date = mod:get -key "date" -default $null
+  repo = mod:get -key "repo" -default $null
 }
 
 #endregion ------------------------------------------------------------------
 
+function nfo:main {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [hashtable]
+    $info,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $repo,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [hashtable]
+    $date
+  )
 
+  log:host -eol:$true # start
 
+  log:host -eol:$false -color:DarkGray -out "#",""
+  log:host -eol:$false -color:Blue     -out $info.description,""
+  log:host -eol:$false -color:DarkGray -out "-",""
+  nfo:version -string $info.version.number -name:$info.version.name
+  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
+  log:host -eol:$false -color:DarkGray -out "#",""
+  log:host -eol:$false -color:Gray     -out $info.author.name,""
+  log:host -eol:$true  -color:DarkGray -out $info.author.mail
+  log:host -eol:$false -color:DarkGray -out "#",""
+  log:host -eol:$false -color:Gray     -out $info.organization.name,""
+  log:host -eol:$true  -color:DarkGray -out $info.organization.home
+  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
+  log:host -eol:$false -color:DarkGray -out "#",""
+  nfo:repo -url:$repo  -color:Blue
+  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
+  log:host -eol:$false -color:DarkGray -out "#",""
+  log:host -eol:$false -color:Cyan     -out $date.updated
+  log:host -eol:$false -color:DarkGray -out "("
+  log:host -eol:$false -color:DarkCyan -out $date.created
+  log:host -eol:$true  -color:DarkGray -out ")"
+
+  log:host -eol:$true # end
+}
+
+function nfo:help {
+  if ($complete) {
+    Get-Help .\nuke.ps1 -Full:$complete
+  } elseif ($examples) {
+    Get-Help .\nuke.ps1 -Examples:$examples
+  } elseif ($detailed) {
+    Get-Help .\nuke.ps1 -Detailed:$detailed
+  } else {
+    Get-Help .\nuke.ps1
+  }
+}
+
+function nfo:version {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string] # version number
+    $string,
+    [Parameter(Mandatory=$false)]
+    [AllowNull()]
+    [string] # version name
+    $name = $null,
+    #region color parameters
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: number
+    $cone = ([System.ConsoleColor]::Cyan),
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: name
+    $ctwo = ([System.ConsoleColor]::DarkGray),
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: dots (name)
+    $cdot = ([System.ConsoleColor]::Blue),
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: pair (name brackets)
+    $cpar = ([System.ConsoleColor]::DarkCyan)
+    #endregion
+  )
+
+  log:host -eol:$false -color:$cone -out $string.Substring(0,
+     $string.indexOf('.'))
+  log:host -eol:$false -color:$cdot -out '.'
+  log:host -eol:$false -color:$cone -out $string.Substring(
+    ($string.indexOf('.') + 1),
+    ($string.LastIndexOf('.') - 2))
+  log:host -eol:$false -color:$cdot -out '.'
+  log:host -eol:$false -color:$cone -out $string.Substring(
+    ($string.LastIndexOf('.') + 1)
+  )
+
+  if ($name.Length -lt 1) {
+    return log:host -eol
+  }
+
+  log:host -eol:$false -color:$cpar -out ' <'
+  log:host -eol:$false -color:$ctwo -out $name
+  log:host -eol:$true  -color:$cpar -out '>'
+}
+
+function nfo:repo {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $url,
+    #region color parameters
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: url
+    $color = ([System.ConsoleColor]::Green)
+    #endregion
+  )
+
+  log:host -eol:$true -color:$color -out $url
+}
 
 #----------------------------------------------------------------------------
 #region: script execution
 #-----------------
 # TODO: SORT EVERYTHING INTO NAMESPACES!!
 #----------------------------------------------------------------------------
+if ($PSBoundParameters.Count -eq 0) {
+  nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
 
-$name.forEach({ $t = $_
-  $arch.ForEach({
-    log:head -name "$t" -arch "$_"
-    app:main -test:$cfg.test -skip $cfg.keep -path "$base" -name "$t" -arch "$_"
+  log:host -eol:$false -color:Red        -out "$",""
+  log:host -eol:$false -color:Yellow     -out "nuke.ps1", ""
+  log:host -eol:$false -color:DarkYellow -out "-"
+  log:host -eol:$false -color:Yellow     -out "h",""
+  log:host -eol:$true  -color:DarkGray   -out "for more information ..."
+  log:host -eol:$true
+} elseif ($help) {
+  nfo:help
+} elseif ($info) {
+  nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
+} elseif ($version) {
+  nfo:version
+} else {
+  $name.foreach({ $t = $_
+    $arch.foreach({
+      log:head -name "$t" -arch "$_"
+      app:main -test:$cfg.test -skip $cfg.keep -path "$base" -name "$t" -arch "$_"
+    })
   })
-})
+}
 
 #endregion ------------------------------------------------------------------
