@@ -36,6 +36,7 @@
 #.NOTES
 # Powershell ftw!
 
+[CmdletBinding()]
 param (
   #region parameters: "main"
   [Parameter(ParameterSetName="1.0")]
@@ -126,8 +127,8 @@ function log:host {
     $eol
   )
 
-  Write-Host -ForegroundColor $color $out -NoNewline
-  Write-Host -NoNewline:(!$eol) # reset-color & line-feed?
+  Write-Host -ForegroundColor:$color $out -NoNewline:$true
+  Write-Host -NoNewline:(!$eol) # reset-color & end-of-line(line-feed)?
 }
 
 function log:line {
@@ -138,11 +139,11 @@ function log:line {
     $color = [System.ConsoleColor]::Magenta,
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
-    [switch] #-# output: end-of-line?
+    [switch] # end-of-line?
     $eol
   )
 
-  log:host -color:$color -out "--------------------" -eol:$eol
+  log:host -eol:$eol -color:$color -out "--------------------"
 }
 
 function log:head {
@@ -157,13 +158,13 @@ function log:head {
     $arch
   )
 
-  log:host -color ([color]::pre)  "> "
-  log:host -color ([color]::name) "${name}"
-  log:host -color ([color]::sep)  ":"
-  log:host -color ([color]::arch) "${arch}"
-  log:host -color ([color]::par)  "("
-  log:host -color ([color]::text) "nuke"
-  log:host -color ([color]::par)  ")" -eol
+  log:host -eol:$false -color:([color]::pre)  -out "> "
+  log:host -eol:$false -color:([color]::name) -out "${name}"
+  log:host -eol:$false -color:([color]::sep)  -out ":"
+  log:host -eol:$false -color:([color]::arch) -out "${arch}"
+  log:host -eol:$false -color:([color]::par)  -out "("
+  log:host -eol:$false -color:([color]::text) -out "nuke"
+  log:host -eol:$true  -color:([color]::par)  -out ")"
 }
 
 function log:file {
@@ -178,7 +179,7 @@ function log:file {
     $name,
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
-    [switch] # skip/keep
+    [switch] # skip/save?
     $keep
   )
 
@@ -186,8 +187,8 @@ function log:file {
   $xc = $keep ? [color]::keep : [color]::nuke
   $fc = [color]::file
 
-  log:host -color $xc "${xx} "
-  log:host -color $fc "${path}/${name}" -eol
+  log:host -eol:$false -color:$xc -out "${xx} "
+  log:host -eol:$true  -color:$fc -out "${path}/${name}"
 }
 
 #endregion ------------------------------------------------------------------
@@ -196,6 +197,58 @@ function log:file {
 #----------------------------------------------------------------------------
 #region: namespace app
 #-----------------
+# TODO: fail-safe!
+#-----------------
+
+$app = @{
+  name = @{
+    main = $MyInvocation.MyCommand.Name
+    base = ""
+    conf = ""
+  }
+  path = @{
+    work = $PWD.Path
+    full = $PSCommandPath
+  }
+  args = @{ # cmd-line arguments
+      all = $args # complete <array>
+    bound = $PSBoundParameters # named arguments <?>
+  }
+}
+
+$app.name.base = $app.name.main.Substring(0, $app.name.main.LastIndexOf('.'))
+$app.name.conf = $app.name.base + '.psd1'
+
+
+function app:argc { # returns the number of cmd-line arguments.
+  param (
+    [Parameter()]
+    [switch]
+    $all
+  )
+
+  return $all ? $app.args.all.Length : $app.args.bound.Count
+}
+
+function app:argv { # returns the cmd-line arguments
+  param (
+    [Parameter()]
+    [switch]
+    $all
+  )
+
+  return $all ? $app.args.all : $app.args.bound
+}
+
+function app:nude { # determines whether the cmd-line has arguments or not.
+  param (
+    [Parameter()]
+    [switch]
+    $all
+  )
+
+  return ((app:argc -all:$all) -eq 0)
+}
 
 function app:keep { # determines whether to keep the file or not.
   param (
@@ -236,11 +289,11 @@ function app:main { # called upon script entry
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [switch] # see configuration (nuke.psd1)
-    $test = $false,
+    $fake = $false,
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [array]  # list of ignored file-names
-    $skip,
+    $keep,
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string] # base/work path
@@ -259,13 +312,12 @@ function app:main { # called upon script entry
   $work = $path + '/' + $name + '/' + $arch
 
   $(Get-ChildItem "$work" -Name).forEach({
-
-    if (app:keep -list $skip -file "${_}")
+    if (app:keep -list:$keep -file:"${_}")
     {
-      log:file -path "${work}" -name "${_}" -keep:$true
+      log:file -path:"${work}" -name:"${_}" -keep:$true
     } else {
-      log:file -path "${work}" -name "${_}" -keep:$false
-      app:nuke -path "${work}" -node "${_}" -fake:$test
+      log:file -path:"${work}" -name:"${_}" -keep:$false
+      app:nuke -path:"${work}" -node:"${_}" -fake:$fake
     }
   })
 }
@@ -283,23 +335,23 @@ function app:main { # called upon script entry
 # each key refers to a specific configuration variable.
 # case-sensitive!
 #-----------------
-
 class key {
-  static [string] $test = "test"
+  static [string] $fake = "fake"
   static [string] $keep = "keep"
+  static [string] $date = "date"
+  static [string] $info = "info"
+  static [string] $repo = "repo"
 }
-
 #endregion ------------------------------------------------------------------
 #region: namespace mod(cfg)
 #-----------------
 # todo: fail handling
 # todo: real implementation!
 #-----------------
-
 # source/import
-$mod = Import-PowerShellDataFile -Path "./nuke.psd1"
-#Import-PowerShellDataFile -Path "./nuke.psd1"
-
+#-----------------
+$mod = Import-PowerShellDataFile -Path:($app.path.work + '/' + $app.name.conf)
+#mod = Import-PowerShellDataFile -Path:($PSCommandPath.Substring(0, $PSCommandPath.LastIndexOf(('.'))) + '.psd1')
 
 function mod:has {
   param(
@@ -328,12 +380,12 @@ function mod:get {
 #endregion ------------------------------------------------------------------
 
 $cfg = @{
-  test =  (mod:get -key ([key]::test) -default $true)
   keep = @(mod:get -key ([key]::keep) -default $keep) + $keep
 
-  info = mod:get -key "info" -default $null
-  date = mod:get -key "date" -default $null
-  repo = mod:get -key "repo" -default $null
+  info = mod:get -key:([key]::info) -default $null
+  date = mod:get -key:([key]::date) -default $null
+  fake = mod:get -key:([key]::fake) -default $true
+  repo = mod:get -key:([key]::repo) -default $null
 }
 
 #endregion ------------------------------------------------------------------
@@ -355,7 +407,6 @@ function nfo:main {
   )
 
   log:host -eol:$true # start
-
   log:host -eol:$false -color:DarkGray -out "#",""
   log:host -eol:$false -color:Blue     -out $info.description,""
   log:host -eol:$false -color:DarkGray -out "-",""
@@ -376,20 +427,36 @@ function nfo:main {
   log:host -eol:$false -color:DarkGray -out "("
   log:host -eol:$false -color:DarkCyan -out $date.created
   log:host -eol:$true  -color:DarkGray -out ")"
-
   log:host -eol:$true # end
 }
 
 function nfo:help {
-  if ($complete) {
-    Get-Help .\nuke.ps1 -Full:$complete
-  } elseif ($examples) {
-    Get-Help .\nuke.ps1 -Examples:$examples
-  } elseif ($detailed) {
-    Get-Help .\nuke.ps1 -Detailed:$detailed
-  } else {
-    Get-Help .\nuke.ps1
-  }
+  param (
+    [Parameter()]
+    [ValidateNotNullOrEmpty()]
+    [string] # script path
+    $path = "$($app.path.full)",
+    [Parameter()]
+    [switch] # script called parameter-less?
+    $nude
+  )
+
+  function help:defaults { Get-Help "${path}" }
+  function help:complete { Get-Help "${path}" -Full }
+  function help:examples { Get-Help "${path}" -Examples }
+  function help:detailed { Get-Help "${path}" -Detailed }
+
+  if ($nude) {
+    log:host -eol:$false -color:Red        -out "$",""
+    log:host -eol:$false -color:Yellow     -out "nuke.ps1", ""
+    log:host -eol:$false -color:DarkYellow -out "-"
+    log:host -eol:$false -color:Yellow     -out "h",""
+    log:host -eol:$true  -color:DarkGray   -out "for more information ..."
+    log:host -eol:$true
+  } elseif ($complete) { help:defaults
+  } elseif ($examples) { help:examples
+  } elseif ($detailed) { help:detailed
+  } else { help:defaults }
 }
 
 function nfo:version {
@@ -437,6 +504,7 @@ function nfo:version {
     return log:host -eol
   }
 
+  log:host -eol:$false -out ''
   log:host -eol:$false -color:$cpar -out ' <'
   log:host -eol:$false -color:$ctwo -out $name
   log:host -eol:$true  -color:$cpar -out '>'
@@ -464,15 +532,10 @@ function nfo:repo {
 #-----------------
 # TODO: SORT EVERYTHING INTO NAMESPACES!!
 #----------------------------------------------------------------------------
-if ($PSBoundParameters.Count -eq 0) {
-  nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
 
-  log:host -eol:$false -color:Red        -out "$",""
-  log:host -eol:$false -color:Yellow     -out "nuke.ps1", ""
-  log:host -eol:$false -color:DarkYellow -out "-"
-  log:host -eol:$false -color:Yellow     -out "h",""
-  log:host -eol:$true  -color:DarkGray   -out "for more information ..."
-  log:host -eol:$true
+if (app:nude) {
+  nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
+  nfo:help -nude:$true
 } elseif ($help) {
   nfo:help
 } elseif ($info) {
@@ -482,8 +545,8 @@ if ($PSBoundParameters.Count -eq 0) {
 } else {
   $name.foreach({ $t = $_
     $arch.foreach({
-      log:head -name "$t" -arch "$_"
-      app:main -test:$cfg.test -skip $cfg.keep -path "$base" -name "$t" -arch "$_"
+      log:head -name:"$t" -arch:"$_"
+      app:main -fake:$cfg.fake -keep:$cfg.keep -path:"${base}" -name:"${t}" -arch:"${_}"
     })
   })
 }

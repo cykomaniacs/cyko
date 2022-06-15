@@ -25,15 +25,12 @@
   # information (about, authors, version, etc...)
   info = @{
     description = "Generic build cleaner for Windows"
-    summary     = "build cleaner"
+    summary = "build cleaner"
     # --------------------------------
     # .number: major.minor.patch
     #   .name: codename
     # --------------------------------
-    version = @{
-      number = "0.1.2"
-      name   = "configurizer"
-    }
+    version = @{ number = "0.1.2"; name = "configurizer" }
     # --------------------------------
     # .name: ...
     # .home: web url
@@ -55,16 +52,15 @@
       mail = "cyko@eggheadedmonkey.com"
     }
   }
-
   # timestamps
   date = @{
     created = "2022/06/14"
     updated = "2022/06/15"
   }
-  # source repository url
+  # repository url
   repo = "https://github.com/cykomaniacs/cyko"
-  # fake/dry-run (don't do anything, just print)
-  test = $false
+  # dry-run (don't do anything, just print)
+  fake = $false
   # ignored files (ie. don't delete)
   keep = @(
     ".gitkeep"
