@@ -36,7 +36,6 @@
 #.NOTES
 # Powershell ftw!
 
-[CmdletBinding()]
 param (
   #region parameters: "main"
   [Parameter(ParameterSetName="1.0")]
@@ -77,9 +76,8 @@ param (
   #endregion
 
   #region parameters: "info"
-  [Parameter(ParameterSetName="3.0", Mandatory)]
-  [Parameter(ParameterSetName="3.0.0")]
-  [Alias("desc")]
+  [Parameter(ParameterSetName="3.0")]
+  [Alias("i")]
   [switch]
   $info,
   [Parameter(ParameterSetName="3.1", Mandatory)]
@@ -194,17 +192,226 @@ function log:file {
 #endregion ------------------------------------------------------------------
 
 
+
+#----------------------------------------------------------------------------
+#region: namespace cfg (see nuke.psd1)
+#----------------------------------------------------------------------------
+#region: namespace key(cfg)
+#-----------------
+# each key refers to a specific configuration variable.
+# case-sensitive!
+#-----------------
+class key {
+  static [string] $fake = "fake"
+  static [string] $keep = "keep"
+  static [string] $date = "date"
+  static [string] $info = "info"
+  static [string] $repo = "repo"
+}
+#endregion ------------------------------------------------------------------
+#region: namespace mod(cfg)
+#-----------------
+# todo: fail handling
+# todo: real implementation!
+#-----------------
+# source/import
+#-----------------
+$mod = Import-PowerShellDataFile -Path:($app.path.work + '/' + $app.name.conf)
+#mod = Import-PowerShellDataFile -Path:($PSCommandPath.Substring(0, $PSCommandPath.LastIndexOf(('.'))) + '.psd1')
+
+function mod:has {
+  param(
+    [Parameter(Mandatory)]
+    [string]
+    $key
+  )
+
+  return $mod.ContainsKey($key)
+}
+
+function mod:get {
+  param(
+    [Parameter(Mandatory)]
+    [string]
+    $key,
+    [Parameter(Mandatory)]
+    [AllowNull()]
+    [object]
+    $default
+  )
+
+  return ((mod:has -key $key) ? $mod[$key] : $default)
+}
+
+#endregion ------------------------------------------------------------------
+$cfg = @{
+  keep = @(mod:get -key ([key]::keep) -default $keep) + $keep
+
+  info = mod:get -key:([key]::info) -default $null
+  date = mod:get -key:([key]::date) -default $null
+  fake = mod:get -key:([key]::fake) -default $true
+  repo = mod:get -key:([key]::repo) -default $null
+}
+#endregion ------------------------------------------------------------------
+
+
+
+#----------------------------------------------------------------------------
+#region: namespace nfo
+#-----------------
+
+function nfo:main {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [hashtable]
+    $info,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $repo,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [hashtable]
+    $date
+  )
+
+  log:host -eol:$true # start
+  log:host -eol:$false -color:DarkGray -out "#",""
+  log:host -eol:$false -color:Blue     -out $info.description,""
+  log:host -eol:$false -color:DarkGray -out "-",""
+  nfo:version -string:$info.version.number -name:$info.version.name
+  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
+  log:host -eol:$false -color:DarkGray -out "#",""
+  log:host -eol:$false -color:Gray     -out $info.author.name,""
+  log:host -eol:$true  -color:DarkGray -out $info.author.mail
+  log:host -eol:$false -color:DarkGray -out "#",""
+  log:host -eol:$false -color:Gray     -out $info.organization.name,""
+  log:host -eol:$true  -color:DarkGray -out $info.organization.home
+  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
+  log:host -eol:$false -color:DarkGray -out "#",""
+  nfo:repo -url:$repo  -color:Blue
+  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
+  log:host -eol:$false -color:DarkGray -out "#",""
+  log:host -eol:$false -color:Cyan     -out $date.updated
+  log:host -eol:$false -color:DarkGray -out "("
+  log:host -eol:$false -color:DarkCyan -out $date.created
+  log:host -eol:$true  -color:DarkGray -out ")"
+  log:host -eol:$true # end
+}
+
+function nfo:help {
+  param (
+    [Parameter()]
+    [ValidateNotNullOrEmpty()]
+    [string] # script path
+    $path = "$($app.path.full)",
+    [Parameter()]
+    [switch] # script called parameter-less?
+    $nude
+  )
+
+  function help:defaults { Get-Help "${path}" }
+  function help:complete { Get-Help "${path}" -Full }
+  function help:examples { Get-Help "${path}" -Examples }
+  function help:detailed { Get-Help "${path}" -Detailed }
+
+  if ($nude) {
+    log:host -eol:$false -color:Red        -out "$",""
+    log:host -eol:$false -color:Yellow     -out "nuke.ps1", ""
+    log:host -eol:$false -color:DarkYellow -out "-"
+    log:host -eol:$false -color:Yellow     -out "h",""
+    log:host -eol:$true  -color:DarkGray   -out "for more information ..."
+    log:host -eol:$true
+  } elseif ($complete) { help:defaults
+  } elseif ($examples) { help:examples
+  } elseif ($detailed) { help:detailed
+  } else { help:defaults }
+}
+
+function nfo:repo {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $url,
+    #region color parameters
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: url
+    $color = ([System.ConsoleColor]::Green)
+    #endregion
+  )
+
+  log:host -eol:$true -color:$color -out $url
+}
+
+function nfo:version {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string] # version number
+    $string,
+    [Parameter(Mandatory=$false)]
+    [AllowNull()]
+    [string] # version name
+    $name = $null,
+    #region color parameters
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: number
+    $cone = ([System.ConsoleColor]::Cyan),
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: name
+    $ctwo = ([System.ConsoleColor]::DarkGray),
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: dots (name)
+    $cdot = ([System.ConsoleColor]::Blue),
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [System.ConsoleColor] # color: pair (name brackets)
+    $cpar = ([System.ConsoleColor]::DarkCyan)
+    #endregion
+  )
+
+  log:host -eol:$false -color:$cone -out $string.Substring(0,
+     $string.indexOf('.'))
+  log:host -eol:$false -color:$cdot -out '.'
+  log:host -eol:$false -color:$cone -out $string.Substring(
+    ($string.indexOf('.') + 1),
+    ($string.LastIndexOf('.') - 2))
+  log:host -eol:$false -color:$cdot -out '.'
+  log:host -eol:$false -color:$cone -out $string.Substring(
+    ($string.LastIndexOf('.') + 1)
+  )
+
+  if (($null -eq $name) -or ($name.Length -lt 1)) {
+    return log:host -eol
+  }
+
+  log:host -eol:$false -out ''
+  log:host -eol:$false -color:$cpar -out ' <'
+  log:host -eol:$false -color:$ctwo -out $name
+  log:host -eol:$true  -color:$cpar -out '>'
+}
+
+#endregion ------------------------------------------------------------------
+
+
 #----------------------------------------------------------------------------
 #region: namespace app
 #-----------------
 # TODO: fail-safe!
+#----------------------------------------------------------------------------
+#region: namespace app(tab)
 #-----------------
-
 $app = @{
   name = @{
     main = $MyInvocation.MyCommand.Name
-    base = ""
-    conf = ""
+    base = "" # script name without extension
+    conf = "" # complete file-name
   }
   path = @{
     work = $PWD.Path
@@ -218,7 +425,7 @@ $app = @{
 
 $app.name.base = $app.name.main.Substring(0, $app.name.main.LastIndexOf('.'))
 $app.name.conf = $app.name.base + '.psd1'
-
+#endregion ------------------------------------------------------------------
 
 function app:argc { # returns the number of cmd-line arguments.
   param (
@@ -325,207 +532,6 @@ function app:main { # called upon script entry
 #endregion ------------------------------------------------------------------
 
 
-#----------------------------------------------------------------------------
-#region: namespace cfg (see nuke.psd1)
-#-----------------
-
-#----------------------------------------------------------------------------
-#region: namespace key(cfg)
-#-----------------
-# each key refers to a specific configuration variable.
-# case-sensitive!
-#-----------------
-class key {
-  static [string] $fake = "fake"
-  static [string] $keep = "keep"
-  static [string] $date = "date"
-  static [string] $info = "info"
-  static [string] $repo = "repo"
-}
-#endregion ------------------------------------------------------------------
-#region: namespace mod(cfg)
-#-----------------
-# todo: fail handling
-# todo: real implementation!
-#-----------------
-# source/import
-#-----------------
-$mod = Import-PowerShellDataFile -Path:($app.path.work + '/' + $app.name.conf)
-#mod = Import-PowerShellDataFile -Path:($PSCommandPath.Substring(0, $PSCommandPath.LastIndexOf(('.'))) + '.psd1')
-
-function mod:has {
-  param(
-    [Parameter(Mandatory)]
-    [string]
-    $key
-  )
-
-  return $mod.ContainsKey($key)
-}
-
-function mod:get {
-  param(
-    [Parameter(Mandatory)]
-    [string]
-    $key,
-    [Parameter(Mandatory)]
-    [AllowNull()]
-    [object]
-    $default
-  )
-
-  return ((mod:has -key $key) ? $mod[$key] : $default)
-}
-
-#endregion ------------------------------------------------------------------
-
-$cfg = @{
-  keep = @(mod:get -key ([key]::keep) -default $keep) + $keep
-
-  info = mod:get -key:([key]::info) -default $null
-  date = mod:get -key:([key]::date) -default $null
-  fake = mod:get -key:([key]::fake) -default $true
-  repo = mod:get -key:([key]::repo) -default $null
-}
-
-#endregion ------------------------------------------------------------------
-
-function nfo:main {
-  param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [hashtable]
-    $info,
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $repo,
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [hashtable]
-    $date
-  )
-
-  log:host -eol:$true # start
-  log:host -eol:$false -color:DarkGray -out "#",""
-  log:host -eol:$false -color:Blue     -out $info.description,""
-  log:host -eol:$false -color:DarkGray -out "-",""
-  nfo:version -string $info.version.number -name:$info.version.name
-  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
-  log:host -eol:$false -color:DarkGray -out "#",""
-  log:host -eol:$false -color:Gray     -out $info.author.name,""
-  log:host -eol:$true  -color:DarkGray -out $info.author.mail
-  log:host -eol:$false -color:DarkGray -out "#",""
-  log:host -eol:$false -color:Gray     -out $info.organization.name,""
-  log:host -eol:$true  -color:DarkGray -out $info.organization.home
-  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
-  log:host -eol:$false -color:DarkGray -out "#",""
-  nfo:repo -url:$repo  -color:Blue
-  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
-  log:host -eol:$false -color:DarkGray -out "#",""
-  log:host -eol:$false -color:Cyan     -out $date.updated
-  log:host -eol:$false -color:DarkGray -out "("
-  log:host -eol:$false -color:DarkCyan -out $date.created
-  log:host -eol:$true  -color:DarkGray -out ")"
-  log:host -eol:$true # end
-}
-
-function nfo:help {
-  param (
-    [Parameter()]
-    [ValidateNotNullOrEmpty()]
-    [string] # script path
-    $path = "$($app.path.full)",
-    [Parameter()]
-    [switch] # script called parameter-less?
-    $nude
-  )
-
-  function help:defaults { Get-Help "${path}" }
-  function help:complete { Get-Help "${path}" -Full }
-  function help:examples { Get-Help "${path}" -Examples }
-  function help:detailed { Get-Help "${path}" -Detailed }
-
-  if ($nude) {
-    log:host -eol:$false -color:Red        -out "$",""
-    log:host -eol:$false -color:Yellow     -out "nuke.ps1", ""
-    log:host -eol:$false -color:DarkYellow -out "-"
-    log:host -eol:$false -color:Yellow     -out "h",""
-    log:host -eol:$true  -color:DarkGray   -out "for more information ..."
-    log:host -eol:$true
-  } elseif ($complete) { help:defaults
-  } elseif ($examples) { help:examples
-  } elseif ($detailed) { help:detailed
-  } else { help:defaults }
-}
-
-function nfo:version {
-  param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [string] # version number
-    $string,
-    [Parameter(Mandatory=$false)]
-    [AllowNull()]
-    [string] # version name
-    $name = $null,
-    #region color parameters
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: number
-    $cone = ([System.ConsoleColor]::Cyan),
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: name
-    $ctwo = ([System.ConsoleColor]::DarkGray),
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: dots (name)
-    $cdot = ([System.ConsoleColor]::Blue),
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: pair (name brackets)
-    $cpar = ([System.ConsoleColor]::DarkCyan)
-    #endregion
-  )
-
-  log:host -eol:$false -color:$cone -out $string.Substring(0,
-     $string.indexOf('.'))
-  log:host -eol:$false -color:$cdot -out '.'
-  log:host -eol:$false -color:$cone -out $string.Substring(
-    ($string.indexOf('.') + 1),
-    ($string.LastIndexOf('.') - 2))
-  log:host -eol:$false -color:$cdot -out '.'
-  log:host -eol:$false -color:$cone -out $string.Substring(
-    ($string.LastIndexOf('.') + 1)
-  )
-
-  if ($name.Length -lt 1) {
-    return log:host -eol
-  }
-
-  log:host -eol:$false -out ''
-  log:host -eol:$false -color:$cpar -out ' <'
-  log:host -eol:$false -color:$ctwo -out $name
-  log:host -eol:$true  -color:$cpar -out '>'
-}
-
-function nfo:repo {
-  param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $url,
-    #region color parameters
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: url
-    $color = ([System.ConsoleColor]::Green)
-    #endregion
-  )
-
-  log:host -eol:$true -color:$color -out $url
-}
 
 #----------------------------------------------------------------------------
 #region: script execution
@@ -541,7 +547,7 @@ if (app:nude) {
 } elseif ($info) {
   nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
 } elseif ($version) {
-  nfo:version
+  nfo:version -string:$cfg.info.version.number -name:$cfg.info.version.name
 } else {
   $name.foreach({ $t = $_
     $arch.foreach({

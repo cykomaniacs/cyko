@@ -11,7 +11,6 @@
   #--------------------------
 
   ModuleVersion = '1.1.0'
-
   GUID = 'aa58b76b-1c0c-48a8-a999-64b67740905a' # UID of this module
   Author = 'eggheadedmonkey <cyko@eggheadedmonkey.com>'
   CompanyName = 'cykomaniacs'
