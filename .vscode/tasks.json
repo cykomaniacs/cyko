@@ -247,7 +247,7 @@
         // ------------------------------------------------------------------
         // #region : i/o
 
-        "${file}",  "-o", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe"
+        "${file}", "-o", "${input:cykoOut}/${fileBasenameNoExtension}.exe" //"${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe"
 
         // #endregion
         // ------------------------------------------------------------------
@@ -285,9 +285,7 @@
         "-p:Configuration=debug"
       ],
 
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "problemMatcher": [ "$msCompile" ]
     },
     { "label": "win-debug-x86(msbuild)",
       "type":  "cppbuild",
@@ -314,9 +312,7 @@
         "-p:Configuration=debug"
       ],
 
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "problemMatcher": [ "$msCompile" ]
     },
     { "label": "win-release-x64(msbuild)",
       "type":  "cppbuild",
@@ -343,9 +339,7 @@
         "-p:Configuration=release"
       ],
 
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "problemMatcher": [ "$msCompile" ]
     },
     { "label": "win-release-x86(msbuild)",
       "type":  "cppbuild",
@@ -372,9 +366,43 @@
         "-p:Configuration=debug"
       ],
 
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "problemMatcher": [ "$msCompile" ]
+    }
+
+  ],
+
+  "inputs": [ // see: c_cpp_properties.json
+
+    { // cykoOut: ${workspaceFolder}/bin/${cykoConfig}/${cykoTarget}
+      "id": "cykoOut", "args": "cykoOut",
+      "type": "command",
+      "command": "cpptools.activeConfigCustomVariable"
+    },
+    { // cykoInc: ${workspaceFolder}/include
+      "id": "cykoInc", "args": "cykoInc",
+      "type": "command",
+      "command": "cpptools.activeConfigCustomVariable"
+    },
+    { // cykoSrc: ${workspaceFolder}/src
+      "id": "cykoSrc", "args": "cykoSrc",
+      "type": "command",
+      "command": "cpptools.activeConfigCustomVariable"
+    },
+    { // cykoBin: ${workspaceFolder}/bin
+      "id": "cykoBin", "args": "cykoBin",
+      "type": "command",
+      "command": "cpptools.activeConfigCustomVariable"
+    },
+
+    { // cykoConfig: debug|release
+      "id": "cykoConfig", "args": "cykoConfig",
+      "type": "command",
+      "command": "cpptools.activeConfigCustomVariable"
+    },
+    { // cykoTarget: x86|x64
+      "id": "cykoTarget", "args": "cykoTarget",
+      "type": "command",
+      "command": "cpptools.activeConfigCustomVariable"
     }
 
   ]

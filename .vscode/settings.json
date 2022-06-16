@@ -12,6 +12,7 @@
   //-------------------------------------------------------------------------
   // #region: EDITOR | VISUALS
   //-------------------------------------------------------------------------
+  "editor.guides.indentation": true,
   "editor.guides.bracketPairs": "active", // "active" (cursor)
   "editor.matchBrackets": "near", // "near" (cursor)
   "editor.guides.bracketPairsHorizontal": true,
@@ -31,7 +32,27 @@
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
-
+  // #region: EDITOR | INTELLISENSE
+  //-------------------------------------------------------------------------
+  //"editor.quickSuggestions": { "other": "on", "comments": "on", "strings": "on" },
+  "editor.quickSuggestions": { "other": true, "comments": true, "strings": true },
+  "editor.parameterHints.enabled": true,
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.acceptSuggestionOnCommitCharacter": false,
+  "editor.wordBasedSuggestions": true, // suggestion based on history
+  "editor.suggest.insertMode": "replace",
+  "editor.suggest.showSnippets": true,
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+  // #region: EDITOR + TABNINE (INTELLISENSE)
+  //-------------------------------------------------------------------------
+  "editor.suggest.showInlineDetails": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.tabCompletion": "off",
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
 
 
 
@@ -64,10 +85,9 @@
   //-------------------------------------------------------------------------
   "[cpp]":
   {
-    "editor.wordBasedSuggestions": true, // suggestion popup based on history
-    "editor.suggest.insertMode": "insert",
-    "editor.guides.indentation": true,
-    "editor.suggest.showInlineDetails": true,
+    /// EDITOR | INTELLISENSE
+    "editor.wordBasedSuggestions": false, // suggestion based on histor
+    /// EDITOR | VISUALS
     "editor.guides.highlightActiveBracketPair": true,
     "editor.guides.highlightActiveIndentation": "always", // "always" (+bracket)
     "editor.selectionHighlight": true, // highlight matching selection
@@ -78,14 +98,39 @@
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
+  // #region: CXX | DEFAULTS
+  //-------------------------------------------------------------------------
+  "C_Cpp.default.enableConfigurationSquiggles": true,
+  "C_Cpp.default.cStandard": "c17",
+  "C_Cpp.default.cppStandard": "c++23",
+  "C_Cpp.default.defines": [
+    "CYKO_BUILD_TOOLKIT_LLVM",
+    "CYKO_BUILD_CRT_LLVM",
+    "CYKO_BUILD_CXX_MSVC",
+    "CYKO_BUILD_X64",
+    "CYKO_BUILD_USE_STDINT",
+  ],
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/include"
+  ],
+  "C_Cpp.default.forcedInclude": [
+    "${workspaceFolder}/include/common/common.h"
+  ],
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
   // #region: CXX | GENERAL
   //-------------------------------------------------------------------------
-  "C_Cpp.default.enableConfigurationSquiggles": true, "C_Cpp.vcpkg.enabled": false,
+  "C_Cpp.configurationWarnings": "Enabled",
+  "C_Cpp.experimentalFeatures": "Enabled",
   "C_Cpp.autoAddFileAssociations": true,
-  "C_Cpp.autocomplete": "Default",
+  // visuals
   "C_Cpp.dimInactiveRegions": true,
   "C_Cpp.enhancedColorization": "Enabled",
   "C_Cpp.errorSquiggles": "Enabled",
+  "C_Cpp.codeFolding": "Enabled",
+  // intellisense
+  "C_Cpp.autocomplete": "Default",
   "C_Cpp.intelliSenseEngine": "Default",
   "C_Cpp.suggestSnippets": true,
   //-------------------------------------------------------------------------
@@ -130,24 +175,9 @@
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
-  // #region: CXX | BUILD CONFIGURATION
+  // #region: CXX + VCPKG
   //-------------------------------------------------------------------------
-  "C_Cpp.default.compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang++.exe",
-  "C_Cpp.default.cStandard": "c17",
-  "C_Cpp.default.cppStandard": "c++23",
-  "C_Cpp.default.defines": [
-    "CYKO_BUILD_TOOLKIT_LLVM",
-    "CYKO_BUILD_CRT_LLVM",
-    "CYKO_BUILD_CXX_MSVC",
-    "CYKO_BUILD_X64",
-    "CYKO_BUILD_USE_STDINT",
-  ],
-  "C_Cpp.default.includePath": [
-    "${workspaceFolder}/include"
-  ],
-  "C_Cpp.default.forcedInclude": [
-    "${workspaceFolder}/include/common/common.h"
-  ],
+  "C_Cpp.vcpkg.enabled": false,
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
@@ -164,15 +194,12 @@
 
 
 
-
   //-------------------------------------------------------------------------
   // #region: +
   //-------------------------------------------------------------------------
-
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
-
 
 
 

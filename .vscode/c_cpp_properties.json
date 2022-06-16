@@ -9,7 +9,6 @@
     "compilerWinGCCx64":      "",
     "compilerNixLLVMx64":     "",
     "compilerNixGCCx64":      "",
-
     // project...
     "cykoInc": "${workspaceFolder}/include",
     "cykoSrc": "${workspaceFolder}/src",
@@ -22,6 +21,18 @@
     //+-----+----------------------------------------------------------------
 
     { "name": "win-debug-x64(msvc)",
+
+      "customConfigurationVariables": {
+        "cykoDir": "${cykoDir}",
+
+        "cykoInc": "${cykoInc}",
+        "cykoSrc": "${cykoSrc}",
+        "cykoBin": "${cykoBin}",
+        "cykoOut": "${cykoBin}/debug/x64",
+
+        "cykoConfig": "debug",
+        "cykoTarget": "x64"
+      },
 
       "includePath": [ "${cykoInc}" ], "forcedInclude": [
         "${cykoInc}/cyko/common/common.h"
@@ -44,9 +55,21 @@
       "cStandard": "c17",
       "cppStandard": "c++23",
       "intelliSenseMode": "msvc-x64",
-      "compilerPath": "${compilerWinMSVCx64}" //, "compilerArgs": []
+      "compilerPath": "${compilerWinMSVCx64}", "compilerArgs": [ "/doc" ]
     },
     { "name": "win-debug-x64(msvclang)",
+
+      "customConfigurationVariables": {
+        "cykoDir": "${cykoDir}",
+
+        "cykoInc": "${cykoInc}",
+        "cykoSrc": "${cykoSrc}",
+        "cykoBin": "${cykoBin}",
+        "cykoOut": "${cykoBin}/debug/x64",
+
+        "cykoConfig": "debug",
+        "cykoTarget": "x64"
+      },
 
       "includePath": [ "${cykoInc}" ], "forcedInclude": [
         "${cykoInc}/cyko/common/common.h"
@@ -72,6 +95,18 @@
       "compilerPath": "${compilerWinMSVCLANGx64}" //, "compilerArgs": []
     },
     { "name": "win-debug-x64(llvm)",
+
+      "customConfigurationVariables": {
+        "cykoDir": "${cykoDir}",
+
+        "cykoInc": "${cykoInc}",
+        "cykoSrc": "${cykoSrc}",
+        "cykoBin": "${cykoBin}",
+        "cykoOut": "${cykoBin}/debug/x64",
+
+        "cykoConfig": "debug",
+        "cykoTarget": "x64"
+      },
 
       "includePath": [ "${cykoInc}" ], "forcedInclude": [
         "${cykoInc}/cyko/common/common.h"

@@ -24,11 +24,11 @@
 #.EXAMPLE
 # ./nuke.ps1 -base "./bin" -name "debug, "release" -arch "x86", "x64"
 #.EXAMPLE
-# ./nuke.ps1 -help
+# ./nuke.ps1 -h[elp]
 #.EXAMPLE
-# ./nuke.ps1 -info|desc
+# ./nuke.ps1 -i[nfo]
 #.EXAMPLE
-# ./nuke.ps1 -version
+# ./nuke.ps1 -v[ersion]
 #
 #.LINK
 # cyko@eggheadedmonkey.com
@@ -193,68 +193,6 @@ function log:file {
 
 
 
-#----------------------------------------------------------------------------
-#region: namespace cfg (see nuke.psd1)
-#----------------------------------------------------------------------------
-#region: namespace key(cfg)
-#-----------------
-# each key refers to a specific configuration variable.
-# case-sensitive!
-#-----------------
-class key {
-  static [string] $fake = "fake"
-  static [string] $keep = "keep"
-  static [string] $date = "date"
-  static [string] $info = "info"
-  static [string] $repo = "repo"
-}
-#endregion ------------------------------------------------------------------
-#region: namespace mod(cfg)
-#-----------------
-# todo: fail handling
-# todo: real implementation!
-#-----------------
-# source/import
-#-----------------
-$mod = Import-PowerShellDataFile -Path:($app.path.work + '/' + $app.name.conf)
-#mod = Import-PowerShellDataFile -Path:($PSCommandPath.Substring(0, $PSCommandPath.LastIndexOf(('.'))) + '.psd1')
-
-function mod:has {
-  param(
-    [Parameter(Mandatory)]
-    [string]
-    $key
-  )
-
-  return $mod.ContainsKey($key)
-}
-
-function mod:get {
-  param(
-    [Parameter(Mandatory)]
-    [string]
-    $key,
-    [Parameter(Mandatory)]
-    [AllowNull()]
-    [object]
-    $default
-  )
-
-  return ((mod:has -key $key) ? $mod[$key] : $default)
-}
-
-#endregion ------------------------------------------------------------------
-$cfg = @{
-  keep = @(mod:get -key ([key]::keep) -default $keep) + $keep
-
-  info = mod:get -key:([key]::info) -default $null
-  date = mod:get -key:([key]::date) -default $null
-  fake = mod:get -key:([key]::fake) -default $true
-  repo = mod:get -key:([key]::repo) -default $null
-}
-#endregion ------------------------------------------------------------------
-
-
 
 #----------------------------------------------------------------------------
 #region: namespace nfo
@@ -400,6 +338,8 @@ function nfo:version {
 #endregion ------------------------------------------------------------------
 
 
+
+
 #----------------------------------------------------------------------------
 #region: namespace app
 #-----------------
@@ -530,6 +470,70 @@ function app:main { # called upon script entry
 }
 
 #endregion ------------------------------------------------------------------
+
+
+
+
+#----------------------------------------------------------------------------
+#region: namespace key(cfg)
+#-----------------
+# each key refers to a specific configuration variable.
+# case-sensitive!
+#-----------------
+
+class key {
+  static [string] $fake = "fake"
+  static [string] $keep = "keep"
+  static [string] $date = "date"
+  static [string] $info = "info"
+  static [string] $repo = "repo"
+}
+
+#endregion ------------------------------------------------------------------
+#region: namespace cfg (see nuke.psd1)
+#-----------------
+# todo: fail handling
+# todo: real implementation!
+#-----------------
+
+# source/import
+$mod = Import-PowerShellDataFile -Path:($app.path.work + '/' + $app.name.conf)
+#mod = Import-PowerShellDataFile -Path:($PSCommandPath.Substring(0, $PSCommandPath.LastIndexOf(('.'))) + '.psd1')
+
+function mod:has {
+  param(
+    [Parameter(Mandatory)]
+    [string]
+    $key
+  )
+
+  return $mod.ContainsKey($key)
+}
+
+function mod:get {
+  param(
+    [Parameter(Mandatory)]
+    [string]
+    $key,
+    [Parameter(Mandatory)]
+    [AllowNull()]
+    [object]
+    $default
+  )
+
+  return ((mod:has -key $key) ? $mod[$key] : $default)
+}
+
+$cfg = @{
+  keep = @(mod:get -key ([key]::keep) -default $keep) + $keep
+
+  info = mod:get -key:([key]::info) -default $null
+  date = mod:get -key:([key]::date) -default $null
+  fake = mod:get -key:([key]::fake) -default $true
+  repo = mod:get -key:([key]::repo) -default $null
+}
+#endregion ------------------------------------------------------------------
+
 
 
 
