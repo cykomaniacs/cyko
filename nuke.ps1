@@ -20,15 +20,20 @@
 # Print the version number to stdout.
 #
 #.EXAMPLE
-# ./nuke.ps1 -base "./bin" -name "debug" -arch "x86"
+# nuke.ps1 -base ./bin    -name "debug"    -arch "x86"
+#
+# # Clean a single build.
+# #
+# # Target: "debug"
+# # Config: "x86"
+#
 #.EXAMPLE
-# ./nuke.ps1 -base "./bin" -name "debug, "release" -arch "x86", "x64"
-#.EXAMPLE
-# ./nuke.ps1 -h[elp]
-#.EXAMPLE
-# ./nuke.ps1 -i[nfo]
-#.EXAMPLE
-# ./nuke.ps1 -v[ersion]
+# nuke.ps1 -base ./bin    -name "debug,"release"    -arch "x86","x64"
+#
+# # Clean multiple builds (both configurations for each target).
+# #
+# # Target: "debug" | "release"
+# # Config: "x86"   | "x64"
 #
 #.LINK
 # cyko@eggheadedmonkey.com
@@ -144,6 +149,30 @@ function log:line {
   log:host -eol:$eol -color:$color -out "--------------------"
 }
 
+function log:fail {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [Alias("i")]
+    [string]
+    $context,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $nfo
+  )
+
+  #log:host -eol:$true
+  log:host -eol:$false -color:DarkGray   -out "#",""
+  log:host -eol:$false -color:Yellow     -out "failure",""
+  log:host -eol:$false -color:DarkYellow -out "<"
+  log:host -eol:$false -color:DarkGray   -out $context
+  log:host -eol:$true  -color:DarkYellow -out ">"
+  log:host -eol:$false -color:DarkGray   -out "#",""
+  log:host -eol:$true  -color:Red        -out $nfo
+  #log:host -eol:$true
+}
+
 function log:head {
   param (
     [Parameter(Mandatory)]
@@ -189,6 +218,51 @@ function log:file {
   log:host -eol:$true  -color:$fc -out "${path}/${name}"
 }
 
+#endregion ------------------------------------------------------------------
+
+
+
+
+#----------------------------------------------------------------------------
+#region: namespace dbg (debug)
+#-----------------
+$script:dbg = $null
+
+function dbg:fail {
+  return ($script:dbg -ne "__OK!")
+}
+
+function dbg:data {
+  param (
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $var
+  )
+
+  if ($var) {
+    return 'dbg'
+  } else {
+    return $script:dbg
+  }
+}
+
+function dbg:test {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $context,
+    [Parameter(Mandatory=$false)]
+    [switch]
+    $die
+  )
+  if ($(dbg:fail)) {
+    log:fail -context:$context -nfo:$script:dbg
+    exit $error.Count
+  } else {
+    $script:dbg = "__OK!"
+  }
+}
 #endregion ------------------------------------------------------------------
 
 
@@ -261,7 +335,7 @@ function nfo:help {
     log:host -eol:$false -color:Yellow     -out "h",""
     log:host -eol:$true  -color:DarkGray   -out "for more information ..."
     log:host -eol:$true
-  } elseif ($complete) { help:defaults
+  } elseif ($complete) { help:complete
   } elseif ($examples) { help:examples
   } elseif ($detailed) { help:detailed
   } else { help:defaults }
@@ -497,8 +571,12 @@ class key {
 #-----------------
 
 # source/import
-$mod = Import-PowerShellDataFile -Path:($app.path.work + '/' + $app.name.conf)
+$mod = Import-PowerShellDataFile -Path:($app.path.work + "/" + $app.name.conf) -ErrorAction:SilentlyContinue -ErrorVariable dbg
 #mod = Import-PowerShellDataFile -Path:($PSCommandPath.Substring(0, $PSCommandPath.LastIndexOf(('.'))) + '.psd1')
+
+dbg:test -context "loading-configuration" -die
+
+
 
 function mod:has {
   param(

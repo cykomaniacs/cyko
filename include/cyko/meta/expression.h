@@ -48,7 +48,9 @@ namespace internal
   template <typename T, T V>
     struct expression
     : internal::constant<T, V>
-    { /*
+    {
+      /// moved the follow code to the base class: internal::constant
+      /*
       using type = T;
       using tag  = internal::expression_tag;
       using self = expression<T, V>;
@@ -69,30 +71,36 @@ namespace internal
        */
 
       /// @b 1:unary @e arithmetic
-      using decrease = cyko::meta::decrease <self>;
-      using increase = cyko::meta::increase <self>;
+      using decrease = ::cyko::meta::decrease <self>;
+      using increase = ::cyko::meta::increase <self>;
       /// @b 1:unary @e logical
-      using negate   = cyko::meta::negate   <self>;
-      using zero     = cyko::meta::zero     <self>;
+      using negate   = ::cyko::meta::negate   <self>;
+      using zero     = ::cyko::meta::zero     <self>;
 
       /// @b 2:binary @e logical
-      template <typename B> using equal    = cyko::meta::equal    <self, B>;
-      template <typename B> using less     = cyko::meta::less     <self, B>;
-      template <typename B> using greater  = cyko::meta::greater  <self, B>;
+      template <typename B> using equal    = ::cyko::meta::equal   <self, B>;
+      template <typename B> using less     = ::cyko::meta::less    <self, B>;
+      template <typename B> using greater  = ::cyko::meta::greater <self, B>;
       /// @b 2:binary @e arithmetic @todo @b test
-      template <typename B, typename... Pack> using plus     = cyko::meta::plus     <self, B, Pack...>;
-      template <typename B, typename... Pack> using minus    = cyko::meta::minus    <self, B, Pack...>;
-      template <typename B, typename... Pack> using multiply = cyko::meta::multiply <self, B, Pack...>;
-      template <typename B, typename... Pack> using divide   = cyko::meta::divide   <self, B, Pack...>;
+      template <typename B, typename... Pack> using plus     = ::cyko::meta::plus     <self, B, Pack...>;
+      template <typename B, typename... Pack> using minus    = ::cyko::meta::minus    <self, B, Pack...>;
+      template <typename B, typename... Pack> using multiply = ::cyko::meta::multiply <self, B, Pack...>;
+      template <typename B, typename... Pack> using divide   = ::cyko::meta::divide   <self, B, Pack...>;
 
       /// @b 3:ternary @e logical
-      template <typename B, typename C> using conditional = cyko::meta::conditional <self, B, C>;
+      template <typename B, typename C> using conditional = ::cyko::meta::conditional <self, B, C>;
 
       /// @b #:variadic @e logical
-      template <typename... Pack> using eller = cyko::meta::eller <self, Pack...>;
-      template <typename... Pack> using och   = cyko::meta::och   <self, Pack...>;
+      template <typename... Pack> using eller = ::cyko::meta::eller <self, Pack...>;
+      template <typename... Pack> using och   = ::cyko::meta::och   <self, Pack...>;
     };
 
+  /**
+   * Provides a common base for @e constant-expressions that represent a
+   * @b boolean value.
+   *
+   * @tparam V @b V @b boolean.
+   **/
   template <cyko::bool_t V>
     struct bool_t
     : meta::expression<cyko::bool_t, V>
@@ -100,6 +108,12 @@ namespace internal
       using self = bool_t<V>;
     };
 
+  /**
+   * Provides a common base for @e constant-expressions that represent an
+   * @b integral value.
+   *
+   * @tparam V @b V @b integer.
+   **/
   template <cyko::int_t V>
     struct int_t
     : meta::expression<cyko::int_t, V>
@@ -107,6 +121,12 @@ namespace internal
       using self = int_t<V>;
     };
 
+  /**
+   * Provides a common base for @e constant-expressions that represent a
+   * @e posetive @b integral value. Such as indexes etc.
+   *
+   * @tparam V @b V @b integer.
+   **/
   template <cyko::size_t V>
     struct size_t
     : meta::expression<cyko::size_t, V>
