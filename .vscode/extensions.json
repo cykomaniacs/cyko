@@ -1,33 +1,36 @@
 {
   "recommendations": [
-    "beardedbear.beardedicons",
-    "beardedbear.beardedtheme",
+    // themes
+    "beardedbear.beardedicons", // Bearded Icons
+    "beardedbear.beardedtheme", // Bearded Theme
+    "robbowen.synthwave-vscode", // SynthWave '84
+    "kyleerickson.night-rider", // Night Rider
+    "gulajavaministudio.mayukaithemevsc", // Mayukai Theme
+    "dracula-theme.theme-dracula", // Dracula Official
+    // themes:icons-only
+    "jonathanharty.gruvbox-material-icon-theme", // Gruvbox Material Icon Theme
 
-    "jonathanharty.gruvbox-material-icon-theme",
-    "gulajavaministudio.mayukaithemevsc",
-    "monokai.theme-monokai-pro-vscode",
-    "liviuschera.noctis",
-    "daylerees.rainglow",
-    "rastikerdar.vscode-seedling-icon-theme",
+    // generic
+    "visualstudioexptteam.vscodeintellicode", // IntelliCode
+    "ahgood.set-syntax", // Set Syntax (statusbar)
+    "TabNine.tabnine-vscode", // Tabnine AI Autocompletion
 
+    // lang:cxx
+    "jeff-hykin.better-cpp-syntax",  // Better C++ Syntax
+    "ms-vscode.cpptools", // C/C++
+    "ms-vscode.cpptools-extension-pack", // C/C++ Extension Pack
+    "vadimcn.vscode-lldb", // LLDB (LLVM Debug)
+    "cschlosser.doxdocgen", // Doxygen Documentation Generator
+    // lang:hex
+    "ms-vscode.hexeditor", // Hex Editor
+    // lang:pwsh
+    "ms-vscode.powershell", // PowerShell
 
-    "ms-vscode.cpptools",
-    "ms-vscode.cpptools-themes",
-    "ms-vscode.cmake-tools",
-    "ms-vscode.hexeditor",
-    "ms-vscode.powershell",
-    "ms-vscode-remote.remote-containers",
-    "visualstudioexptteam.vscodeintellicode",
-
-    "cschlosser.doxdocgen",
-    "twxs.cmake",
-    "vadimcn.vscode-lldb",
-    "tabnine.tabnine-vscode",
-    "github.codespaces",
-    "eamodio.gitlens",
-    "jeff-hykin.better-cpp-syntax",
-    "peaceshi.syntax-highlight",
-    "ahgood.set-syntax",
-    "llvm-vs-code-extensions.vscode-clangd",
+    // git
+    "github.vscode-pull-request-github", // GitHub (Issues)
+    "eamodio.gitlens", // GitLens
+    // git:codespaces
+    "github.codespaces", // GitHub Codespaces
+    "ms-vscode-remote.remote-containers", // GitHub Codespaces (Remote Containers [docker])
   ]
 }
