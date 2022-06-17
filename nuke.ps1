@@ -532,7 +532,7 @@ function app:main { # called upon script entry
   # ex: ./bin/debug/x64
   $work = $path + '/' + $name + '/' + $arch
 
-  $(Get-ChildItem "$work" -Name).forEach({
+  $(Get-ChildItem -Hidden "$work" -Name).forEach({
     if (app:keep -list:$keep -file:"${_}")
     {
       log:file -path:"${work}" -name:"${_}" -keep:$true
