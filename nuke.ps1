@@ -529,18 +529,43 @@ function app:main { # called upon script entry
     $arch
   )
 
+  function main:loop {
+    param (
+      [Parameter(Mandatory)]
+      [ValidateNotNullOrEmpty()]
+      [string]
+      $path,
+      [Parameter(Mandatory)]
+      [switch]
+      $all
+    )
+
+    $(Get-ChildItem -Hidden:$all "${path}" -Name).forEach({
+      if (app:keep -list:$keep -file:"${_}")
+      {
+        log:file -path:"${path}" -name:"${_}" -keep:$true
+      } else {
+        log:file -path:"${path}" -name:"${_}" -keep:$false
+        app:nuke -path:"${path}" -node:"${_}" -fake:$fake
+      }
+    })
+  }
+
   # ex: ./bin/debug/x64
   $work = $path + '/' + $name + '/' + $arch
-
-  $(Get-ChildItem -Hidden "$work" -Name).forEach({
-    if (app:keep -list:$keep -file:"${_}")
-    {
-      log:file -path:"${work}" -name:"${_}" -keep:$true
-    } else {
-      log:file -path:"${work}" -name:"${_}" -keep:$false
-      app:nuke -path:"${work}" -node:"${_}" -fake:$fake
-    }
-  })
+  # need -Hidden:$true on nix, $false on win
+  foreach ($all in @( $false, $true )) {
+    main:loop -path:"${work}" -all:$all
+  }
+  #$(Get-ChildItem -Hidden "$work" -Name).forEach({
+  #  if (app:keep -list:$keep -file:"${_}")
+  #  {
+  #    log:file -path:"${work}" -name:"${_}" -keep:$true
+  #  } else {
+  #    log:file -path:"${work}" -name:"${_}" -keep:$false
+  #    app:nuke -path:"${work}" -node:"${_}" -fake:$fake
+  #  }
+  #})
 }
 
 #endregion ------------------------------------------------------------------
