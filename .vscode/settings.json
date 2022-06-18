@@ -2,6 +2,13 @@
   //-------------------------------------------------------------------------
   // #region: EDITOR | WORKBENCH
   //-------------------------------------------------------------------------
+  "editor.fontFamily": "input, Monospace",
+  "debug.console.fontFamily": "input",
+  "scm.inputFontFamily": "input",
+  "editor.codeLensFontFamily": "input",
+  "editor.inlayHints.fontFamily": "input",
+  "terminal.integrated.fontFamily": "input",
+  //--------
   "workbench.tree.renderIndentGuides": "always", // file explorer
   "workbench.sideBar.location": "right",
   "workbench.editor.highlightModifiedTabs": true,

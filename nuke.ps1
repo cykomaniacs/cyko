@@ -9,18 +9,18 @@
 #.PARAMETER base
 # Base path to the build output (ex: "./bin")
 #.PARAMETER name
-# Target names (ex: "debug", "release")
+# Target configuration names (ex: "debug", "release")
 #.PARAMETER arch
-# Target architectures (ex: "x64", "x86")
+# Target architectures names (ex: "x64", "x86")
 #.PARAMETER help
-# Print usage and description to stdout.
+# Print usage and description to STDOUT.
 #.PARAMETER info
-# Print description to stdout.
+# Print description to STDOUT.
 #.PARAMETER version
-# Print the version number to stdout.
+# Print the version number to STDOUT.
 #
 #.EXAMPLE
-# nuke.ps1 -base ./bin    -name "debug"    -arch "x86"
+# nuke.ps1 -base:./bin -name:debug -arch:x86
 #
 # # Clean a single build.
 # #
@@ -28,7 +28,7 @@
 # # Config: "x86"
 #
 #.EXAMPLE
-# nuke.ps1 -base ./bin    -name "debug,"release"    -arch "x86","x64"
+# nuke.ps1 -base:./bin -name:debug,release -arch:x86,x64
 #
 # # Clean multiple builds (both configurations for each target).
 # #
@@ -248,6 +248,10 @@ function dbg:data {
 
 function dbg:test {
   param (
+    [Parameter()]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $var = $script:dbg,
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string]
@@ -257,7 +261,7 @@ function dbg:test {
     $die
   )
   if ($(dbg:fail)) {
-    log:fail -context:$context -nfo:$script:dbg
+    log:fail -context:$context -nfo:$var
     exit $error.Count
   } else {
     $script:dbg = "__OK!"
@@ -529,6 +533,21 @@ function app:main { # called upon script entry
     $arch
   )
 
+  function main:list {
+    param (
+      [Parameter(Mandatory)]
+      [ValidateNotNullOrEmpty()]
+      [string]
+      $path,
+      [Parameter()]
+      [switch]
+      $all
+    )
+
+    Get-ChildItem -Hidden:$all "${path}" -Name -ErrorAction:SilentlyContinue -ErrorVariable dbg
+    dbg:test -context "getting file list of: ${path}" -die
+  }
+
   function main:loop {
     param (
       [Parameter(Mandatory)]
@@ -540,7 +559,14 @@ function app:main { # called upon script entry
       $all
     )
 
-    $(Get-ChildItem -Hidden:$all "${path}" -Name).forEach({
+    $files = main:list -path:"${path}" -all:$true
+    if ($null -eq $files) {
+      $script:dbg = "no files!"
+      dbg:test -context "listing files..." -die:$false
+    } 
+  
+    $files.foreach({
+    #$(Get-ChildItem -Hidden:$all "${path}" -Name).forEach({
       if (app:keep -list:$keep -file:"${_}")
       {
         log:file -path:"${path}" -name:"${_}" -keep:$true
