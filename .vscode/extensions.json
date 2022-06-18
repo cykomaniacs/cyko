@@ -16,10 +16,15 @@
     "TabNine.tabnine-vscode", // Tabnine AI Autocompletion
 
     // lang:cxx
-    "jeff-hykin.better-cpp-syntax",  // Better C++ Syntax
     "ms-vscode.cpptools", // C/C++
     "ms-vscode.cpptools-extension-pack", // C/C++ Extension Pack
+    // lang:cxx:build
+    "twxs.cmake",
+    "ms-vscode.cmake-tools",
+    // lang:cdd:debug
     "vadimcn.vscode-lldb", // LLDB (LLVM Debug)
+    // lang:cxx:extra
+    "jeff-hykin.better-cpp-syntax",  // Better C++ Syntax
     "cschlosser.doxdocgen", // Doxygen Documentation Generator
     // lang:hex
     "ms-vscode.hexeditor", // Hex Editor
@@ -31,6 +36,7 @@
     "eamodio.gitlens", // GitLens
     // git:codespaces
     "github.codespaces", // GitHub Codespaces
-    "ms-vscode-remote.remote-containers", // GitHub Codespaces (Remote Containers [docker])
+    "ms-vscode-remote.remote-containers", // GitHub Codespaces (Remote Containers - Docker)
+    //"ms-azuretools.vscode-docker", // GitHub Codespaces (Docker)
   ]
 }

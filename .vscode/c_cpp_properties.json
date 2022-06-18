@@ -6,9 +6,8 @@
     "compilerWinMSVCx64":     "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
     "compilerWinMSVCLANGx64": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
     "compilerWinLLVMx64":     "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang++.exe",
-    "compilerWinGCCx64":      "",
-    "compilerNixLLVMx64":     "",
-    "compilerNixGCCx64":      "",
+    "compilerWinGCCx64":      "/usr/bin/g++",
+    "compilerNixLLVMx64":     "/usr/bin/clang++",
     // project...
     "cykoInc": "${workspaceFolder}/include",
     "cykoSrc": "${workspaceFolder}/src",
@@ -144,10 +143,62 @@
         "-std=c++2b",
         "-Xclang", "-stdlib=libc++"
       ]
-    }
+    },
 
     //+-----+----------------------------------------------------------------
     //| NIX | LINUX/BSD/...
     //+-----+----------------------------------------------------------------
+
+    { "name": "nix-debug-x64(llvm)",
+
+      "customConfigurationVariables": {
+        "cykoDir": "${cykoDir}",
+
+        "cykoInc": "${cykoInc}",
+        "cykoSrc": "${cykoSrc}",
+        "cykoBin": "${cykoBin}",
+        "cykoOut": "${cykoBin}/debug/x64",
+
+        "cykoConfig": "debug",
+        "cykoTarget": "x64"
+      },
+
+      "includePath": [ "${cykoInc}" ], "forcedInclude": [
+        "${cykoInc}/cyko/common/common.h"
+      ],
+
+      /*
+        "CYKO_BUILD_CRT_LLVM", // LIBC (LLVM libc)
+        "CYKO_BUILD_CRT_MSVC", // LIBC (MSVC CRT)
+        "CYKO_BUILD_CRT_GCC",  // LIBC (GNU glibc)
+
+        "CYKO_BUILD_CXX_MSVC", // LIBC++ (MSVC STL)
+        "CYKO_BUILD_CXX_GCC",  // LIBC++ (GCC  libstdc++)
+        "CYKO_BUILD_CXX_LLVM", // LIBC++ (LLVM libc++)
+      */
+
+      "defines": [
+        "CYKO_DEBUG",
+        "CYKO_BUILD_TOOLKIT_LLVM",
+        "CYKO_BUILD_CRT_LLVM",
+        "CYKO_BUILD_CXX_GCC",
+        "CYKO_BUILD_X64",
+        "CYKO_BUILD_LINUX",
+        "CYKO_BUILD_USE_STDINT",
+
+        "_CONSOLE",
+        "_UNICODE"
+      ],
+
+      "windowsSdkVersion": "10.0.22000.0",
+      "cStandard": "c17",
+      "cppStandard": "c++23",
+      "intelliSenseMode": "clang-x64",
+      "compilerPath": "${compilerNixLLVMx64}", "compilerArgs": [
+        "-m64",
+        "-std=c++2b",
+        "-Xclang", "-stdlib=libc++"
+      ]
+    }
   ]
 }
