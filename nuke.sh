@@ -1,14 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 # ---------------------------------------------------------------------------
-# nuke.ps1 bash helper
+# nuke.ps1 sh helper
 # ---------------------------------------------------------------------------
 
-[[ -x "$(which pwsh)" ]] || {
+[ -x "$(which pwsh)" ] || {
   echo "cannot find: <pwsh> executable!"
   exit 1
 }
 
-[[ -n "${*}" ]] || {
+[ -n "${*}" ] || {
   pwsh ./nuke.ps1 # run without args
   exit $?
 }
