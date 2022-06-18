@@ -11,6 +11,7 @@ auto main()
   add_volatile<char> b = 'c';
   add_cv<int[]> c = { 33, 44, 55 };
 
+  /// NOLINTBEGIN(*null*)
   remove_pointer<int*> pa = 1;
   remove_pointer<int**> pb = nullptr;
   remove_pointer<int const*const> pc = NULL;
@@ -24,6 +25,7 @@ auto main()
   cyko::type::add_const<int> xjj = 1;
 
   remove_const<int const volatile> g = 1;
+  /// NOLINTEND(*null*)
   /*
   remove_const<int const volatile&&const volatile> e = 3;
   remove_const<int const volatile&const volatile> e = e;
@@ -42,7 +44,18 @@ auto main()
   remove_pointer<int const*const volatile> pe = 0;
   remove_pointer<int const**> pf = 0;
   remove_pointer<int const*> pg = 0;
-  remove_pointer<int const**> ph = 0;
+  remove_pointer<int const**> ph = 0;[{
+	"resource": "/workspaces/cyko/src/cyko.cpp",
+	"owner": "clang-tidy",
+	"code": "clang-diagnostic-null-conversion",
+	"severity": 4,
+	"message": "implicit conversion of NULL constant to 'remove_pointer<const int *const>' (aka 'const int')",
+	"source": "C/C++",
+	"startLineNumber": 16,
+	"startColumn": 40,
+	"endLineNumber": 16,
+	"endColumn": 44
+}]
   */
 
   std::cout << "Hello World!" << std::endl;

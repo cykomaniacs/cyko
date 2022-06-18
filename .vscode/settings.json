@@ -171,6 +171,7 @@
     "modernize-concat-nested-namespaces",
     /// MISC
     "cppcoreguidelines-avoid-magic-numbers",
+    /// NULL
   ],
   //-------------------------------------------------------------------------
   // #endregion

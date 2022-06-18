@@ -3,10 +3,13 @@
   "enableConfigurationSquiggles": true,
 
   "env": {
+    // system: win
     "compilerWinMSVCx64":     "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.33.31424/bin/Hostx64/x64/cl.exe",
     "compilerWinMSVCLANGx64": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
     "compilerWinLLVMx64":     "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/Llvm/x64/bin/clang++.exe",
-    "compilerWinGCCx64":      "/usr/bin/g++",
+    "compilerWinGCCx64":      "",
+    // system: nix
+    "compilerNixGCCx64":      "/usr/bin/g++",
     "compilerNixLLVMx64":     "/usr/bin/clang++",
     // project...
     "cykoInc": "${workspaceFolder}/include",
@@ -167,16 +170,6 @@
         "${cykoInc}/cyko/common/common.h"
       ],
 
-      /*
-        "CYKO_BUILD_CRT_LLVM", // LIBC (LLVM libc)
-        "CYKO_BUILD_CRT_MSVC", // LIBC (MSVC CRT)
-        "CYKO_BUILD_CRT_GCC",  // LIBC (GNU glibc)
-
-        "CYKO_BUILD_CXX_MSVC", // LIBC++ (MSVC STL)
-        "CYKO_BUILD_CXX_GCC",  // LIBC++ (GCC  libstdc++)
-        "CYKO_BUILD_CXX_LLVM", // LIBC++ (LLVM libc++)
-      */
-
       "defines": [
         "CYKO_DEBUG",
         "CYKO_BUILD_TOOLKIT_LLVM",
@@ -190,14 +183,13 @@
         "_UNICODE"
       ],
 
-      "windowsSdkVersion": "10.0.22000.0",
       "cStandard": "c17",
-      "cppStandard": "c++23",
+      "cppStandard": "c++20",
       "intelliSenseMode": "clang-x64",
       "compilerPath": "${compilerNixLLVMx64}", "compilerArgs": [
         "-m64",
-        "-std=c++2b",
-        "-Xclang", "-stdlib=libc++"
+        "-std=c++20"
+        //"-Xclang", "-stdlib=libc++"
       ]
     }
   ]

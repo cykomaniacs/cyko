@@ -2,12 +2,12 @@
   "version": "2.0.0",
   "tasks": [
 
-    //+----------------------------------------------------------------------
-    //| CLEAN: POWERSHELL
-    //+----------------------------------------------------------------------
+    //+-----+----------------------------------------------------------------
+    //| XXX | CLEAN: POWERSHELL
+    //+-----+----------------------------------------------------------------
 
-    { "label": "clean",
-      "type":  "shell",
+    { "type": "shell", "label": "clean",
+
       "group": { "kind": "none", "isDefault": false }, "presentation": {
         "panel": "shared",
         "clear": true,
@@ -19,15 +19,20 @@
         "showReuseMessage": false,
       },
 
+      // specifics
+      "windows": { "command": "./nuke.ps1" },
+      "linux":   { "command": "./nuke.sh"  },
+
+      // common
       "options": { "cwd": "${workspaceFolder}" },
-      "command": "./nuke.ps1", "args": [
+      "args": [
         "-base", "'./bin'",
         "-name", "'debug', 'release'",
         "-arch", "'x64', 'x86'"
       ]
     },
-    { "label": "debug-x64(clean)",
-      "type":  "shell",
+    { "type": "shell", "label": "debug-x64(clean)",
+
       "group": { "kind": "none", "isDefault": false }, "presentation": {
         "panel": "shared",
         "clear": true,
@@ -39,20 +44,24 @@
         "showReuseMessage": false,
       },
 
+      // specifics
+      "windows": { "command": "./nuke.ps1" },
+      "linux":   { "command": "./nuke.sh"  },
+
+      // common
       "options": { "cwd": "${workspaceFolder}" },
-      "command": "./nuke.ps1", "args": [
+      "args": [
         "-base", "'./bin'",
         "-name", "'debug'",
         "-arch", "'x64'"
       ]
     },
 
-    //+----------------------------------------------------------------------
-    //| BUILD: MANUAL CONFIG
-    //+----------------------------------------------------------------------
+    //+-----+----------------------------------------------------------------
+    //| WIN | BUILD: MANUAL CONFIG
+    //+-----+----------------------------------------------------------------
 
-    { "label": "win-debug-x64(msvc)",
-      "type":  "cppbuild",
+    { "type": "cppbuild", "label": "win-debug-x64(msvc)",
 
       "dependsOn": [
         "clean"
@@ -71,15 +80,10 @@
 
       "options": { "cwd": "${fileDirname}" },
       "command": "cl.exe", "args": [
-        // ------------------------------------------------------------------
-        // #region : misc
-
+        // misc
         "/options:strict", // unrecognized compiler options = error!!
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : definitions
-
+        // definitions
         "/DCYKO_DEBUG",
         // ------------------------------
         "/DCYKO_BUILD_TOOLKIT_MSVC",
@@ -92,25 +96,16 @@
         "/D_CONSOLE",
         "/D_UNICODE",
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : includes
-
+        // includes
         "/I${workspaceFolder}/include",
         // ------------------------------
         "/FI${workspaceFolder}/include/cyko/common/common.h",
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : base
-
+        // base
         "/nologo",
         "/EHsc",
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : language
-
+        // language
         "/std:c++20",         // c++ standard version <c++(11|17|20)>
         "/fp:precise",        // floating-point model; results are predictable
         "/Gd",                // use __cdecl (default) calling convention for all functions except C++ member functions and functions that are marked __stdcall, __fastcall, or __vectorcall.
@@ -120,44 +115,102 @@
         "/utf-8",             // set source and execution character set to UTF-8
         "/permissive-",       // [-] enable some nonconforming code to compile
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : diagnostics
-
+        // diagnostics
         "/Wall", // warning level (<all>|[0-3])
         "/WX-",  // [-] treat warnings as errors
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : optimization
-
+         // optimization
         "/Od", // optimize level (disable: 0)
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : debugging
-
+        // debugging
         "/ZI", // enable Edit and Continue debug info (overrides /Zi)
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : architecture
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : i/o
-
+        // architecture
+        // i/o
         "/Fd:", "${workspaceFolder}/bin/debug/x64/vc143.pdb",
         "/Fo:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.obj",
         "/Fe:", "${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe", "${file}"
-
-        // #endregion
-        // ------------------------------------------------------------------
       ],
 
       "problemMatcher": [ "$msCompile" ]
     },
-    { "label": "win-debug-x64(llvm)",
-      "type":  "cppbuild",
+    { "type": "cppbuild", "label": "win-debug-x64(llvm)",
+
+      "dependsOn": [
+        "clean"
+      ],
+
+      "group": { "kind": "build", "isDefault": false, }, "presentation": {
+        "panel": "shared",
+        "clear": false,
+        "echo":  true,
+        "close": false,
+        "focus": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "showReuseMessage": true
+      },
+
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "clang++.exe", "args": [
+        // clang
+        "-Xclang", "-stdlib=libc++",
+
+        // definitions
+        "-DCYKO_DEBUG",
+        // ------------------------------
+        "-DCYKO_BUILD_TOOLKIT_LLVM",
+        "-DCYKO_BUILD_CRT_LLVM", // LIBCRT
+        "-DCYKO_BUILD_CXX_MSVC", // LIBC++
+        "-DCYKO_BUILD_X64",
+        "-DCYKO_BUILD_WINDOWS",
+        "-DCYKO_BUILD_USE_STDINT",
+        // ------------------------------
+        "-D_CONSOLE",
+        "-D_UNICODE",
+
+        // includes
+        "-I${workspaceFolder}/include",
+        // ------------------------------
+        "-include", "${workspaceFolder}/include/cyko/common/common.h",
+
+        // language
+        "-std=c++2b",
+
+        // diagnostics
+        "-fansi-escape-codes", // dep: -fdiagnostics-color=always
+        "-fdiagnostics-color", // dep: -fansi-escape-codes
+        // ------------------------------
+        "-Wall",
+        "-Wextra",
+        "-Wdeprecated",
+        // ------------------------------
+        "-Wno-unused-variable",
+
+       // optimization
+        "-O0", // vsdebug requires -O0
+
+        // debugging
+        "-fdebug-compilation-dir", "${workspaceFolder}/bin/debug/x64/",
+        "-g",
+        "-g3",
+        "-gfull",
+        "-glldb",
+
+        // architecture
+        "-m64",
+
+        // i/o
+        "${file}", "-o", "${input:cykoOut}/${fileBasenameNoExtension}.exe"
+      ],
+
+      "problemMatcher": [ "$gcc" ]
+    },
+
+    //+-----+----------------------------------------------------------------
+    //| MIX | BUILD: MANUAL CONFIG
+    //+-----+----------------------------------------------------------------
+    { "type": "cppbuild", "label": "nix-debug-x64(llvm)",
 
       "dependsOn": [
         "clean"
@@ -175,46 +228,32 @@
       },
 
       "options": { "cwd": "${workspaceFolder}" },
-      "command": "clang++.exe", "args": [
-        // ------------------------------------------------------------------
-        // #region : clang
-
+      "command": "clang++", "args": [
+        // clang
         "-Xclang", "-stdlib=libc++",
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : definitions
-
+        // definitions
         "-DCYKO_DEBUG",
         // ------------------------------
         "-DCYKO_BUILD_TOOLKIT_LLVM",
         "-DCYKO_BUILD_CRT_LLVM", // LIBCRT
-        "-DCYKO_BUILD_CXX_MSVC", // LIBC++
+        "-DCYKO_BUILD_CXX_GCC",  // LIBC++
         "-DCYKO_BUILD_X64",
-        "-DCYKO_BUILD_WINDOWS",
+        "-DCYKO_BUILD_LINUX",
         "-DCYKO_BUILD_USE_STDINT",
         // ------------------------------
         "-D_CONSOLE",
         "-D_UNICODE",
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : includes
-
-        "-I${workspaceFolder}/include",
+        // includes
+        "-I${input:cykoInc}",
         // ------------------------------
-        "-include", "${workspaceFolder}/include/cyko/common/common.h",
+        "-include", "${input:cykoInc}/cyko/common/common.h",
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : language
+        // language
+        "-std=c++20",
 
-        "-std=c++2b",
-
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : diagnostics
-
+        // diagnostics
         "-fansi-escape-codes", // dep: -fdiagnostics-color=always
         "-fdiagnostics-color", // dep: -fansi-escape-codes
         // ------------------------------
@@ -223,45 +262,33 @@
         "-Wdeprecated",
         // ------------------------------
         "-Wno-unused-variable",
+        "-Wno-null-conversion",
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : optimization
-
+       // optimization
         "-O0", // vsdebug requires -O0
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : debugging
-        "-fdebug-compilation-dir", "${workspaceFolder}/bin/debug/x64/",
+        // debugging
+        "-fdebug-compilation-dir", "${input:cykoOut}",
         "-g",
         "-g3",
         "-gfull",
         "-glldb",
-        // ------------------------------------------------------------------
-        // #region : architecture
 
+        // architecture
         "-m64",
 
-        // #endregion
-        // ------------------------------------------------------------------
-        // #region : i/o
-
-        "${file}", "-o", "${input:cykoOut}/${fileBasenameNoExtension}.exe" //"${workspaceFolder}/bin/debug/x64/${fileBasenameNoExtension}.exe"
-
-        // #endregion
-        // ------------------------------------------------------------------
+        // i/o
+        "${file}", "-o", "${input:cykoOut}/${fileBasenameNoExtension}.exe"
       ],
 
       "problemMatcher": [ "$gcc" ]
     },
 
-    //+----------------------------------------------------------------------
-    //| BUILD: MSBUILD (VISUAL STUDIO CONFIG)
-    //+----------------------------------------------------------------------
+    //+-----+----------------------------------------------------------------
+    //| WIN | BUILD: MSBUILD (VISUAL STUDIO CONFIG)
+    //+-----+----------------------------------------------------------------
 
-    { "label": "win-debug-x64(msbuild)",
-      "type":  "cppbuild",
+    { "type": "cppbuild", "label": "win-debug-x64(msbuild)",
 
       "dependsOn": [
         "clean"
@@ -287,8 +314,7 @@
 
       "problemMatcher": [ "$msCompile" ]
     },
-    { "label": "win-debug-x86(msbuild)",
-      "type":  "cppbuild",
+    { "type": "cppbuild", "label": "win-debug-x86(msbuild)",
 
       "dependsOn": [
         "clean"
@@ -314,8 +340,7 @@
 
       "problemMatcher": [ "$msCompile" ]
     },
-    { "label": "win-release-x64(msbuild)",
-      "type":  "cppbuild",
+    { "type": "cppbuild", "label": "win-release-x64(msbuild)",
 
       "dependsOn": [
         "clean"
@@ -341,8 +366,7 @@
 
       "problemMatcher": [ "$msCompile" ]
     },
-    { "label": "win-release-x86(msbuild)",
-      "type":  "cppbuild",
+    { "type": "cppbuild", "label": "win-release-x86(msbuild)",
 
       "dependsOn": [
         "clean"
@@ -371,39 +395,53 @@
 
   ],
 
-  "inputs": [ // see: c_cpp_properties.json
+  "inputs": [
 
-    { // cykoOut: ${workspaceFolder}/bin/${cykoConfig}/${cykoTarget}
+    //+----------------------------------------------------------------------
+    //| CROSS-FILE VARIABLES
+    //+----------------------------------------------------------------------
+    //| see: c_cpp_properties.json
+    //| use: ${input:<(@...)>}
+    //+----------------------------------------------------------------------
+
+    //+------------
+    //| PATHS/DIRS
+    //+------------
+
+    { // @cykoOut: current configuration build output
       "id": "cykoOut", "args": "cykoOut",
       "type": "command",
       "command": "cpptools.activeConfigCustomVariable"
     },
-    { // cykoInc: ${workspaceFolder}/include
+    { // @cykoInc: headers
       "id": "cykoInc", "args": "cykoInc",
       "type": "command",
       "command": "cpptools.activeConfigCustomVariable"
     },
-    { // cykoSrc: ${workspaceFolder}/src
+    { // @cykoSrc: sources
       "id": "cykoSrc", "args": "cykoSrc",
       "type": "command",
       "command": "cpptools.activeConfigCustomVariable"
     },
-    { // cykoBin: ${workspaceFolder}/bin
+    { // @cykoBin: binary / build files
       "id": "cykoBin", "args": "cykoBin",
       "type": "command",
       "command": "cpptools.activeConfigCustomVariable"
     },
 
-    { // cykoConfig: debug|release
+    //+------------
+    //| PARAMETERS
+    //+------------
+
+    { // @cykoConfig: debug|release
       "id": "cykoConfig", "args": "cykoConfig",
       "type": "command",
       "command": "cpptools.activeConfigCustomVariable"
     },
-    { // cykoTarget: x86|x64
+    { // @cykoTarget: x86|x64
       "id": "cykoTarget", "args": "cykoTarget",
       "type": "command",
       "command": "cpptools.activeConfigCustomVariable"
     }
-
   ]
 }
