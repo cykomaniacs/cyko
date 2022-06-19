@@ -1,42 +1,83 @@
 {
   "recommendations": [
-    // themes
-    "beardedbear.beardedicons", // Bearded Icons
-    "beardedbear.beardedtheme", // Bearded Theme
-    "robbowen.synthwave-vscode", // SynthWave '84
-    "kyleerickson.night-rider", // Night Rider
-    "gulajavaministudio.mayukaithemevsc", // Mayukai Theme
-    "dracula-theme.theme-dracula", // Dracula Official
-    // themes:icons-only
-    "jonathanharty.gruvbox-material-icon-theme", // Gruvbox Material Icon Theme
+    // ----------------------------------------------------------------------
+    // #region VISUALS / THEMING
+    // ----------------------------------------------------------------------
+    // THEMES | TEXT
+    // --------------------------------
+    "beardedbear.beardedtheme",           // Bearded
+    "robbowen.synthwave-vscode",          // SynthWave '84
+    "kyleerickson.night-rider",           // Night Rider
+    "gulajavaministudio.mayukaithemevsc", // Mayukai
+    "dracula-theme.theme-dracula",        // Dracula Official
+    // --------------------------------
+    // THEMES | ICON
+    // --------------------------------
+    "beardedbear.beardedicons",                  // Bearded
+    "jonathanharty.gruvbox-material-icon-theme", // Gruvbox Material
+    // ----------------------------------------------------------------------
+    // #endregion
+    // ----------------------------------------------------------------------
 
-    // generic
+
+    // ----------------------------------------------------------------------
+    // #region BASICS
+    // ----------------------------------------------------------------------
     "visualstudioexptteam.vscodeintellicode", // IntelliCode
     "ahgood.set-syntax", // Set Syntax (statusbar)
     "TabNine.tabnine-vscode", // Tabnine AI Autocompletion
+    // ----------------------------------------------------------------------
+    // #endregion
+    // ----------------------------------------------------------------------
 
-    // lang:cxx
-    "ms-vscode.cpptools", // C/C++
-    "ms-vscode.cpptools-extension-pack", // C/C++ Extension Pack
-    // lang:cxx:build
+
+    // ----------------------------------------------------------------------
+    // #region LANGUAGES
+    // ----------------------------------------------------------------------
+    // CXX | BASICS
+    // --------------------------------
+    "ms-vscode.cpptools",
+    "ms-vscode.cpptools-extension-pack",
+    // --------------------------------
+    // CXX | BUILD
+    // --------------------------------
     "twxs.cmake",
     "ms-vscode.cmake-tools",
-    // lang:cdd:debug
-    "vadimcn.vscode-lldb", // LLDB (LLVM Debug)
-    // lang:cxx:extra
+    // --------------------------------
+    // CXX | DEBUG
+    // --------------------------------
+    "vadimcn.vscode-lldb", // LLDB (LLVM/CLANG)
+    // --------------------------------
+    // CXX | EXTRA
+    // --------------------------------
     "jeff-hykin.better-cpp-syntax",  // Better C++ Syntax
     "cschlosser.doxdocgen", // Doxygen Documentation Generator
-    // lang:hex
+    // --------------------------------
+    // SHELL | POSH
+    // --------------------------------
+    //"ms-vscode.powershell",
+    "ms-vscode.powershell-preview",
+    // --------------------------------
+    // MISC
+    // --------------------------------
     "ms-vscode.hexeditor", // Hex Editor
-    // lang:pwsh
-    "ms-vscode.powershell", // PowerShell
+    // ----------------------------------------------------------------------
+    // #endregion
+    // ----------------------------------------------------------------------
 
-    // git
+
+    // ----------------------------------------------------------------------
+    // #region GIT
+    // ----------------------------------------------------------------------
     "github.vscode-pull-request-github", // GitHub (Issues)
     "eamodio.gitlens", // GitLens
-    // git:codespaces
-    "github.codespaces", // GitHub Codespaces
-    "ms-vscode-remote.remote-containers", // GitHub Codespaces (Remote Containers - Docker)
-    //"ms-azuretools.vscode-docker", // GitHub Codespaces (Docker)
+    // --------------------------------
+    // CODESPACES
+    // --------------------------------
+    "github.codespaces",
+    "ms-vscode-remote.remote-containers",
+    // ----------------------------------------------------------------------
+    // #endregion
+    // ----------------------------------------------------------------------
   ]
 }
