@@ -2,7 +2,7 @@
 # Build cleaner.
 #
 #.DESCRIPTION
-# Generic build cleaner for Windows.
+# Generic build cleaner by cykomaniacs.
 #
 #.PARAMETER keep
 # List of file-names to keep.
@@ -41,8 +41,11 @@
 #.NOTES
 # Powershell ftw!
 
+using namespace system
+
+[CmdletBinding()]
 param (
-  #region parameters: "main"
+  #region parameters: main
   [Parameter(ParameterSetName="1.0")]
   [ValidateNotNullOrEmpty()]
   [array]
@@ -61,7 +64,7 @@ param (
   $arch,
   #endregion
 
-  #region parameters: "help"
+  #region parameters: help
   [Parameter(ParameterSetName="2.0", Mandatory)]
   [Parameter(ParameterSetName="2.1", Mandatory)]
   [Parameter(ParameterSetName="2.2", Mandatory)]
@@ -80,7 +83,7 @@ param (
   $complete,
   #endregion
 
-  #region parameters: "info"
+  #region parameters: info
   [Parameter(ParameterSetName="3.0")]
   [Alias("i")]
   [switch]
@@ -92,26 +95,8 @@ param (
   #endregion
 )
 
+
 #----------------------------------------------------------------------------
-#region: namespace color(log)
-#-----------------
-
-class color {
-  static $name = [System.ConsoleColor]::Blue
-  static $arch = [System.ConsoleColor]::Blue
-  static $text = [System.ConsoleColor]::DarkGray
-
-  static $std  = [System.ConsoleColor]::White    #standard
-  static $pre  = [System.ConsoleColor]::DarkGray #prefix
-  static $par  = [System.ConsoleColor]::Yellow   #pairs
-  static $sep  = [System.ConsoleColor]::DarkBlue #separator
-
-  static $keep = [System.ConsoleColor]::Green    #file:delete(no!)
-  static $nuke = [System.ConsoleColor]::Red      #file:delete
-  static $file = [System.ConsoleColor]::Gray     #file:name
-}
-
-#endregion ------------------------------------------------------------------
 #region: namespace log
 #-----------------
 
@@ -119,58 +104,34 @@ function log:host {
   param (
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor]
-    $color = [color]::std,
+    [ConsoleColor]
+    $rgb = [ConsoleColor]::White,
     [Parameter(Mandatory=$false)]
     [string[]] # output: ...
     $out,
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [switch] #-# output: end-of-line?
-    $eol
+    $end
   )
 
-  Write-Host -ForegroundColor:$color $out -NoNewline:$true
-  Write-Host -NoNewline:(!$eol) # reset-color & end-of-line(line-feed)?
+  Write-Host -ForegroundColor:$rgb $out -NoNewline:$true
+  Write-Host -NoNewline:(!$end) # reset-rgb & end-of-line(line-feed)?
 }
 
 function log:line {
   param (
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor]
-    $color = [System.ConsoleColor]::Magenta,
+    [ConsoleColor]
+    $rgb = [ConsoleColor]::Magenta,
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
     [switch] # end-of-line?
-    $eol
+    $end
   )
 
-  log:host -eol:$eol -color:$color -out "--------------------"
-}
-
-function log:fail {
-  param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [Alias("i")]
-    [string]
-    $context,
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $nfo
-  )
-
-  #log:host -eol:$true
-  log:host -eol:$false -color:DarkGray   -out "#",""
-  log:host -eol:$false -color:Yellow     -out "failure",""
-  log:host -eol:$false -color:DarkYellow -out "<"
-  log:host -eol:$false -color:DarkGray   -out $context
-  log:host -eol:$true  -color:DarkYellow -out ">"
-  log:host -eol:$false -color:DarkGray   -out "#",""
-  log:host -eol:$true  -color:Red        -out $nfo
-  #log:host -eol:$true
+  log:host -end:$end -rgb:$rgb -out:"--------------------"
 }
 
 function log:head {
@@ -185,13 +146,13 @@ function log:head {
     $arch
   )
 
-  log:host -eol:$false -color:([color]::pre)  -out "> "
-  log:host -eol:$false -color:([color]::name) -out "${name}"
-  log:host -eol:$false -color:([color]::sep)  -out ":"
-  log:host -eol:$false -color:([color]::arch) -out "${arch}"
-  log:host -eol:$false -color:([color]::par)  -out "("
-  log:host -eol:$false -color:([color]::text) -out "nuke"
-  log:host -eol:$true  -color:([color]::par)  -out ")"
+  log:host -end:$false -rgb:Yellow   -out:'> '
+  log:host -end:$false -rgb:Blue     -out:"${name}"
+  log:host -end:$false -rgb:DarkCyan -out:':'
+  log:host -end:$false -rgb:Red      -out:"${arch}"
+  log:host -end:$false -rgb:Yellow   -out:'('
+  log:host -end:$false -rgb:DarkGray -out:'nuke'
+  log:host -end:$true  -rgb:Yellow   -out:')'
 }
 
 function log:file {
@@ -210,14 +171,13 @@ function log:file {
     $keep
   )
 
-  $xx = $keep ? "*" : "-"
-  $xc = $keep ? [color]::keep : [color]::nuke
-  $fc = [color]::file
+  $xx = $keep ? '*' : '-'
+  $xc = $keep ? [ConsoleColor]::Green : [ConsoleColor]::Red
+  $fc = [ConsoleColor]::Gray
 
-  log:host -eol:$false -color:$xc -out "${xx} "
-  log:host -eol:$true  -color:$fc -out "${path}/${name}"
+  log:host -end:$false -rgb:$xc -out:"${xx} "
+  log:host -end:$true  -rgb:$fc -out:"${path}/${name}"
 }
-
 #endregion ------------------------------------------------------------------
 
 
@@ -226,45 +186,95 @@ function log:file {
 #----------------------------------------------------------------------------
 #region: namespace dbg (debug)
 #-----------------
-$script:dbg = $null
+$script:dbg = $null # ErrorVariable
+$script:dov = 'OK!' # ErrorVariable : d(efault)o(kay)v(alue)
 
-function dbg:fail {
-  return ($script:dbg -ne "__OK!")
+function dbg:data:variable {
+  return 'dbg' # name of ErrorVariable
+}
+function dbg:data:reset {
+  $script:dbg = $script:dov
+}
+function dbg:data:okay {
+  return $script:dbg -eq $script:dov
+}
+function dbg:data {
+  return $script:dbg
 }
 
-function dbg:data {
+function dbg:kill {
   param (
     [Parameter(Mandatory=$false)]
-    [switch]
-    $var
+    [int]
+    $status = 1
   )
 
-  if ($var) {
-    return 'dbg'
-  } else {
-    return $script:dbg
-  }
+  exit $status
 }
 
-function dbg:test {
+function dbg:fail {
   param (
-    [Parameter()]
+    [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
+    [Alias("msg")]
     [string]
-    $var = $script:dbg,
+    $message = $script:dbg,
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
+    [Alias("nfo","fun")]
     [string]
     $context,
     [Parameter(Mandatory=$false)]
+    [alias("die")]
     [switch]
-    $die
+    $critcal
   )
-  if ($(dbg:fail)) {
-    log:fail -context:$context -nfo:$var
-    exit $error.Count
+
+  log:host -end:$false -rgb:DarkRed   -out:'#'
+  log:host -end:$false -rgb:Yellow    -out:'['
+  log:host -end:$false -rgb:Green     -out:$Error[0].InvocationInfo.ScriptLineNumber
+  log:host -end:$false -rgb:DarkGray  -out:','
+  log:host -end:$false -rgb:DarkGreen -out:$Error[0].InvocationInfo.OffsetInLine
+  log:host -end:$false -rgb:Yellow    -out:']'
+  log:host -end:$false -rgb:DarkGray  -out:' '
+  log:host -end:$false -rgb:Blue      -out:'<'
+  log:host -end:$false -rgb:DarkCyan  -out:"${context}"
+  log:host -end:$false -rgb:Blue      -out:'>'
+  log:host -end:$false -rgb:DarkGray  -out:' '
+  log:host -end:$false -rgb:Red       -out:"${message}"
+  log:host -end:$true
+
+  if ($critcal) {
+    dbg:kill -status:(($Error.Count -eq 0) ? 1 : $Error.Count)
+  }
+}
+
+
+
+function dbg:eval {
+  param (
+    [Parameter(Mandatory=$false)]
+    [ValidateNotNullOrEmpty()]
+    [Alias("msg")]
+    [string]
+    $message = $script:dbg,
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [Alias("nfo","fun")]
+    [string]
+    $context,
+    [Parameter(Mandatory=$false)]
+    [alias("die")]
+    [switch]
+    $critcal
+  )
+
+  if (!( dbg:data:okay ))
+  {
+    dbg:data:reset # in case the of non-critical failure
+    dbg:fail -message:"${message}" -context:"${context}" -critcal:$critcal
   } else {
-    $script:dbg = "__OK!"
+    dbg:data:reset
   }
 }
 #endregion ------------------------------------------------------------------
@@ -275,7 +285,6 @@ function dbg:test {
 #----------------------------------------------------------------------------
 #region: namespace nfo
 #-----------------
-
 function nfo:main {
   param (
     [Parameter(Mandatory)]
@@ -292,28 +301,28 @@ function nfo:main {
     $date
   )
 
-  log:host -eol:$true # start
-  log:host -eol:$false -color:DarkGray -out "#",""
-  log:host -eol:$false -color:Blue     -out $info.description,""
-  log:host -eol:$false -color:DarkGray -out "-",""
+  log:host -end:$true # start
+  log:host -end:$false -rgb:DarkGray -out:"#",""
+  log:host -end:$false -rgb:Blue     -out:$info.description,""
+  log:host -end:$false -rgb:DarkGray -out:"-",""
   nfo:version -string:$info.version.number -name:$info.version.name
-  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
-  log:host -eol:$false -color:DarkGray -out "#",""
-  log:host -eol:$false -color:Gray     -out $info.author.name,""
-  log:host -eol:$true  -color:DarkGray -out $info.author.mail
-  log:host -eol:$false -color:DarkGray -out "#",""
-  log:host -eol:$false -color:Gray     -out $info.organization.name,""
-  log:host -eol:$true  -color:DarkGray -out $info.organization.home
-  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
-  log:host -eol:$false -color:DarkGray -out "#",""
-  nfo:repo -url:$repo  -color:Blue
-  log:host -eol:$false -color:DarkGray -out "#","";log:line -eol:$true -color:DarkGray
-  log:host -eol:$false -color:DarkGray -out "#",""
-  log:host -eol:$false -color:Cyan     -out $date.updated
-  log:host -eol:$false -color:DarkGray -out "("
-  log:host -eol:$false -color:DarkCyan -out $date.created
-  log:host -eol:$true  -color:DarkGray -out ")"
-  log:host -eol:$true # end
+  log:host -end:$false -rgb:DarkGray -out:"#","";log:line -end:$true -rgb:DarkGray
+  log:host -end:$false -rgb:DarkGray -out:"#",""
+  log:host -end:$false -rgb:Gray     -out:$info.author.name,""
+  log:host -end:$true  -rgb:DarkGray -out:$info.author.mail
+  log:host -end:$false -rgb:DarkGray -out:"#",""
+  log:host -end:$false -rgb:Gray     -out:$info.organization.name,""
+  log:host -end:$true  -rgb:DarkGray -out:$info.organization.home
+  log:host -end:$false -rgb:DarkGray -out:"#","";log:line -end:$true -rgb:DarkGray
+  log:host -end:$false -rgb:DarkGray -out:"#",""
+  nfo:repo -url:$repo  -rgb:Blue
+  log:host -end:$false -rgb:DarkGray -out:"#","";log:line -end:$true -rgb:DarkGray
+  log:host -end:$false -rgb:DarkGray -out:"#",""
+  log:host -end:$false -rgb:Cyan     -out:$date.updated
+  log:host -end:$false -rgb:DarkGray -out:"("
+  log:host -end:$false -rgb:DarkCyan -out:$date.created
+  log:host -end:$true  -rgb:DarkGray -out:")"
+  log:host -end:$true # end
 }
 
 function nfo:help {
@@ -332,13 +341,14 @@ function nfo:help {
   function help:examples { Get-Help "${path}" -Examples }
   function help:detailed { Get-Help "${path}" -Detailed }
 
-  if ($nude) {
-    log:host -eol:$false -color:Red        -out "$",""
-    log:host -eol:$false -color:Yellow     -out "nuke.ps1", ""
-    log:host -eol:$false -color:DarkYellow -out "-"
-    log:host -eol:$false -color:Yellow     -out "h",""
-    log:host -eol:$true  -color:DarkGray   -out "for more information ..."
-    log:host -eol:$true
+  if ($nude)
+  {
+    log:host -end:$false -rgb:Red        -out:"$",""
+    log:host -end:$false -rgb:Yellow     -out:"nuke.ps1", ""
+    log:host -end:$false -rgb:DarkYellow -out:"-"
+    log:host -end:$false -rgb:Yellow     -out:"h",""
+    log:host -end:$true  -rgb:DarkGray   -out:"for more information ..."
+    log:host -end:$true
   } elseif ($complete) { help:complete
   } elseif ($examples) { help:examples
   } elseif ($detailed) { help:detailed
@@ -354,13 +364,15 @@ function nfo:repo {
     #region color parameters
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: url
-    $color = ([System.ConsoleColor]::Green)
+    [ConsoleColor] # color: url
+    $rgb = ([ConsoleColor]::Green)
     #endregion
   )
 
-  log:host -eol:$true -color:$color -out $url
+  log:host -end:$true -rgb:$rgb -out:$url
 }
+
+
 
 function nfo:version {
   param (
@@ -371,46 +383,28 @@ function nfo:version {
     [Parameter(Mandatory=$false)]
     [AllowNull()]
     [string] # version name
-    $name = $null,
-    #region color parameters
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: number
-    $cone = ([System.ConsoleColor]::Cyan),
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: name
-    $ctwo = ([System.ConsoleColor]::DarkGray),
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: dots (name)
-    $cdot = ([System.ConsoleColor]::Blue),
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [System.ConsoleColor] # color: pair (name brackets)
-    $cpar = ([System.ConsoleColor]::DarkCyan)
-    #endregion
+    $name = $null
   )
 
-  log:host -eol:$false -color:$cone -out $string.Substring(0,
+  log:host -end:$false -rgb:Cyan -out:$string.Substring(0,
      $string.indexOf('.'))
-  log:host -eol:$false -color:$cdot -out '.'
-  log:host -eol:$false -color:$cone -out $string.Substring(
+  log:host -end:$false -rgb:Blue -out:'.'
+  log:host -end:$false -rgb:Cyan -out:$string.Substring(
     ($string.indexOf('.') + 1),
     ($string.LastIndexOf('.') - 2))
-  log:host -eol:$false -color:$cdot -out '.'
-  log:host -eol:$false -color:$cone -out $string.Substring(
+  log:host -end:$false -rgb:Blue -out:'.'
+  log:host -end:$false -rgb:Cyan -out:$string.Substring(
     ($string.LastIndexOf('.') + 1)
   )
 
   if (($null -eq $name) -or ($name.Length -lt 1)) {
-    return log:host -eol
+    return log:host -end:$true
   }
 
-  log:host -eol:$false -out ''
-  log:host -eol:$false -color:$cpar -out ' <'
-  log:host -eol:$false -color:$ctwo -out $name
-  log:host -eol:$true  -color:$cpar -out '>'
+  log:host -end:$false -out:''
+  log:host -end:$false -rgb:DarkCyan -out:' <'
+  log:host -end:$false -rgb:DarkGray -out:$name
+  log:host -end:$true  -rgb:DarkCyan -out:'>'
 }
 
 #endregion ------------------------------------------------------------------
@@ -443,6 +437,7 @@ $app = @{
 
 $app.name.base = $app.name.main.Substring(0, $app.name.main.LastIndexOf('.'))
 $app.name.conf = $app.name.base + '.psd1'
+
 #endregion ------------------------------------------------------------------
 
 function app:argc { # returns the number of cmd-line arguments.
@@ -544,8 +539,9 @@ function app:main { # called upon script entry
       $all
     )
 
-    Get-ChildItem -Hidden:$all "${path}" -Name -ErrorAction:SilentlyContinue -ErrorVariable dbg
-    dbg:test -context "getting file list of: ${path}" -die
+    $tmp = Get-ChildItem -Hidden:$all "${path}" -Name -ErrorAction:SilentlyContinue -ErrorVariable dbg
+    if ($null -eq $tmp) {
+    }
   }
 
   function main:loop {
@@ -561,10 +557,11 @@ function app:main { # called upon script entry
 
     $files = main:list -path:"${path}" -all:$true
     if ($null -eq $files) {
-      $script:dbg = "no files!"
-      dbg:test -context "listing files..." -die:$false
-    } 
-  
+      $script:dbg = "ls(listing files)"
+      dbg:test -context "no files in: ${path}" -die:$false
+      #dbg:test -context "listing files..." -die:$false
+    }
+
     $files.foreach({
     #$(Get-ChildItem -Hidden:$all "${path}" -Name).forEach({
       if (app:keep -list:$keep -file:"${_}")
@@ -620,14 +617,13 @@ class key {
 # todo: fail handling
 # todo: real implementation!
 #-----------------
-
 # source/import
-$mod = Import-PowerShellDataFile -Path:($app.path.work + "/" + $app.name.conf) -ErrorAction:SilentlyContinue -ErrorVariable dbg
-#mod = Import-PowerShellDataFile -Path:($PSCommandPath.Substring(0, $PSCommandPath.LastIndexOf(('.'))) + '.psd1')
-
-dbg:test -context "loading-configuration" -die
-
-
+$mod = Import-PowerShellDataFile -Path:($app.path.work + "s/" + $app.name.conf) -ErrorAction:SilentlyContinue -ErrorVariable (dbg:data:variable)
+# -----------------
+# fail-safe
+# -----------------
+dbg:eval -fun:Import-PowerShellDataFile -die
+# -----------------
 
 function mod:has {
   param(
@@ -661,6 +657,7 @@ $cfg = @{
   fake = mod:get -key:([key]::fake) -default $true
   repo = mod:get -key:([key]::repo) -default $null
 }
+
 #endregion ------------------------------------------------------------------
 
 
