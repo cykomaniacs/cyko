@@ -1,6 +1,34 @@
 {
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "bash",
+      "icon": "terminal-bash"
+    },
+    "pwsh": {
+      "path": "pwsh",
+      "icon": "terminal-powershell"
+    },
+    "zsh": null,
+    "fish": null,
+    "tmux": null,
+    "JavaScript Debug Terminal": null,
+    /*
+    "zsh": {
+      "path": "zsh"
+    },
+    "fish": {
+      "path": "fish"
+    },
+    "tmux": {
+      "path": "tmux",
+      "icon": "terminal-tmux"
+    },
+    */
+  },
+  "powershell.startAsLoginShell.linux": true,
   //-------------------------------------------------------------------------
-  // #region: EDITOR | WORKBENCH
+  // #region: GL8BAL | VISUALS
   //-------------------------------------------------------------------------
   "editor.fontFamily": "input, Monospace",
   "debug.console.fontFamily": "input",
@@ -8,6 +36,25 @@
   "editor.codeLensFontFamily": "input",
   "editor.inlayHints.fontFamily": "input",
   "terminal.integrated.fontFamily": "input",
+  "editor.semanticTokenColorCustomizations": {
+    "[Night Rider]": { // <namespace>
+      "rules": {
+        "namespace": { "foreground": "#ff82e0",
+          "bold": true,
+          "italic": false,
+          "underline": false,
+          "strikethrough": false
+        }
+      }
+    }
+  },
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+
+  //-------------------------------------------------------------------------
+  // #region: EDITOR | WORKBENCH
+  //-------------------------------------------------------------------------
   //--------
   "workbench.tree.renderIndentGuides": "always", // file explorer
   "workbench.sideBar.location": "right",
