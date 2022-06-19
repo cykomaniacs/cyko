@@ -172,7 +172,19 @@
       ],
 
       "createTemporaryIntegratedConsole": false,
-    }
+    },
+
+    { "type": "PowerShell", "name": "nuke:debug(posh)",
+      "presentation": {
+        "hidden": false,
+        "group": "X.NUKE.D",
+        "order": 0
+      },
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "script":  "${workspaceFolder}/nuke.ps1",
+      //"script": "enter path or command to execute e.g.: ${workspaceFolder}/src/foo.ps1 or Invoke-Pester",
+    },
 
     //-----------------------------------------------------------------------
     // #endregion

@@ -41,55 +41,56 @@
 #.NOTES
 # Powershell ftw!
 
+#----------------------------------------------------------------------------
 using namespace system
-
-[CmdletBinding()]
+#----------------------------------------------------------------------------
 param (
   #region parameters: main
-  [Parameter(ParameterSetName="1.0")]
+  [Parameter(ParameterSetName='1.0')]
   [ValidateNotNullOrEmpty()]
   [array]
-  $keep = ( ".gitkeep" ),
-  [Parameter(ParameterSetName="1.0", Mandatory)]
+  $keep = ( '.gitkeep' ),
+  [Parameter(ParameterSetName='1.0', Mandatory)]
   [ValidateNotNullOrEmpty()]
   [string]
   $base,
-  [Parameter(ParameterSetName="1.0", Mandatory)]
+  [Parameter(ParameterSetName='1.0', Mandatory)]
   [ValidateNotNullOrEmpty()]
   [string[]]
   $name,
-  [Parameter(ParameterSetName="1.0", Mandatory)]
+  [Parameter(ParameterSetName='1.0', Mandatory)]
   [ValidateNotNullOrEmpty()]
   [string[]]
   $arch,
   #endregion
 
   #region parameters: help
-  [Parameter(ParameterSetName="2.0", Mandatory)]
-  [Parameter(ParameterSetName="2.1", Mandatory)]
-  [Parameter(ParameterSetName="2.2", Mandatory)]
-  [Parameter(ParameterSetName="2.3", Mandatory)]
-  [Alias("h")]
+  [Parameter(ParameterSetName='2.0', Mandatory)]
+  [Parameter(ParameterSetName='2.1', Mandatory)]
+  [Parameter(ParameterSetName='2.2', Mandatory)]
+  [Parameter(ParameterSetName='2.3', Mandatory)]
+  [Alias('h')]
   [switch]
   $help,
-  [Parameter(ParameterSetName="2.1", Position=1, Mandatory)]
+  [Parameter(ParameterSetName='2.1', Position=1, Mandatory)]
   [switch]
   $detailed,
-  [Parameter(ParameterSetName="2.2", Position=1, Mandatory)]
+  [Parameter(ParameterSetName='2.2', Position=1, Mandatory)]
   [switch]
   $examples,
-  [Parameter(ParameterSetName="2.3", Position=1, Mandatory)]
+  [Parameter(ParameterSetName='2.3', Position=1, Mandatory)]
   [switch]
   $complete,
   #endregion
 
   #region parameters: info
-  [Parameter(ParameterSetName="3.0")]
-  [Alias("i")]
+  [Parameter(ParameterSetName='3.0')]
+  [Parameter(ParameterSetName='3.1', Mandatory)]
+  [Alias('i')]
   [switch]
   $info,
-  [Parameter(ParameterSetName="3.1", Mandatory)]
-  [Alias("v")]
+  [Parameter(ParameterSetName='3.1', Position=1, Mandatory)]
+  [Alias('v')]
   [switch]
   $version
   #endregion
@@ -99,7 +100,6 @@ param (
 #----------------------------------------------------------------------------
 #region: namespace log
 #-----------------
-
 function log:host {
   param (
     [Parameter(Mandatory=$false)]
@@ -119,6 +119,18 @@ function log:host {
   Write-Host -NoNewline:(!$end) # reset-rgb & end-of-line(line-feed)?
 }
 
+function log:feed {
+  param (
+    [Parameter()]
+    [int]
+    $num = 1
+  )
+
+  for ($i = 0; $i -lt $num; $i++) {
+    Write-Host -NoNewline:$false
+  }
+}
+
 function log:line {
   param (
     [Parameter(Mandatory=$false)]
@@ -131,7 +143,7 @@ function log:line {
     $end
   )
 
-  log:host -end:$end -rgb:$rgb -out:"--------------------"
+  log:host -end:$end -rgb:$rgb -out:'--------------------'
 }
 
 function log:head {
@@ -202,6 +214,10 @@ function dbg:data {
   return $script:dbg
 }
 
+function dbg:okay {
+  return $Error.Count -eq 0
+}
+
 function dbg:kill {
   param (
     [Parameter(Mandatory=$false)]
@@ -215,17 +231,17 @@ function dbg:kill {
 function dbg:fail {
   param (
     [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [Alias("msg")]
+    #[ValidateNotNullOrEmpty()]
+    [Alias('msg')]
     [string]
     $message = $script:dbg,
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
-    [Alias("nfo","fun")]
+    [Alias('nfo','fun')]
     [string]
     $context,
     [Parameter(Mandatory=$false)]
-    [alias("die")]
+    [alias('die')]
     [switch]
     $critcal
   )
@@ -249,30 +265,29 @@ function dbg:fail {
   }
 }
 
-
-
 function dbg:eval {
   param (
     [Parameter(Mandatory=$false)]
     [ValidateNotNullOrEmpty()]
-    [Alias("msg")]
+    [Alias('msg')]
     [string]
     $message = $script:dbg,
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
-    [Alias("nfo","fun")]
+    [Alias('nfo','fun')]
     [string]
     $context,
     [Parameter(Mandatory=$false)]
-    [alias("die")]
+    [alias('die')]
     [switch]
     $critcal
   )
 
-  if (!( dbg:data:okay ))
+  if (!(dbg:okay))
   {
+    $tmp = $message
     dbg:data:reset # in case the of non-critical failure
-    dbg:fail -message:"${message}" -context:"${context}" -critcal:$critcal
+    dbg:fail -message:"${tmp}" -context:"${context}" -critcal:$critcal
   } else {
     dbg:data:reset
   }
@@ -301,28 +316,32 @@ function nfo:main {
     $date
   )
 
-  log:host -end:$true # start
-  log:host -end:$false -rgb:DarkGray -out:"#",""
-  log:host -end:$false -rgb:Blue     -out:$info.description,""
-  log:host -end:$false -rgb:DarkGray -out:"-",""
+  log:feed
+  log:host -end:$false -rgb:DarkGray -out:'# '
+  log:host -end:$false -rgb:Blue     -out:$info.description
+  log:host -end:$false -rgb:DarkGray -out:' - '
   nfo:version -string:$info.version.number -name:$info.version.name
-  log:host -end:$false -rgb:DarkGray -out:"#","";log:line -end:$true -rgb:DarkGray
-  log:host -end:$false -rgb:DarkGray -out:"#",""
-  log:host -end:$false -rgb:Gray     -out:$info.author.name,""
-  log:host -end:$true  -rgb:DarkGray -out:$info.author.mail
-  log:host -end:$false -rgb:DarkGray -out:"#",""
-  log:host -end:$false -rgb:Gray     -out:$info.organization.name,""
-  log:host -end:$true  -rgb:DarkGray -out:$info.organization.home
-  log:host -end:$false -rgb:DarkGray -out:"#","";log:line -end:$true -rgb:DarkGray
-  log:host -end:$false -rgb:DarkGray -out:"#",""
+  log:host -end:$false -rgb:DarkGray -out:'# '; log:line -end:$true -rgb:DarkGray
+  log:host -end:$false -rgb:DarkGray -out:'# '
+  log:host -end:$false -rgb:Gray     -out:$info.author.name#,''
+  log:host -end:$false -rgb:Gray     -out:' <'
+  log:host -end:$false -rgb:DarkGray -out:$info.author.mail
+  log:host -end:$true  -rgb:Gray     -out:'>'
+  log:host -end:$false -rgb:DarkGray -out:'# '
+  log:host -end:$false -rgb:Gray     -out:$info.organization.name#,''
+  log:host -end:$false -rgb:Gray     -out:' <'
+  log:host -end:$false -rgb:DarkGray -out:$info.organization.home
+  log:host -end:$true  -rgb:Gray     -out:'>'
+  log:host -end:$false -rgb:DarkGray -out:'# '; log:line -end:$true -rgb:DarkGray
+  log:host -end:$false -rgb:DarkGray -out:'# '
   nfo:repo -url:$repo  -rgb:Blue
-  log:host -end:$false -rgb:DarkGray -out:"#","";log:line -end:$true -rgb:DarkGray
-  log:host -end:$false -rgb:DarkGray -out:"#",""
+  log:host -end:$false -rgb:DarkGray -out:'# '; log:line -end:$true -rgb:DarkGray
+  log:host -end:$false -rgb:DarkGray -out:'# '
   log:host -end:$false -rgb:Cyan     -out:$date.updated
-  log:host -end:$false -rgb:DarkGray -out:"("
+  log:host -end:$false -rgb:DarkGray -out:'('
   log:host -end:$false -rgb:DarkCyan -out:$date.created
-  log:host -end:$true  -rgb:DarkGray -out:")"
-  log:host -end:$true # end
+  log:host -end:$true  -rgb:DarkGray -out:')'
+  log:feed
 }
 
 function nfo:help {
@@ -343,12 +362,12 @@ function nfo:help {
 
   if ($nude)
   {
-    log:host -end:$false -rgb:Red        -out:"$",""
-    log:host -end:$false -rgb:Yellow     -out:"nuke.ps1", ""
-    log:host -end:$false -rgb:DarkYellow -out:"-"
-    log:host -end:$false -rgb:Yellow     -out:"h",""
-    log:host -end:$true  -rgb:DarkGray   -out:"for more information ..."
-    log:host -end:$true
+    log:host -rgb:Red        -out:'$ '
+    log:host -rgb:Yellow     -out:'nuke.ps1'
+    log:host -rgb:DarkYellow -out:' -'
+    log:host -rgb:Yellow     -out:'h '
+    log:host -rgb:DarkGray   -out:'for more information ...'
+    log:feed -num:1
   } elseif ($complete) { help:complete
   } elseif ($examples) { help:examples
   } elseif ($detailed) { help:detailed
@@ -357,22 +376,18 @@ function nfo:help {
 
 function nfo:repo {
   param (
+    [Parameter()]
+    [ValidateNotNullOrEmpty()]
+    [ConsoleColor]
+    $rgb = ([ConsoleColor]::Green),
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string]
-    $url,
-    #region color parameters
-    [Parameter(Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    [ConsoleColor] # color: url
-    $rgb = ([ConsoleColor]::Green)
-    #endregion
+    $url
   )
 
   log:host -end:$true -rgb:$rgb -out:$url
 }
-
-
 
 function nfo:version {
   param (
@@ -386,27 +401,23 @@ function nfo:version {
     $name = $null
   )
 
-  log:host -end:$false -rgb:Cyan -out:$string.Substring(0,
-     $string.indexOf('.'))
-  log:host -end:$false -rgb:Blue -out:'.'
-  log:host -end:$false -rgb:Cyan -out:$string.Substring(
+  log:host -rgb:Cyan -out:$string.Substring(0, $string.indexOf('.'))
+  log:host -rgb:Blue -out:'.'
+  log:host -rgb:Cyan -out:$string.Substring(
     ($string.indexOf('.') + 1),
     ($string.LastIndexOf('.') - 2))
-  log:host -end:$false -rgb:Blue -out:'.'
-  log:host -end:$false -rgb:Cyan -out:$string.Substring(
-    ($string.LastIndexOf('.') + 1)
-  )
+  log:host -rgb:Blue -out:'.'
+  log:host -rgb:Cyan -out:$string.Substring(($string.LastIndexOf('.') + 1))
 
   if (($null -eq $name) -or ($name.Length -lt 1)) {
-    return log:host -end:$true
+    return log:feed
   }
 
-  log:host -end:$false -out:''
-  log:host -end:$false -rgb:DarkCyan -out:' <'
-  log:host -end:$false -rgb:DarkGray -out:$name
-  log:host -end:$true  -rgb:DarkCyan -out:'>'
+  log:host -rgb:DarkCyan -out:' <'
+  log:host -rgb:DarkGray -out:$name
+  log:host -rgb:DarkCyan -out:'>'
+  log:feed
 }
-
 #endregion ------------------------------------------------------------------
 
 
@@ -422,8 +433,8 @@ function nfo:version {
 $app = @{
   name = @{
     main = $MyInvocation.MyCommand.Name
-    base = "" # script name without extension
-    conf = "" # complete file-name
+    base = '' # script name without extension
+    conf = '' # complete file-name
   }
   path = @{
     work = $PWD.Path
@@ -437,7 +448,6 @@ $app = @{
 
 $app.name.base = $app.name.main.Substring(0, $app.name.main.LastIndexOf('.'))
 $app.name.conf = $app.name.base + '.psd1'
-
 #endregion ------------------------------------------------------------------
 
 function app:argc { # returns the number of cmd-line arguments.
@@ -499,14 +509,24 @@ function app:nuke { # deleter!
     $fake
   )
 
+  nuke:impl {
+    param (
+      [Parameter(Mandatory)]
+      [string]
+      $path
+    )
+
+    Remove-Item -Force -Recurse -ErrorAction:SilentlyContinue -Path:"${path}"
+  }
+
   if (!$fake) {
-    Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "${path}/${node}"
+    nuke:impl "${path}/${node}"
   }
 }
 
 function app:main { # called upon script entry
   param (
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [ValidateNotNullOrEmpty()]
     [switch] # see configuration (nuke.psd1)
     $fake = $false,
@@ -539,12 +559,12 @@ function app:main { # called upon script entry
       $all
     )
 
-    $tmp = Get-ChildItem -Hidden:$all "${path}" -Name -ErrorAction:SilentlyContinue -ErrorVariable dbg
-    if ($null -eq $tmp) {
-    }
+    $tmp = Get-ChildItem -Hidden:$all "${path}" -Name -ErrorAction:SilentlyContinue -ErrorVariable (dbg:data:variable)
+    dbg:eval -context:'Get-ChildItem' -message:"path: ${path}" -critcal:$true
+    return $tmp
   }
 
-  function main:loop {
+  function main:impl {
     param (
       [Parameter(Mandatory)]
       [ValidateNotNullOrEmpty()]
@@ -555,15 +575,7 @@ function app:main { # called upon script entry
       $all
     )
 
-    $files = main:list -path:"${path}" -all:$true
-    if ($null -eq $files) {
-      $script:dbg = "ls(listing files)"
-      dbg:test -context "no files in: ${path}" -die:$false
-      #dbg:test -context "listing files..." -die:$false
-    }
-
-    $files.foreach({
-    #$(Get-ChildItem -Hidden:$all "${path}" -Name).forEach({
+    $(main:list -path:"${path}" -all:$all).foreach({
       if (app:keep -list:$keep -file:"${_}")
       {
         log:file -path:"${path}" -name:"${_}" -keep:$true
@@ -578,19 +590,9 @@ function app:main { # called upon script entry
   $work = $path + '/' + $name + '/' + $arch
   # need -Hidden:$true on nix, $false on win
   foreach ($all in @( $false, $true )) {
-    main:loop -path:"${work}" -all:$all
+    main:impl -path:"${work}" -all:$all
   }
-  #$(Get-ChildItem -Hidden "$work" -Name).forEach({
-  #  if (app:keep -list:$keep -file:"${_}")
-  #  {
-  #    log:file -path:"${work}" -name:"${_}" -keep:$true
-  #  } else {
-  #    log:file -path:"${work}" -name:"${_}" -keep:$false
-  #    app:nuke -path:"${work}" -node:"${_}" -fake:$fake
-  #  }
-  #})
 }
-
 #endregion ------------------------------------------------------------------
 
 
@@ -602,7 +604,6 @@ function app:main { # called upon script entry
 # each key refers to a specific configuration variable.
 # case-sensitive!
 #-----------------
-
 class key {
   static [string] $fake = "fake"
   static [string] $keep = "keep"
@@ -610,7 +611,6 @@ class key {
   static [string] $info = "info"
   static [string] $repo = "repo"
 }
-
 #endregion ------------------------------------------------------------------
 #region: namespace cfg (see nuke.psd1)
 #-----------------
@@ -618,11 +618,11 @@ class key {
 # todo: real implementation!
 #-----------------
 # source/import
-$mod = Import-PowerShellDataFile -Path:($app.path.work + "s/" + $app.name.conf) -ErrorAction:SilentlyContinue -ErrorVariable (dbg:data:variable)
+$mod = Import-PowerShellDataFile -Path:($app.path.work + '/' + $app.name.conf) -ErrorAction:SilentlyContinue -ErrorVariable (dbg:data:variable)
 # -----------------
 # fail-safe
 # -----------------
-dbg:eval -fun:Import-PowerShellDataFile -die
+dbg:eval -fun:'Import-PowerShellDataFile' -die
 # -----------------
 
 function mod:has {
@@ -668,16 +668,16 @@ $cfg = @{
 #-----------------
 # TODO: SORT EVERYTHING INTO NAMESPACES!!
 #----------------------------------------------------------------------------
-
-if (app:nude) {
+if (app:nude)
+{
   nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
   nfo:help -nude:$true
 } elseif ($help) {
   nfo:help
-} elseif ($info) {
-  nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
 } elseif ($version) {
   nfo:version -string:$cfg.info.version.number -name:$cfg.info.version.name
+} elseif ($info) {
+  nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
 } else {
   $name.foreach({ $t = $_
     $arch.foreach({
@@ -686,5 +686,4 @@ if (app:nude) {
     })
   })
 }
-
 #endregion ------------------------------------------------------------------
