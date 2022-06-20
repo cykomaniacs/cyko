@@ -134,17 +134,50 @@ function log:feed {
 }
 function log:line {
   param (
-    [Parameter()]
+    [Parameter(ParameterSetName='1.0')]
+    [Parameter(ParameterSetName='2.0')]
+    [Parameter(ParameterSetName='2.1')]
+    [Parameter(ParameterSetName='2.2')]
+    [Parameter(ParameterSetName='2.3')]
+    [Parameter(ParameterSetName='2.4')]
     [ValidateNotNullOrEmpty()]
     [ConsoleColor]
     $rgb = [ConsoleColor]::Magenta,
-    [Parameter()]
+    [Parameter(ParameterSetName='2.0', Mandatory)]
+    [switch] # length: about 80 characters
+    $full,
+    [Parameter(ParameterSetName='2.1', Mandatory)]
+    [switch] # length: < full
+    $long,
+    [Parameter(ParameterSetName='2.2', Mandatory)]
+    [switch] # length: < long
+    $half,
+    [Parameter(ParameterSetName='2.3', Mandatory)]
+    [switch] # length: < half
+    $mini,
+    [Parameter(ParameterSetName='1.0', Mandatory)]
+    [Alias('length','number','num')]
+    [int] #--# length: manual
+    $len = 20,
+    [Parameter(ParameterSetName='1.1')]
+    [Parameter(ParameterSetName='2.0')]
+    [Parameter(ParameterSetName='2.1')]
+    [Parameter(ParameterSetName='2.2')]
+    [Parameter(ParameterSetName='2.3')]
+    [Parameter(ParameterSetName='2.4')]
     [ValidateNotNullOrEmpty()]
     [switch] # end-of-line?
     $end
   )
 
-  log:host -end:$end -rgb:$rgb -out:'--------------------'
+  if ($full) { $len = 78 }
+  if ($long) { $len = 60 }
+  if ($half) { $len = 40 }
+  if ($mini) { $len = 20 }
+
+  for ($i = 0; $i -lt $len; $i++) {
+    log:host -rgb:$rgb -out:'-'
+  }
 }
 function log:head {
   param (
@@ -203,33 +236,40 @@ $script:dbg = $null # ErrorVariable
 $script:dov = 'OK!' # ErrorVariable : d(efault)o(kay)v(alue)
 #-----------------
 function dbg:data:variable {
-  return 'dbg' # name of ErrorVariable
+  'dbg' # name of ErrorVariable
 }
 function dbg:data:reset {
   $script:dbg = $script:dov
 }
-function dbg:data:okay {
-  return $script:dbg -eq $script:dov
-}
 function dbg:data {
-  return $script:dbg
+  $script:dbg
 }
 function dbg:okay {
-  return $Error.Count -eq 0
+  $Error.Count -eq 0
 }
 function dbg:kill {
   param (
     [Parameter()]
     [int]
-    $status = 1
+    $status = 1,
+    [Parameter()]
+    [Alias('die')]
+    [switch]
+    $fake
   )
 
-  exit $status
+  if ($fake)
+  {
+    log:host -rgb:Yellow -out:exit
+    log:host -rgb:Red    -out:$status
+    log:feed -num:1
+  } else {
+    exit $status
+  }
 }
 function dbg:fail {
   param (
     [Parameter()]
-    #[ValidateNotNullOrEmpty()]
     [Alias('msg')]
     [string]
     $message = $script:dbg,
@@ -255,9 +295,9 @@ function dbg:fail {
 
   log:host -rgb:DarkRed   -out:'#'
   log:host -rgb:Yellow    -out:'['
-  log:host -rgb:Green     -out:$ln #$Error[0].InvocationInfo.ScriptLineNumber
+  log:host -rgb:Green     -out:$ln #@ line-number
   log:host -rgb:DarkGray  -out:','
-  log:host -rgb:DarkGreen -out:$cn #$Error[0].InvocationInfo.OffsetInLine
+  log:host -rgb:DarkGreen -out:$cn #@ line-number:column-number
   log:host -rgb:Yellow    -out:']'
   log:host -rgb:DarkGray  -out:' '
   log:host -rgb:Blue      -out:'<'
@@ -267,9 +307,7 @@ function dbg:fail {
   log:host -rgb:Red       -out:"${message}"
   log:feed -num:1
 
-  if ($critcal) {
-    dbg:kill -status:(($Error.Count -eq 0) ? 1 : $Error.Count)
-  }
+  dbg:kill -status:(($Error.Count -eq 0) ? 1 : $Error.Count) -fake:(!$critcal)
 }
 function dbg:eval {
   param (
@@ -327,7 +365,7 @@ function nfo:main {
   log:host -rgb:Blue     -out:$info.description
   log:host -rgb:DarkGray -out:' - '
   nfo:version -string:$info.version.number -name:$info.version.name
-  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray
+  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray -len:41
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
   log:host -rgb:Gray     -out:$info.author.name#,''
@@ -341,11 +379,11 @@ function nfo:main {
   log:host -rgb:DarkGray -out:$info.organization.home
   log:host -rgb:Gray     -out:'>'
   log:feed -num:1
-  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray
+  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray -len:41
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
   nfo:repo -url:$repo  -rgb:Blue
-  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray
+  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray -len:22
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
   log:host -rgb:Cyan     -out:$date.updated
@@ -506,7 +544,7 @@ function app:nuke { # deleter!
     $fake
   )
 
-  nuke:impl {
+  function nuke:impl {
     param (
       [Parameter(Mandatory)]
       [string]
