@@ -1,32 +1,40 @@
 {
+  //-------------------------------------------------------------------------
+  // #region: TERMINAL
+  //-------------------------------------------------------------------------
+  //"terminal.integrated.shellIntegration.enabled": true,
+  //"terminal.integrated.shellIntegration.decorationsEnabled": true,
+  "terminal.integrated.tabs.showActions": "always",
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.profiles.linux": {
     "bash": {
       "path": "bash",
-      "icon": "terminal-bash"
+      "icon": "terminal-bash",
+      "color": "terminal.ansiYellow"
     },
     "pwsh": {
       "path": "pwsh",
-      "icon": "terminal-powershell"
+      "icon": "terminal-powershell",
+      "color": "terminal.ansiBlue"
     },
     "zsh": null,
     "fish": null,
     "tmux": null,
     "JavaScript Debug Terminal": null,
-    /*
-    "zsh": {
-      "path": "zsh"
-    },
-    "fish": {
-      "path": "fish"
-    },
-    "tmux": {
-      "path": "tmux",
-      "icon": "terminal-tmux"
-    },
-    */
   },
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+  // #region: TERMINAL | POSH
+  //-------------------------------------------------------------------------
   "powershell.startAsLoginShell.linux": true,
+  "powershell.integratedConsole.showOnStartup": true,
+  //-------------------------------------------------------------------------
+  // #endregion
+  //-------------------------------------------------------------------------
+
+
+
   //-------------------------------------------------------------------------
   // #region: GL8BAL | VISUALS
   //-------------------------------------------------------------------------

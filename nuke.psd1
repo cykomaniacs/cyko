@@ -7,7 +7,7 @@ info = @{
   # .number: major.minor.patch
   #   .name: codename
   # --------------------------------
-  version = @{ number = "0.1.2"; name = "configurizer" }
+  version = @{ number = "0.1.3"; name = "namespacer" }
   # --------------------------------
   # .name: ...
   # .home: web url
@@ -30,10 +30,7 @@ info = @{
   }
 }
 # timestamps
-date = @{
-  created = "2022/06/14"
-  updated = "2022/06/16"
-}
+date = @{ created = "2022/06/14"; updated = "2022/06/21" }
 # repository url
 repo = "https://github.com/cykomaniacs/cyko"
 # dry-run (don't do anything, just print)
