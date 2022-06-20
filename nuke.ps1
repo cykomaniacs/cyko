@@ -45,7 +45,7 @@
 using namespace system
 #----------------------------------------------------------------------------
 param (
-  #region parameters: main
+  #region parameters(main)
   [Parameter(ParameterSetName='1.0')]
   [ValidateNotNullOrEmpty()]
   [array]
@@ -62,9 +62,12 @@ param (
   [ValidateNotNullOrEmpty()]
   [string[]]
   $arch,
+  [Parameter(ParameterSetName='1.0')]
+  [switch]
+  $fake,
   #endregion
 
-  #region parameters: help
+  #region parameters(help)
   [Parameter(ParameterSetName='2.0', Mandatory)]
   [Parameter(ParameterSetName='2.1', Mandatory)]
   [Parameter(ParameterSetName='2.2', Mandatory)]
@@ -83,7 +86,7 @@ param (
   $complete,
   #endregion
 
-  #region parameters: info
+  #region parameters(info)
   [Parameter(ParameterSetName='3.0')]
   [Parameter(ParameterSetName='3.1', Mandatory)]
   [Alias('i')]
@@ -98,18 +101,18 @@ param (
 
 
 #----------------------------------------------------------------------------
-#region: namespace log
+#region namespace log
 #-----------------
 function log:host {
   param (
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [ValidateNotNullOrEmpty()]
     [ConsoleColor]
     $rgb = [ConsoleColor]::White,
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [string[]] # output: ...
     $out,
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [ValidateNotNullOrEmpty()]
     [switch] #-# output: end-of-line?
     $end
@@ -118,7 +121,6 @@ function log:host {
   Write-Host -ForegroundColor:$rgb $out -NoNewline:$true
   Write-Host -NoNewline:(!$end) # reset-rgb & end-of-line(line-feed)?
 }
-
 function log:feed {
   param (
     [Parameter()]
@@ -130,14 +132,13 @@ function log:feed {
     Write-Host -NoNewline:$false
   }
 }
-
 function log:line {
   param (
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [ValidateNotNullOrEmpty()]
     [ConsoleColor]
     $rgb = [ConsoleColor]::Magenta,
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [ValidateNotNullOrEmpty()]
     [switch] # end-of-line?
     $end
@@ -145,7 +146,6 @@ function log:line {
 
   log:host -end:$end -rgb:$rgb -out:'--------------------'
 }
-
 function log:head {
   param (
     [Parameter(Mandatory)]
@@ -158,15 +158,15 @@ function log:head {
     $arch
   )
 
-  log:host -end:$false -rgb:Yellow   -out:'> '
-  log:host -end:$false -rgb:Blue     -out:"${name}"
-  log:host -end:$false -rgb:DarkCyan -out:':'
-  log:host -end:$false -rgb:Red      -out:"${arch}"
-  log:host -end:$false -rgb:Yellow   -out:'('
-  log:host -end:$false -rgb:DarkGray -out:'nuke'
-  log:host -end:$true  -rgb:Yellow   -out:')'
+  log:host -rgb:Yellow   -out:'> '
+  log:host -rgb:Blue     -out:"${name}"
+  log:host -rgb:DarkCyan -out:':'
+  log:host -rgb:Red      -out:"${arch}"
+  log:host -rgb:Yellow   -out:'('
+  log:host -rgb:DarkGray -out:'nuke'
+  log:host -rgb:Yellow   -out:')'
+  log:feed -num:1
 }
-
 function log:file {
   param (
     [Parameter(Mandatory)]
@@ -177,7 +177,7 @@ function log:file {
     [ValidateNotNullOrEmpty()]
     [string] # file-name
     $name,
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [ValidateNotNullOrEmpty()]
     [switch] # skip/save?
     $keep
@@ -187,8 +187,9 @@ function log:file {
   $xc = $keep ? [ConsoleColor]::Green : [ConsoleColor]::Red
   $fc = [ConsoleColor]::Gray
 
-  log:host -end:$false -rgb:$xc -out:"${xx} "
-  log:host -end:$true  -rgb:$fc -out:"${path}/${name}"
+  log:host -rgb:$xc -out:"${xx} "
+  log:host -rgb:$fc -out:"${path}/${name}"
+  log:feed -num:1
 }
 #endregion ------------------------------------------------------------------
 
@@ -196,11 +197,11 @@ function log:file {
 
 
 #----------------------------------------------------------------------------
-#region: namespace dbg (debug)
+#region namespace dbg (debug)
 #-----------------
 $script:dbg = $null # ErrorVariable
 $script:dov = 'OK!' # ErrorVariable : d(efault)o(kay)v(alue)
-
+#-----------------
 function dbg:data:variable {
   return 'dbg' # name of ErrorVariable
 }
@@ -213,24 +214,21 @@ function dbg:data:okay {
 function dbg:data {
   return $script:dbg
 }
-
 function dbg:okay {
   return $Error.Count -eq 0
 }
-
 function dbg:kill {
   param (
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [int]
     $status = 1
   )
 
   exit $status
 }
-
 function dbg:fail {
   param (
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     #[ValidateNotNullOrEmpty()]
     [Alias('msg')]
     [string]
@@ -240,34 +238,42 @@ function dbg:fail {
     [Alias('nfo','fun')]
     [string]
     $context,
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [alias('die')]
     [switch]
     $critcal
   )
 
-  log:host -end:$false -rgb:DarkRed   -out:'#'
-  log:host -end:$false -rgb:Yellow    -out:'['
-  log:host -end:$false -rgb:Green     -out:$Error[0].InvocationInfo.ScriptLineNumber
-  log:host -end:$false -rgb:DarkGray  -out:','
-  log:host -end:$false -rgb:DarkGreen -out:$Error[0].InvocationInfo.OffsetInLine
-  log:host -end:$false -rgb:Yellow    -out:']'
-  log:host -end:$false -rgb:DarkGray  -out:' '
-  log:host -end:$false -rgb:Blue      -out:'<'
-  log:host -end:$false -rgb:DarkCyan  -out:"${context}"
-  log:host -end:$false -rgb:Blue      -out:'>'
-  log:host -end:$false -rgb:DarkGray  -out:' '
-  log:host -end:$false -rgb:Red       -out:"${message}"
-  log:host -end:$true
+  if ($Error.Count -eq 0)
+  {
+    $ln = $PSCmdlet.MyInvocation.ScriptLineNumber
+    $cn = $PSCmdlet.MyInvocation.OffsetInLine
+  } else {
+    $ln = $Error[0].InvocationInfo.ScriptLineNumber
+    $cn = $Error[0].InvocationInfo.OffsetInLine
+  }
+
+  log:host -rgb:DarkRed   -out:'#'
+  log:host -rgb:Yellow    -out:'['
+  log:host -rgb:Green     -out:$ln #$Error[0].InvocationInfo.ScriptLineNumber
+  log:host -rgb:DarkGray  -out:','
+  log:host -rgb:DarkGreen -out:$cn #$Error[0].InvocationInfo.OffsetInLine
+  log:host -rgb:Yellow    -out:']'
+  log:host -rgb:DarkGray  -out:' '
+  log:host -rgb:Blue      -out:'<'
+  log:host -rgb:DarkCyan  -out:"${context}"
+  log:host -rgb:Blue      -out:'>'
+  log:host -rgb:DarkGray  -out:' '
+  log:host -rgb:Red       -out:"${message}"
+  log:feed -num:1
 
   if ($critcal) {
     dbg:kill -status:(($Error.Count -eq 0) ? 1 : $Error.Count)
   }
 }
-
 function dbg:eval {
   param (
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [ValidateNotNullOrEmpty()]
     [Alias('msg')]
     [string]
@@ -277,7 +283,7 @@ function dbg:eval {
     [Alias('nfo','fun')]
     [string]
     $context,
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [alias('die')]
     [switch]
     $critcal
@@ -298,7 +304,7 @@ function dbg:eval {
 
 
 #----------------------------------------------------------------------------
-#region: namespace nfo
+#region namespace nfo
 #-----------------
 function nfo:main {
   param (
@@ -316,34 +322,38 @@ function nfo:main {
     $date
   )
 
-  log:feed
-  log:host -end:$false -rgb:DarkGray -out:'# '
-  log:host -end:$false -rgb:Blue     -out:$info.description
-  log:host -end:$false -rgb:DarkGray -out:' - '
+  log:feed -num:1
+  log:host -rgb:DarkGray -out:'# '
+  log:host -rgb:Blue     -out:$info.description
+  log:host -rgb:DarkGray -out:' - '
   nfo:version -string:$info.version.number -name:$info.version.name
-  log:host -end:$false -rgb:DarkGray -out:'# '; log:line -end:$true -rgb:DarkGray
-  log:host -end:$false -rgb:DarkGray -out:'# '
-  log:host -end:$false -rgb:Gray     -out:$info.author.name#,''
-  log:host -end:$false -rgb:Gray     -out:' <'
-  log:host -end:$false -rgb:DarkGray -out:$info.author.mail
-  log:host -end:$true  -rgb:Gray     -out:'>'
-  log:host -end:$false -rgb:DarkGray -out:'# '
-  log:host -end:$false -rgb:Gray     -out:$info.organization.name#,''
-  log:host -end:$false -rgb:Gray     -out:' <'
-  log:host -end:$false -rgb:DarkGray -out:$info.organization.home
-  log:host -end:$true  -rgb:Gray     -out:'>'
-  log:host -end:$false -rgb:DarkGray -out:'# '; log:line -end:$true -rgb:DarkGray
-  log:host -end:$false -rgb:DarkGray -out:'# '
+  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray
+  log:feed -num:1
+  log:host -rgb:DarkGray -out:'# '
+  log:host -rgb:Gray     -out:$info.author.name#,''
+  log:host -rgb:Gray     -out:' <'
+  log:host -rgb:DarkGray -out:$info.author.mail
+  log:host -rgb:Gray     -out:'>'
+  log:feed -num:1
+  log:host -rgb:DarkGray -out:'# '
+  log:host -rgb:Gray     -out:$info.organization.name#,''
+  log:host -rgb:Gray     -out:' <'
+  log:host -rgb:DarkGray -out:$info.organization.home
+  log:host -rgb:Gray     -out:'>'
+  log:feed -num:1
+  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray
+  log:feed -num:1
+  log:host -rgb:DarkGray -out:'# '
   nfo:repo -url:$repo  -rgb:Blue
-  log:host -end:$false -rgb:DarkGray -out:'# '; log:line -end:$true -rgb:DarkGray
-  log:host -end:$false -rgb:DarkGray -out:'# '
-  log:host -end:$false -rgb:Cyan     -out:$date.updated
-  log:host -end:$false -rgb:DarkGray -out:'('
-  log:host -end:$false -rgb:DarkCyan -out:$date.created
-  log:host -end:$true  -rgb:DarkGray -out:')'
-  log:feed
+  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray
+  log:feed -num:1
+  log:host -rgb:DarkGray -out:'# '
+  log:host -rgb:Cyan     -out:$date.updated
+  log:host -rgb:DarkGray -out:'('
+  log:host -rgb:DarkCyan -out:$date.created
+  log:host -rgb:DarkGray -out:')'
+  log:feed -num:2
 }
-
 function nfo:help {
   param (
     [Parameter()]
@@ -373,7 +383,6 @@ function nfo:help {
   } elseif ($detailed) { help:detailed
   } else { help:defaults }
 }
-
 function nfo:repo {
   param (
     [Parameter()]
@@ -386,16 +395,16 @@ function nfo:repo {
     $url
   )
 
-  log:host -end:$true -rgb:$rgb -out:$url
+  log:host -rgb:$rgb -out:$url
+  log:feed -num:1
 }
-
 function nfo:version {
   param (
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string] # version number
     $string,
-    [Parameter(Mandatory=$false)]
+    [Parameter()]
     [AllowNull()]
     [string] # version name
     $name = $null
@@ -408,15 +417,11 @@ function nfo:version {
     ($string.LastIndexOf('.') - 2))
   log:host -rgb:Blue -out:'.'
   log:host -rgb:Cyan -out:$string.Substring(($string.LastIndexOf('.') + 1))
-
-  if (($null -eq $name) -or ($name.Length -lt 1)) {
-    return log:feed
-  }
-
+  log:feed -num:((($null -eq $name) -or ($name.Length -lt 1)) ? 1:0)
   log:host -rgb:DarkCyan -out:' <'
   log:host -rgb:DarkGray -out:$name
   log:host -rgb:DarkCyan -out:'>'
-  log:feed
+  log:feed -num:1
 }
 #endregion ------------------------------------------------------------------
 
@@ -424,32 +429,28 @@ function nfo:version {
 
 
 #----------------------------------------------------------------------------
-#region: namespace app
-#-----------------
-# TODO: fail-safe!
+#region namespace app
 #----------------------------------------------------------------------------
-#region: namespace app(tab)
+#region namespace app - constants
 #-----------------
 $app = @{
   name = @{
-    main = $MyInvocation.MyCommand.Name
-    base = '' # script name without extension
-    conf = '' # complete file-name
+    data = $MyInvocation.MyCommand.Name
+  # base = script name without extension
+  # conf = complete file-name
   }
   path = @{
     work = $PWD.Path
     full = $PSCommandPath
   }
   args = @{ # cmd-line arguments
-      all = $args # complete <array>
-    bound = $PSBoundParameters # named arguments <?>
+     all = $args # complete <array>
+   bound = $PSBoundParameters # named arguments <?>
   }
 }
-
-$app.name.base = $app.name.main.Substring(0, $app.name.main.LastIndexOf('.'))
-$app.name.conf = $app.name.base + '.psd1'
+$app.name.Add('base', $app.name.data.Substring(0, $app.name.data.LastIndexOf('.')))
+$app.name.Add('conf', $app.name.base + '.psd1')
 #endregion ------------------------------------------------------------------
-
 function app:argc { # returns the number of cmd-line arguments.
   param (
     [Parameter()]
@@ -459,7 +460,6 @@ function app:argc { # returns the number of cmd-line arguments.
 
   return $all ? $app.args.all.Length : $app.args.bound.Count
 }
-
 function app:argv { # returns the cmd-line arguments
   param (
     [Parameter()]
@@ -469,7 +469,6 @@ function app:argv { # returns the cmd-line arguments
 
   return $all ? $app.args.all : $app.args.bound
 }
-
 function app:nude { # determines whether the cmd-line has arguments or not.
   param (
     [Parameter()]
@@ -479,7 +478,6 @@ function app:nude { # determines whether the cmd-line has arguments or not.
 
   return ((app:argc -all:$all) -eq 0)
 }
-
 function app:keep { # determines whether to keep the file or not.
   param (
     [Parameter(Mandatory)]
@@ -495,7 +493,6 @@ function app:keep { # determines whether to keep the file or not.
   $list.foreach({ if ("${_}" -eq "${file}") { return $true } })
   return $false
 }
-
 function app:nuke { # deleter!
   param (
     [Parameter(Mandatory)]
@@ -523,7 +520,6 @@ function app:nuke { # deleter!
     nuke:impl "${path}/${node}"
   }
 }
-
 function app:main { # called upon script entry
   param (
     [Parameter()]
@@ -559,11 +555,10 @@ function app:main { # called upon script entry
       $all
     )
 
-    $tmp = Get-ChildItem -Hidden:$all "${path}" -Name -ErrorAction:SilentlyContinue -ErrorVariable (dbg:data:variable)
-    dbg:eval -context:'Get-ChildItem' -message:"path: ${path}" -critcal:$true
+    $tmp = Get-ChildItem -Hidden:$all "${path}" -Name -ErrorAction:SilentlyContinue -ErrorVariable:(dbg:data:variable)
+    dbg:eval -context:Get-ChildItem -message:"path: ${path}" -critcal:$true
     return $tmp
   }
-
   function main:impl {
     param (
       [Parameter(Mandatory)]
@@ -599,67 +594,79 @@ function app:main { # called upon script entry
 
 
 #----------------------------------------------------------------------------
-#region: namespace key(cfg)
+#region namespace key(cfg) - module variable (constants)
 #-----------------
 # each key refers to a specific configuration variable.
 # case-sensitive!
 #-----------------
+# $var[([key]::info)]
+#-----------------
 class key {
-  static [string] $fake = "fake"
-  static [string] $keep = "keep"
-  static [string] $date = "date"
-  static [string] $info = "info"
-  static [string] $repo = "repo"
+  static [string] $fake = 'fake'
+  static [string] $keep = 'keep'
+  static [string] $date = 'date'
+  static [string] $info = 'info'
+  static [string] $repo = 'repo'
 }
 #endregion ------------------------------------------------------------------
-#region: namespace cfg (see nuke.psd1)
+#region namespace mod(cfg) - module importer
 #-----------------
-# todo: fail handling
-# todo: real implementation!
+# import/source
 #-----------------
-# source/import
-$mod = Import-PowerShellDataFile -Path:($app.path.work + '/' + $app.name.conf) -ErrorAction:SilentlyContinue -ErrorVariable (dbg:data:variable)
-# -----------------
-# fail-safe
-# -----------------
-dbg:eval -fun:'Import-PowerShellDataFile' -die
-# -----------------
-
+$mop = $app.path.work + '/' + $app.name.conf
+$mod = Import-PowerShellDataFile -Path:$mop -ErrorAction:SilentlyContinue -ErrorVariable:(dbg:data:variable)
+dbg:eval -fun:Import-PowerShellDataFile -die:$true # fail-safe
+#-----------------
 function mod:has {
-  param(
-    [Parameter(Mandatory)]
-    [string]
-    $key
-  )
-
-  return $mod.ContainsKey($key)
-}
-
-function mod:get {
-  param(
+  param (
     [Parameter(Mandatory)]
     [string]
     $key,
-    [Parameter(Mandatory)]
-    [AllowNull()]
-    [object]
-    $default
+    [Parameter()]
+    [Alias('die')]
+    [switch]
+    $critical
   )
 
-  return ((mod:has -key $key) ? $mod[$key] : $default)
+  if (!$mod.ContainsKey($key)) {
+    if ($critical)
+    {
+      dbg:fail -context:configuration -message:"cannot find specified key: ${key}" -critcal:$true
+    } else {
+      return $false
+    }
+  } else { return $true }
 }
+function mod:get {
+  param (
+    [Parameter(Mandatory)]
+    [string]
+    $key,
+    [Parameter()]
+    [AllowNull()]
+    [Alias('def')]
+    [object]
+    $default = $null,
+    [Parameter()]
+    [Alias('die')]
+    [switch]
+    $critical
+  )
 
-$cfg = @{
-  keep = @(mod:get -key ([key]::keep) -default $keep) + $keep
-
-  info = mod:get -key:([key]::info) -default $null
-  date = mod:get -key:([key]::date) -default $null
-  fake = mod:get -key:([key]::fake) -default $true
-  repo = mod:get -key:([key]::repo) -default $null
+  (mod:has -key $key -critical:$critical) ? $mod[$key] : $default
 }
-
 #endregion ------------------------------------------------------------------
-
+#region namespace cfg
+#-----------------
+$cfg = @{ # importing
+  keep = @(mod:get -critical:$true  -key:([key]::keep) -default:$keep) + $keep
+  #----------------------------------------------------#
+  info = ( mod:get -critical:$true  -key:([key]::info) )
+  date = ( mod:get -critical:$true  -key:([key]::date) )
+  fake = ( mod:get -critical:$false -key:([key]::fake) -default:$fake )
+  repo = ( mod:get -critical:$true  -key:([key]::repo) )
+}
+#endregion ------------------------------------------------------------------
 
 
 
@@ -667,6 +674,7 @@ $cfg = @{
 #region: script execution
 #-----------------
 # TODO: SORT EVERYTHING INTO NAMESPACES!!
+# TODO: ALMOST NAMESPACED! :D
 #----------------------------------------------------------------------------
 if (app:nude)
 {
