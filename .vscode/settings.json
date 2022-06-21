@@ -3,7 +3,7 @@
   // #region: TERMINAL
   //-------------------------------------------------------------------------
   "terminal.integrated.tabs.showActions": "always",
-  "terminal.integrated.defaultProfile.linux": "bassh",
+  "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.defaultProfile.windows": "posh",
   "terminal.integrated.profiles.linux":
   {
