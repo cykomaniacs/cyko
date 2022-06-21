@@ -3,18 +3,20 @@
   // #region: TERMINAL
   //-------------------------------------------------------------------------
   "terminal.integrated.tabs.showActions": "always",
-  "terminal.integrated.defaultProfile.linux": "bash",
-  "terminal.integrated.profiles.linux": {
+  "terminal.integrated.defaultProfile.linux": "bassh",
+  "terminal.integrated.defaultProfile.windows": "posh",
+  "terminal.integrated.profiles.linux":
+  {
     "bash":
     {
-      "path": "bash",
-      "icon": "terminal-bash",
+      "path":  "bash",
+      "icon":  "terminal-bash",
       "color": "terminal.ansiYellow"
     },
     "posh":
     {
-      "path": "pwsh",
-      "icon": "terminal-powershell",
+      "path":  "pwsh",
+      "icon":  "terminal-powershell",
       "color": "terminal.ansiBlue"
     },
 
@@ -28,8 +30,8 @@
   //-------------------------------------------------------------------------
   // #region: TERMINAL | POSH
   //-------------------------------------------------------------------------
-  "powershell.powerShellDefaultVersion": "latest-linux",
-  "powershell.startAsLoginShell.linux": true,
+  "powershell.powerShellDefaultVersion": "latest-linux", // -windows|linux
+  //"powershell.startAsLoginShell.linux": true,
   "powershell.integratedConsole.showOnStartup": true,
   //-------------------------------------------------------------------------
   // #endregion
