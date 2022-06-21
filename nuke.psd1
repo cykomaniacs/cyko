@@ -7,7 +7,7 @@ info = @{
   # .number: major.minor.patch
   #   .name: codename
   # --------------------------------
-  version = @{ number = "0.1.3"; name = "namespacer" }
+  version = @{ number = "0.1.4"; name = "namespacer" }
   # --------------------------------
   # .name: ...
   # .home: web url

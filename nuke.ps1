@@ -7,11 +7,13 @@
 #.PARAMETER keep
 # List of file-names to keep.
 #.PARAMETER base
-# Base path to the build output (ex: "./bin")
+# Base path to the build output (ex: "./bin").
 #.PARAMETER name
-# Target configuration names (ex: "debug", "release")
+# Target configuration names (ex: "debug", "release").
 #.PARAMETER arch
-# Target architectures names (ex: "x64", "x86")
+# Target architectures names (ex: "x64", "x86").
+#.PARAMETER fake
+# Fake execution (don't act, just print).
 #.PARAMETER help
 # Print usage and description to STDOUT.
 #.PARAMETER info
@@ -100,10 +102,11 @@ param (
 )
 
 
-
 #----------------------------------------------------------------------------
 #region namespace log
 #-----------------
+#:SYNOPSIS
+# Prints to STDOUT (default/main print implementation).
 function log:host {
   param (
     [Parameter()]
@@ -112,16 +115,13 @@ function log:host {
     $rgb = [ConsoleColor]::White,
     [Parameter()]
     [string[]] # output: ...
-    $out,
-    [Parameter()]
-    [ValidateNotNullOrEmpty()]
-    [switch] #-# output: end-of-line?
-    $endd
+    $out
   )
 
-  Write-Host -ForegroundColor:$rgb $out -NoNewline:$true
- #Write-Host -NoNewline:(!$end) # reset-rgb & end-of-line(line-feed)?
+  Write-Host -NoNewline -ForegroundColor:$rgb $out
 }
+#:SYNOPSIS
+# Prints the line-feed character (new-line).
 function log:feed {
   param (
     [Parameter()]
@@ -131,6 +131,8 @@ function log:feed {
 
   for ($i = 0; $i -lt $num; $i++) { Write-Host -NoNewline:$false }
 }
+#:SYNOPSIS
+# Prints a horizontal line of specified width/length.
 function log:line {
   param (
     [Parameter(ParameterSetName='1.0')]
@@ -157,16 +159,7 @@ function log:line {
     [Parameter(ParameterSetName='1.0', Mandatory)]
     [Alias('length','number','num')]
     [int] #--# length: manual
-    $len = 20,
-    [Parameter(ParameterSetName='1.1')]
-    [Parameter(ParameterSetName='2.0')]
-    [Parameter(ParameterSetName='2.1')]
-    [Parameter(ParameterSetName='2.2')]
-    [Parameter(ParameterSetName='2.3')]
-    [Parameter(ParameterSetName='2.4')]
-    [ValidateNotNullOrEmpty()]
-    [switch] # end-of-line?
-    $end
+    $len = 20
   )
 
   if ($full) { $len = 76 }
@@ -178,6 +171,8 @@ function log:line {
     log:host -rgb:$rgb -out:'-'
   }
 }
+#:SYNOPSIS
+# Prints a header (info about target).
 function log:head {
   param (
     [Parameter(Mandatory)]
@@ -199,6 +194,8 @@ function log:head {
   log:host -rgb:Yellow   -out:')'
   log:feed -num:1
 }
+#:SYNOPSIS
+# Prints info about a file (prefixed with nuke/keep indicator + path).
 function log:file {
   param (
     [Parameter(Mandatory)]
@@ -238,30 +235,20 @@ $script:dov = 'OK!' # ErrorVariable : d(efault)o(kay)v(alue)
 #.SYNOPSIS
 # Returns the name of the common-debug-variable.
 # Use: Some-Command -ErrorVariable:(dbg:data:variable)
-function dbg:data:variable {
-  'dbg' # name of ErrorVariable
-}
+function dbg:data:variable { 'dbg' <# name of ErrorVariable #> }
 #.SYNOPSIS
-# Resets the common-debug-varable to its default value
-function dbg:data:reset {
-  $script:dbg = $script:dov
-}
+# Resets the common-debug-varable to its default value.
+function dbg:data:reset { $script:dbg = $script:dov }
 #.SYNOPSIS
 # Returns the cutrent value of the common-debug-variable.
-function dbg:data {
-  $script:dbg
-}
+function dbg:data { $script:dbg }
 #.SYNOPSIS
-# Returns true if there are no errors.
-function dbg:okay {
-  $Error.Count -eq 0
-}
+# Returns true if there are no global errors.
+function dbg:okay { $Error.Count -eq 0 }
 #.SYNOPSIS
 # Returns the number of global errors.
-function dbg:fail:count {
-  $Error.Count
-}
-#.SYNOPSIS
+function dbg:fail:count { $Error.Count }
+#:SYNOPSIS
 # Stops the script!
 function dbg:kill {
   param (
@@ -283,7 +270,7 @@ function dbg:kill {
     exit $code
   }
 }
-#.SYNOPSIS-DISABLE
+#:SYNOPSIS
 # Failure handling.
 function dbg:fail {
   param (
@@ -302,7 +289,7 @@ function dbg:fail {
     $critcal
   )
 
-  if ((dbg:okay))
+  if (dbg:okay)
   {
     $ln = $PSCmdlet.MyInvocation.ScriptLineNumber
     $cn = $PSCmdlet.MyInvocation.OffsetInLine
@@ -327,7 +314,7 @@ function dbg:fail {
 
   dbg:kill -code:((dbg:okay) ? 1:(dbg:fail:count)) -fake:(!$critcal)
 }
-#.SYNOPSIS-DISABLE
+#:SYNOPSIS
 # Handle failures. Evaluates the common-debug parameters per default.
 function dbg:eval {
   param (
@@ -364,6 +351,9 @@ function dbg:eval {
 #----------------------------------------------------------------------------
 #region namespace nfo
 #-----------------
+
+#:SYNOPSIS
+# Prints information about the script.
 function nfo:main {
   param (
     [Parameter(Mandatory)]
@@ -412,6 +402,8 @@ function nfo:main {
   log:host -rgb:DarkGray -out:')'
   log:feed -num:2
 }
+#:SYNOPSIS
+# Prints usage / help (using the Get-Help command).
 function nfo:help {
   param (
     [Parameter()]
@@ -441,6 +433,8 @@ function nfo:help {
   } elseif ($detailed) { help:detailed
   } else { help:defaults }
 }
+#:SYNOPSIS
+# Prints information about the source code repository.
 function nfo:repo {
   param (
     [Parameter()]
@@ -456,6 +450,8 @@ function nfo:repo {
   log:host -rgb:$rgb -out:$url
   log:feed -num:1
 }
+#:SYNOPSIS
+# Prints version information.
 function nfo:version {
   param (
     [Parameter(Mandatory)]
@@ -506,9 +502,13 @@ $app = @{
    bound = $PSBoundParameters # named arguments <?>
   }
 }
-$app.name.Add('base', $app.name.data.Substring(0, $app.name.data.LastIndexOf('.')))
+$app.name.Add('base', $app.name.data.Substring(0,
+  $app.name.data.LastIndexOf('.')))
 $app.name.Add('conf', $app.name.base + '.psd1')
 #endregion ------------------------------------------------------------------
+
+#:SYNOPSIS
+# Returns the number of cmd-line arguments.
 function app:argc { # returns the number of cmd-line arguments.
   param (
     [Parameter()]
@@ -518,6 +518,8 @@ function app:argc { # returns the number of cmd-line arguments.
 
   return $all ? $app.args.all.Length : $app.args.bound.Count
 }
+#:SYNOPSIS
+# Returns the cmd-line arguments as an array.
 function app:argv { # returns the cmd-line arguments
   param (
     [Parameter()]
@@ -527,15 +529,11 @@ function app:argv { # returns the cmd-line arguments
 
   return $all ? $app.args.all : $app.args.bound
 }
-function app:nude { # determines whether the cmd-line has arguments or not.
-  param (
-    [Parameter()]
-    [switch]
-    $all
-  )
-
-  return ((app:argc -all:$all) -eq 0)
-}
+#.SYNOPSIS
+# Returns true if the scripts was invoked without arguments (nude)?
+function app:nude { (app:argc) -eq 0 }
+#:SYNOPSIS
+# Returns true if the specified list contains the named file.
 function app:keep { # determines whether to keep the file or not.
   param (
     [Parameter(Mandatory)]
@@ -551,7 +549,9 @@ function app:keep { # determines whether to keep the file or not.
   $list.foreach({ if ("${_}" -eq "${file}") { return $true } })
   return $false
 }
-function app:nuke { # deleter!
+#:SYNOPSIS
+# Main functionality (deleter).
+function app:nuke {
   param (
     [Parameter(Mandatory)]
     [string] # file-path(excluding file-name)
@@ -564,20 +564,16 @@ function app:nuke { # deleter!
     $fake
   )
 
-  function nuke:impl {
-    param (
-      [Parameter(Mandatory)]
-      [string]
-      $path
-    )
-
-    Remove-Item -Force -Recurse -ErrorAction:SilentlyContinue -Path:"${path}"
-  }
-
   if (!$fake) {
-    nuke:impl "${path}/${node}"
+    Remove-Item `
+      -Force `
+      -Recurse `
+      -ErrorAction:SilentlyContinue `
+      -Path:"${path}/${node}"
   }
 }
+#:SYNOPSIS
+# Main (first function called).
 function app:main { # called upon script entry
   param (
     [Parameter()]
@@ -613,38 +609,29 @@ function app:main { # called upon script entry
       $all
     )
 
-    $tmp = Get-ChildItem -Hidden:$all "${path}" -Name -ErrorAction:SilentlyContinue -ErrorVariable:(dbg:data:variable)
-    dbg:eval -context:Get-ChildItem -message:"path: ${path}" -critcal:$true
-    return $tmp
-  }
-  function main:impl {
-    param (
-      [Parameter(Mandatory)]
-      [ValidateNotNullOrEmpty()]
-      [string]
-      $path,
-      [Parameter(Mandatory)]
-      [switch]
-      $all
-    )
-
-    $(main:list -path:"${path}" -all:$all).foreach({
-      if (app:keep -list:$keep -file:"${_}")
-      {
-        log:file -path:"${path}" -name:"${_}" -keep:$true
-      } else {
-        log:file -path:"${path}" -name:"${_}" -keep:$false
-        app:nuke -path:"${path}" -node:"${_}" -fake:$fake
-      }
-    })
+    $tmp = Get-ChildItem -Hidden:$all `
+      -Path:"${path}" `
+      -Name `
+      -ErrorAction:SilentlyContinue `
+      -ErrorVariable:(dbg:data:variable)
+    dbg:eval -context:Get-ChildItem -message:"path: ${path}" -critcal
+    $tmp
   }
 
   # ex: ./bin/debug/x64
-  $work = $path + '/' + $name + '/' + $arch
-  # need -Hidden:$true on nix, $false on win
-  foreach ($all in @( $false, $true )) {
-    main:impl -path:"${work}" -all:$all
-  }
+  $node = $path + '/' + $name + '/' + $arch
+  # need -Hidden:$true on nix, $false on win (-all alias for -Hidden)
+  @($false,$true).foreach({
+    $(main:list -path:"${node}" -all:$_).foreach({
+      if (app:keep -list:$keep -file:"${_}")
+      {
+        log:file -path:"${node}" -name:"${_}" -keep
+      } else {
+        log:file -path:"${node}" -name:"${_}"
+        app:nuke -path:"${node}" -node:"${_}" -fake:$fake
+      }
+    })
+  })
 }
 #endregion ------------------------------------------------------------------
 
@@ -654,26 +641,28 @@ function app:main { # called upon script entry
 #----------------------------------------------------------------------------
 #region namespace key(cfg) - module variable (constants)
 #-----------------
-# each key refers to a specific configuration variable.
+# each key refers to a specific configuration variable (preference).
 # case-sensitive!
 #-----------------
 # $var[([key]::info)]
 #-----------------
 class key {
-  static [string] $fake = 'fake'
-  static [string] $keep = 'keep'
-  static [string] $date = 'date'
-  static [string] $info = 'info'
-  static [string] $repo = 'repo'
+  static [string]$info = 'info'
+  static [string]$date = 'date'
+  static [string]$repo = 'repo'
+  static [string]$fake = 'fake'
+  static [string]$keep = 'keep'
 }
 #endregion ------------------------------------------------------------------
 #region namespace mod(cfg) - module importer
 #-----------------
 # import/source
 #-----------------
-$mop = $app.path.work + '/' + $app.name.conf
-$mod = Import-PowerShellDataFile -Path:$mop -ErrorAction:SilentlyContinue -ErrorVariable:(dbg:data:variable)
-dbg:eval -fun:Import-PowerShellDataFile -die:$true # fail-safe
+$mop = $app.path.work + '/' + $app.name.conf # m(od-)p(ath)
+$mod = Import-PowerShellDataFile -Path:$mop `
+  -ErrorAction:SilentlyContinue `
+  -ErrorVariable:(dbg:data:variable)
+dbg:eval -context:Import-PowerShellDataFile -critcal # fail-safe
 #-----------------
 function mod:has {
   param (
@@ -689,7 +678,9 @@ function mod:has {
   if (!$mod.ContainsKey($key)) {
     if ($critical)
     {
-      dbg:fail -context:configuration -message:"cannot find specified key: ${key}" -critcal:$true
+      dbg:fail -critcal `
+        -context:configuration `
+        -message:"cannot find specified key: ${key}" `
     } else {
       return $false
     }
@@ -697,32 +688,33 @@ function mod:has {
 }
 function mod:get {
   param (
-    [Parameter(Mandatory)]
+    [Parameter(ParameterSetName='1.0', Mandatory)]
+    [Parameter(ParameterSetName='1.1', Mandatory)]
     [string]
     $key,
-    [Parameter()]
+    [Parameter(ParameterSetName='1.0')]
     [AllowNull()]
     [Alias('def')]
     [object]
     $default = $null,
-    [Parameter()]
+    [Parameter(ParameterSetName='1.1')]
     [Alias('die')]
     [switch]
     $critical
   )
 
-  (mod:has -key $key -critical:$critical) ? $mod[$key] : $default
+  (mod:has -key:$key -critical:$critical) ? $mod[$key] : $default
 }
 #endregion ------------------------------------------------------------------
 #region namespace cfg
 #-----------------
 $cfg = @{ # importing
-  keep = @(mod:get -critical:$true  -key:([key]::keep) -default:$keep) + $keep
+  keep = @(mod:get -key:([key]::keep) -default:$keep) + $keep
   #----------------------------------------------------#
-  info = ( mod:get -critical:$true  -key:([key]::info) )
-  date = ( mod:get -critical:$true  -key:([key]::date) )
-  fake = ( mod:get -critical:$false -key:([key]::fake) -default:$fake )
-  repo = ( mod:get -critical:$true  -key:([key]::repo) )
+  info = ( mod:get -key:([key]::info) -critical )
+  date = ( mod:get -key:([key]::date) -critical )
+  repo = ( mod:get -key:([key]::repo) -critical )
+  fake = ( mod:get -key:([key]::fake) -default:$fake )
 }
 #endregion ------------------------------------------------------------------
 
@@ -737,7 +729,7 @@ $cfg = @{ # importing
 if (app:nude)
 {
   nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
-  nfo:help -nude:$true
+  nfo:help -nude
 } elseif ($help) {
   nfo:help
 } elseif ($version) {
