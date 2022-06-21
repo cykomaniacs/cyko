@@ -2,8 +2,6 @@
   //-------------------------------------------------------------------------
   // #region: TERMINAL
   //-------------------------------------------------------------------------
-  //"terminal.integrated.shellIntegration.enabled": true,
-  //"terminal.integrated.shellIntegration.decorationsEnabled": true,
   "terminal.integrated.tabs.showActions": "always",
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.profiles.linux": {

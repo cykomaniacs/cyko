@@ -86,7 +86,7 @@ param (
   $complete,
   #endregion
 
-  #region parameters(info)
+  #region parameters(info) not manadatory! enables parameter-less invokation
   [Parameter(ParameterSetName='3.0')]
   [Parameter(ParameterSetName='3.1', Mandatory)]
   [Alias('i')]
@@ -98,6 +98,7 @@ param (
   $version
   #endregion
 )
+
 
 
 #----------------------------------------------------------------------------
@@ -115,11 +116,11 @@ function log:host {
     [Parameter()]
     [ValidateNotNullOrEmpty()]
     [switch] #-# output: end-of-line?
-    $end
+    $endd
   )
 
   Write-Host -ForegroundColor:$rgb $out -NoNewline:$true
-  Write-Host -NoNewline:(!$end) # reset-rgb & end-of-line(line-feed)?
+ #Write-Host -NoNewline:(!$end) # reset-rgb & end-of-line(line-feed)?
 }
 function log:feed {
   param (
@@ -128,9 +129,7 @@ function log:feed {
     $num = 1
   )
 
-  for ($i = 0; $i -lt $num; $i++) {
-    Write-Host -NoNewline:$false
-  }
+  for ($i = 0; $i -lt $num; $i++) { Write-Host -NoNewline:$false }
 }
 function log:line {
   param (
@@ -170,9 +169,9 @@ function log:line {
     $end
   )
 
-  if ($full) { $len = 78 }
-  if ($long) { $len = 60 }
-  if ($half) { $len = 40 }
+  if ($full) { $len = 76 }
+  if ($long) { $len = 57 }
+  if ($half) { $len = 38 }
   if ($mini) { $len = 20 }
 
   for ($i = 0; $i -lt $len; $i++) {
@@ -235,23 +234,40 @@ function log:file {
 $script:dbg = $null # ErrorVariable
 $script:dov = 'OK!' # ErrorVariable : d(efault)o(kay)v(alue)
 #-----------------
+
+#.SYNOPSIS
+# Returns the name of the common-debug-variable.
+# Use: Some-Command -ErrorVariable:(dbg:data:variable)
 function dbg:data:variable {
   'dbg' # name of ErrorVariable
 }
+#.SYNOPSIS
+# Resets the common-debug-varable to its default value
 function dbg:data:reset {
   $script:dbg = $script:dov
 }
+#.SYNOPSIS
+# Returns the cutrent value of the common-debug-variable.
 function dbg:data {
   $script:dbg
 }
+#.SYNOPSIS
+# Returns true if there are no errors.
 function dbg:okay {
   $Error.Count -eq 0
 }
+#.SYNOPSIS
+# Returns the number of global errors.
+function dbg:fail:count {
+  $Error.Count
+}
+#.SYNOPSIS
+# Stops the script!
 function dbg:kill {
   param (
     [Parameter()]
     [int]
-    $status = 1,
+    $code = 1,
     [Parameter()]
     [Alias('die')]
     [switch]
@@ -261,18 +277,20 @@ function dbg:kill {
   if ($fake)
   {
     log:host -rgb:Yellow -out:exit
-    log:host -rgb:Red    -out:$status
+    log:host -rgb:Red    -out:$code
     log:feed -num:1
   } else {
-    exit $status
+    exit $code
   }
 }
+#.SYNOPSIS-DISABLE
+# Failure handling.
 function dbg:fail {
   param (
     [Parameter()]
     [Alias('msg')]
     [string]
-    $message = $script:dbg,
+    $message = (dbg:data),
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [Alias('nfo','fun')]
@@ -284,7 +302,7 @@ function dbg:fail {
     $critcal
   )
 
-  if ($Error.Count -eq 0)
+  if ((dbg:okay))
   {
     $ln = $PSCmdlet.MyInvocation.ScriptLineNumber
     $cn = $PSCmdlet.MyInvocation.OffsetInLine
@@ -307,15 +325,17 @@ function dbg:fail {
   log:host -rgb:Red       -out:"${message}"
   log:feed -num:1
 
-  dbg:kill -status:(($Error.Count -eq 0) ? 1 : $Error.Count) -fake:(!$critcal)
+  dbg:kill -code:((dbg:okay) ? 1:(dbg:fail:count)) -fake:(!$critcal)
 }
+#.SYNOPSIS-DISABLE
+# Handle failures. Evaluates the common-debug parameters per default.
 function dbg:eval {
   param (
     [Parameter()]
     [ValidateNotNullOrEmpty()]
     [Alias('msg')]
     [string]
-    $message = $script:dbg,
+    $message = $script:dbg, #(dbg:data),
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [Alias('nfo','fun')]
@@ -365,7 +385,7 @@ function nfo:main {
   log:host -rgb:Blue     -out:$info.description
   log:host -rgb:DarkGray -out:' - '
   nfo:version -string:$info.version.number -name:$info.version.name
-  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray -len:41
+  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray -len:40
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
   log:host -rgb:Gray     -out:$info.author.name#,''
