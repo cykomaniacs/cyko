@@ -1,23 +1,23 @@
 {
   //-------------------------------------------------------------------------
-  // #region: TERMINAL | INTERGRATED
+  // #region: TERMINAL
   //-------------------------------------------------------------------------
-  "terminal.integrated.profiles.linux":
-  {
-    /*
+  "terminal.integrated.tabs.showActions": "always",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
     "bash":
     {
       "path": "bash",
       "icon": "terminal-bash",
       "color": "terminal.ansiYellow"
     },
-    "pwsh":
+    "posh":
     {
       "path": "pwsh",
       "icon": "terminal-powershell",
       "color": "terminal.ansiBlue"
     },
-    */
+
     "fish": null,
     "tmux": null,
     "zsh":  null,
@@ -28,6 +28,7 @@
   //-------------------------------------------------------------------------
   // #region: TERMINAL | POSH
   //-------------------------------------------------------------------------
+  "powershell.powerShellDefaultVersion": "latest-linux",
   "powershell.startAsLoginShell.linux": true,
   "powershell.integratedConsole.showOnStartup": true,
   //-------------------------------------------------------------------------
@@ -39,14 +40,24 @@
   //-------------------------------------------------------------------------
   // #region: GL8BAL | VISUALS
   //-------------------------------------------------------------------------
-  /*
   "editor.fontFamily": "input, Monospace",
   "debug.console.fontFamily": "input",
   "scm.inputFontFamily": "input",
   "editor.codeLensFontFamily": "input",
   "editor.inlayHints.fontFamily": "input",
   "terminal.integrated.fontFamily": "input",
-  */
+  "editor.semanticTokenColorCustomizations": {
+    "[Night Rider]": { // <namespace>
+      "rules": {
+        "namespace": { "foreground": "#ff82e0",
+          "bold": true,
+          "italic": false,
+          "underline": false,
+          "strikethrough": false
+        }
+      }
+    }
+  },
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
@@ -54,16 +65,34 @@
   //-------------------------------------------------------------------------
   // #region: EDITOR | WORKBENCH
   //-------------------------------------------------------------------------
+  //--------
   "workbench.tree.renderIndentGuides": "always", // file explorer
   "workbench.sideBar.location": "right",
   "workbench.editor.highlightModifiedTabs": true,
   "workbench.editor.tabSizing": "shrink",
+  "breadcrumbs.enabled": true,
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
   // #region: EDITOR | VISUALS
   //-------------------------------------------------------------------------
-
+  "editor.guides.indentation": true,
+  "editor.guides.bracketPairs": "active", // "active" (cursor)
+  "editor.matchBrackets": "near", // "near" (cursor)
+  "editor.guides.bracketPairsHorizontal": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "editor.language.brackets": [
+    [ "(", ")" ],
+    [ "{", "}" ],
+    [ "[", "]" ],
+    [ "<", ">" ],
+  ],
+  "editor.guides.highlightActiveBracketPair": true,
+  "editor.guides.highlightActiveIndentation": "always",
+  "editor.renderLineHighlight": "all", // highlight current line
+  "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
+  "editor.roundedSelection": true,
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
