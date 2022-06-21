@@ -384,7 +384,7 @@ function nfo:main {
   log:host -rgb:Gray     -out:'>'
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
-  log:host -rgb:Gray     -out:$info.organization.name#,''
+  log:host -rgb:Gray     -out:$info.organization.name #,''
   log:host -rgb:Gray     -out:' <'
   log:host -rgb:DarkGray -out:$info.organization.home
   log:host -rgb:Gray     -out:'>'

@@ -6,12 +6,20 @@
     //| DEBUG
     //+----------------------------------------------------------------------
 
+    //+-----+----------------------------------------------------------------
+    //| WIN | DEBUG
+    //+-----+----------------------------------------------------------------
+
     { "name": "debug-x64(vsdb)", // extension : C/C++
-      "presentation": {
+      "windows": { "presentation": {
         "hidden": false,
         "group": "A.DEBUG",
-        "order": 1
-      },
+        "order": 0
+      }},"linux":{ "presentation": {
+        "hidden": true,
+        "group": "A.DEBUG",
+        "order": 0
+      }},
 
       "type":    "cppvsdbg",
       "request": "launch",
@@ -28,15 +36,23 @@
       "presentation": {
         "hidden": false,
         "group": "A.DEBUG",
-        "order": 2
+        "order": 1
       },
 
       "type":    "lldb",
       "request": "custom",
 
-      "targetCreateCommands": [
-        "target create ${workspaceFolder}/bin/debug/x64/cyko.exe"
-      ],
+      "windows": {
+        "targetCreateCommands": [
+          "target create ${workspaceFolder}/bin/debug/x64/cyko.exe"
+        ],
+      },
+      "linux": {
+        "targetCreateCommands": [
+          "target create ${workspaceFolder}/bin/debug/x64/cyko"
+        ],
+      },
+
       "processCreateCommands": [
         "settings set target.run-args value1 value2 value3",
         "process launch"
