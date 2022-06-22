@@ -15,11 +15,18 @@
 #.PARAMETER fake
 # Fake execution (don't act, just print).
 #.PARAMETER help
-# Print usage and description to STDOUT.
+# Print info/help (Get-Help).
+#.PARAMETER detailed
+# Print info/help similar to: Get-Help -detailed
+#.PARAMETER examples
+# Print info/help similar to: Get-Help -examples
+#.PARAMETER complete
+# Print info/help similar to: Get-Help -full
 #.PARAMETER info
-# Print description to STDOUT.
+# Print script information (author, version, configuration etc).
+# About... simply put.
 #.PARAMETER version
-# Print the version number to STDOUT.
+# Print script version.
 #
 #.EXAMPLE
 # nuke.ps1 -base:./bin -name:debug -arch:x86
@@ -41,8 +48,17 @@
 # cyko@eggheadedmonkey.com
 #
 #.NOTES
-# Powershell ftw!
+# Power to the shell! ... and the people ;)
+# Skit ner er! Ever heard about zsh?
 
+#----------------------------------------------------------------------------
+# TODO: SORT - SPLIT EVERYTHING INTO NAMESPACES(GROUPS)
+# TODO: DOCS - PROVIDE PROPER DOCUMENTATION
+# TODO: OPTIMIZE / CLEANUP
+#-----------------
+# 2022/06/20 - Almost namespaced! :D
+# 2022/06/22 - Almost documented! XD
+# 2022/06/23 - Feeling good about cleanup, optimization... dunno.
 #----------------------------------------------------------------------------
 using namespace system
 #----------------------------------------------------------------------------
@@ -89,12 +105,13 @@ param (
   #endregion
 
   #region parameters(info) not manadatory! enables parameter-less invokation
-  [Parameter(ParameterSetName='3.0')]
+  [Parameter(ParameterSetName='3.0', Mandatory)]
   [Parameter(ParameterSetName='3.1', Mandatory)]
   [Alias('i')]
   [switch]
   $info,
   [Parameter(ParameterSetName='3.1', Position=1, Mandatory)]
+  [Parameter(ParameterSetName='3.2')]
   [Alias('v')]
   [switch]
   $version
@@ -105,6 +122,7 @@ param (
 #----------------------------------------------------------------------------
 #region namespace log
 #-----------------
+
 #:SYNOPSIS
 # Prints to STDOUT (default/main print implementation).
 function log:host {
@@ -378,13 +396,13 @@ function nfo:main {
   log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray -len:40
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
-  log:host -rgb:Gray     -out:$info.author.name#,''
+  log:host -rgb:Gray     -out:$info.author.name
   log:host -rgb:Gray     -out:' <'
   log:host -rgb:DarkGray -out:$info.author.mail
   log:host -rgb:Gray     -out:'>'
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
-  log:host -rgb:Gray     -out:$info.organization.name #,''
+  log:host -rgb:Gray     -out:$info.organization.name
   log:host -rgb:Gray     -out:' <'
   log:host -rgb:DarkGray -out:$info.organization.home
   log:host -rgb:Gray     -out:'>'
@@ -722,9 +740,6 @@ $cfg = @{ # importing
 
 #----------------------------------------------------------------------------
 #region: script execution
-#-----------------
-# TODO: SORT EVERYTHING INTO NAMESPACES!!
-# TODO: ALMOST NAMESPACED! :D
 #----------------------------------------------------------------------------
 if (app:nude)
 {
@@ -737,10 +752,14 @@ if (app:nude)
 } elseif ($info) {
   nfo:main -info:$cfg.info -repo:$cfg.repo -date:$cfg.date
 } else {
-  $name.foreach({ $t = $_
+  $name.foreach({ $n = $_
     $arch.foreach({
-      log:head -name:"$t" -arch:"$_"
-      app:main -fake:$cfg.fake -keep:$cfg.keep -path:"${base}" -name:"${t}" -arch:"${_}"
+      log:head -name:"${n}" -arch:"${_}" ; app:main `
+        -fake:$cfg.fake `
+        -keep:$cfg.keep `
+        -path:"${base}" `
+        -name:"${n}" `
+        -arch:"${_}"
     })
   })
 }
