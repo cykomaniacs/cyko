@@ -58,7 +58,8 @@
 #-----------------
 # 2022/06/20 - Almost namespaced! :D
 # 2022/06/22 - Almost documented! XD
-# 2022/06/23 - Feeling good about cleanup, optimization... dunno.
+# 2022/06/22 - Feeling good about cleanup, optimization... dunno.
+# 2022/06/22 - Optimizing types (uint etc).
 #----------------------------------------------------------------------------
 using namespace system
 #----------------------------------------------------------------------------
@@ -149,6 +150,7 @@ function log:feed {
 
   for ($i = 0; $i -lt $num; $i++) { Write-Host -NoNewline:$false }
 }
+
 #:SYNOPSIS
 # Prints a horizontal line of specified width/length.
 function log:line {
@@ -176,7 +178,7 @@ function log:line {
     $mini,
     [Parameter(ParameterSetName='1.0', Mandatory)]
     [Alias('length','number','num')]
-    [int] #--# length: manual
+    [uint] #--# length: manual
     $len = 20
   )
 
@@ -664,6 +666,9 @@ function app:main { # called upon script entry
 #-----------------
 # $var[([key]::info)]
 #-----------------
+
+#.SYNOPSIS
+# Configuration (psd1) keys.
 class key {
   static [string]$info = 'info'
   static [string]$date = 'date'
@@ -671,6 +676,7 @@ class key {
   static [string]$fake = 'fake'
   static [string]$keep = 'keep'
 }
+
 #endregion ------------------------------------------------------------------
 #region namespace mod(cfg) - module importer
 #-----------------
@@ -729,10 +735,10 @@ function mod:get {
 $cfg = @{ # importing
   keep = @(mod:get -key:([key]::keep) -default:$keep) + $keep
   #----------------------------------------------------#
-  info = ( mod:get -key:([key]::info) -critical )
-  date = ( mod:get -key:([key]::date) -critical )
-  repo = ( mod:get -key:([key]::repo) -critical )
-  fake = ( mod:get -key:([key]::fake) -default:$fake )
+  info = mod:get -key:([key]::info) -default:$infocritical
+  date = mod:get -key:([key]::date) -critical
+  repo = mod:get -key:([key]::repo) -critical
+  fake = mod:get -key:([key]::fake) -default:$fake
 }
 #endregion ------------------------------------------------------------------
 
@@ -764,3 +770,40 @@ if (app:nude)
   })
 }
 #endregion ------------------------------------------------------------------
+
+
+class version {
+  [ValidateNotNullOrEmpty()][string]$number
+  [ValidateNotNullOrEmpty()][string]$name
+
+  hidden [uint]$major # !.?.?
+  hidden [uint]$minor # ?.!.?
+  hidden [uint]$patch # ?.?.!
+
+  static [string]
+  major([string]$num) {
+    return $num.Substring(0, $num.indexOf('.'))
+  }
+
+  static [string]
+  minor([string]$num) {
+    return $num.Substring(
+      ($num.indexOf('.') + 1),
+      ($num.LastIndexOf('.') - 2)
+    )
+  }
+
+  static [string]
+  patch([string]$num) {
+    return $num.Substring(($num.LastIndexOf('.') + 1))
+  }
+
+  version([object]$tab <# config entry #>) {
+    $this.number = $tab.number
+    $this.name = $tab.name
+
+    $this.major = [version]::major($this.number)
+    $this.minor = [version]::minor($this.number)
+    $this.patch = [version]::patch($this.number)
+  }
+}
