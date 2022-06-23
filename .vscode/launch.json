@@ -1,14 +1,12 @@
 {
   "version": "0.2.0",
   "configurations": [
+    
+
 
     //+----------------------------------------------------------------------
     //| DEBUG
     //+----------------------------------------------------------------------
-
-    //+-----+----------------------------------------------------------------
-    //| WIN | DEBUG
-    //+-----+----------------------------------------------------------------
 
     { "name": "debug-x64(vsdb)", // extension : C/C++
       "windows": { "presentation": {
@@ -72,9 +70,14 @@
         "order": 0
       },
 
+      // specifics
+      "windows": { "script": "./nuke.ps1" },
+      "linux":   { "script": "./nuke.sh"  },
+
+      // common
       "request": "launch",
       "cwd":     "${workspaceFolder}",
-      "script":  "./nuke.ps1", "args": [
+      "args": [
         "-base", "'./bin'",
         "-name", "'debug', 'release'",
         "-arch", "'x86', 'x64'"
@@ -89,9 +92,14 @@
         "order": 1
       },
 
+      // specifics
+      "windows": { "script": "./nuke.ps1" },
+      "linux":   { "script": "./nuke.sh"  },
+
+      // common
       "request": "launch",
       "cwd":     "${workspaceFolder}",
-      "script":  "./nuke.ps1", "args": [
+      "args": [
         "-base", "'./bin'",
         "-name", "'debug'",
         "-arch", "'x86','x64'"
@@ -106,9 +114,14 @@
         "order": 2
       },
 
+      // specifics
+      "windows": { "script": "./nuke.ps1" },
+      "linux":   { "script": "./nuke.sh"  },
+
+      // common
       "request": "launch",
       "cwd":     "${workspaceFolder}",
-      "script":  "./nuke.ps1", "args": [
+      "args": [
         "-base", "'./bin'",
         "-name", "'debug'",
         "-arch", "'x86'"
@@ -123,9 +136,14 @@
         "order": 3
       },
 
+      // specifics
+      "windows": { "script": "./nuke.ps1" },
+      "linux":   { "script": "./nuke.sh"  },
+
+      // common
       "request": "launch",
       "cwd":     "${workspaceFolder}",
-      "script":  "./nuke.ps1", "args": [
+      "args": [
         "-base", "'./bin'",
         "-name", "'debug'",
         "-arch", "'x64'"
@@ -140,9 +158,14 @@
         "order": 4
       },
 
+      // specifics
+      "windows": { "script": "./nuke.ps1" },
+      "linux":   { "script": "./nuke.sh"  },
+
+      // common
       "request": "launch",
       "cwd":     "${workspaceFolder}",
-      "script":  "./nuke.ps1", "args": [
+      "args": [
         "-base", "'./bin'",
         "-name", "'release'",
         "-arch", "'x86', 'x64'"
@@ -157,9 +180,14 @@
         "order": 5
       },
 
+      // specifics
+      "windows": { "script": "./nuke.ps1" },
+      "linux":   { "script": "./nuke.sh"  },
+
+      // common
       "request": "launch",
       "cwd":     "${workspaceFolder}",
-      "script":  "./nuke.ps1", "args": [
+      "args": [
         "-base", "'./bin'",
         "-name", "'release'",
         "-arch", "'x86'"
@@ -190,7 +218,7 @@
       "createTemporaryIntegratedConsole": false,
     },
 
-    { "type": "PowerShell", "name": "nuke:debug(posh)",
+    { "type": "PowerShell", "name": "nuke:self(debug)",
       "presentation": {
         "hidden": false,
         "group": "X.NUKE.D",
@@ -200,6 +228,33 @@
       "cwd":     "${workspaceFolder}",
       "script":  "${workspaceFolder}/nuke.ps1",
       //"script": "enter path or command to execute e.g.: ${workspaceFolder}/src/foo.ps1 or Invoke-Pester",
+    },
+    { "type": "PowerShell", "name": "nuke:self(nude)",
+      "presentation": {
+        "hidden": false,
+        "group": "X.NUKE.D",
+        "order": 1
+      },
+
+      // specifics
+      "windows": { "script": "./nuke.ps1" },
+      "linux":   { "script": "./nuke.sh"  },
+
+      // common
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "args": []
+    },
+    {"type": "PowerShell", "name": "nuke:self(load:intellisense)",
+      "presentation": {
+        "hidden": false,
+        "group": "X.NUKE.D",
+        "order": 2
+      },
+
+      "request": "launch",
+      "cwd":     "${workspaceFolder}",
+      "script":  "./nuke.ps1", "args": [ ],
     },
 
     //-----------------------------------------------------------------------
