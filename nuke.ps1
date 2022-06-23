@@ -139,6 +139,7 @@ function log:host {
 
   Write-Host -NoNewline -ForegroundColor:$rgb $out
 }
+
 #:SYNOPSIS
 # Prints the line-feed character (new-line).
 function log:feed {
@@ -245,6 +246,11 @@ function log:file {
 
 
 
+
+
+
+
+
 #----------------------------------------------------------------------------
 #region namespace dbg (debug)
 #-----------------
@@ -252,57 +258,45 @@ $script:dbg = $null # ErrorVariable
 $script:dov = 'OK!' # ErrorVariable : d(efault)o(kay)v(alue)
 #-----------------
 
+trap {
+  log:feed; log:line -long; log:feed
+  log:host -rgb:Magenta -out $_
+  log:feed; log:line -long; log:feed
+}
+
 #.SYNOPSIS
 # Returns the name of the common-debug-variable.
 # Use: Some-Command -ErrorVariable:(dbg:data:variable)
 function dbg:data:variable { 'dbg' <# name of ErrorVariable #> }
 #.SYNOPSIS
-# Resets the common-debug-varable to its default value.
-function dbg:data:reset { $script:dbg = $script:dov }
+# Resets the common-debug-varable to its default value (and clears $Error).
+function dbg:data:reset {
+  $script:dbg = $script:dov;
+  $Error.Clear()
+}
 #.SYNOPSIS
-# Returns the cutrent value of the common-debug-variable.
+# Returns the value of the common-debug-variable.
 function dbg:data { $script:dbg }
 #.SYNOPSIS
 # Returns true if there are no global errors.
-function dbg:okay { $Error.Count -eq 0 }
+function dbg:okay { (dbg:fail:count) -eq 0 }
 #.SYNOPSIS
 # Returns the number of global errors.
 function dbg:fail:count { $Error.Count }
-#:SYNOPSIS
-# Stops the script!
-function dbg:kill {
-  param (
-    [Parameter()]
-    [int]
-    $code = 1,
-    [Parameter()]
-    [Alias('die')]
-    [switch]
-    $fake
-  )
 
-  if ($fake)
-  {
-    log:host -rgb:Yellow -out:exit
-    log:host -rgb:Red    -out:$code
-    log:feed -num:1
-  } else {
-    exit $code
-  }
-}
 #:SYNOPSIS
 # Failure handling.
 function dbg:fail {
   param (
-    [Parameter()]
-    [Alias('msg')]
-    [string]
-    $message = (dbg:data),
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
-    [Alias('nfo','fun')]
+    [Alias('c')]
     [string]
     $context,
+    [Parameter()]
+    [Alias('m')]
+    [string]
+    $message = (dbg:data),
     [Parameter()]
     [alias('die')]
     [switch]
@@ -324,30 +318,29 @@ function dbg:fail {
   log:host -rgb:DarkGray  -out:','
   log:host -rgb:DarkGreen -out:$cn #@ line-number:column-number
   log:host -rgb:Yellow    -out:']'
-  log:host -rgb:DarkGray  -out:' '
-  log:host -rgb:Blue      -out:'<'
+  log:host -rgb:Blue      -out:' <'
   log:host -rgb:DarkCyan  -out:"${context}"
-  log:host -rgb:Blue      -out:'>'
-  log:host -rgb:DarkGray  -out:' '
+  log:host -rgb:Blue      -out:'> '
   log:host -rgb:Red       -out:"${message}"
   log:feed -num:1
 
-  dbg:kill -code:((dbg:okay) ? 1:(dbg:fail:count)) -fake:(!$critcal)
+  dbg:data:reset # clear $Error
+  app:kill -code:((dbg:okay) ? 1:(dbg:fail:count)) -fake:(!$critcal)
 }
 #:SYNOPSIS
 # Handle failures. Evaluates the common-debug parameters per default.
 function dbg:eval {
   param (
-    [Parameter()]
-    [ValidateNotNullOrEmpty()]
-    [Alias('msg')]
-    [string]
-    $message = $script:dbg, #(dbg:data),
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
-    [Alias('nfo','fun')]
+    [Alias('c')]
     [string]
     $context,
+    [Parameter()]
+    [ValidateNotNullOrEmpty()]
+    [Alias('m')]
+    [string]
+    $message = (dbg:data),
     [Parameter()]
     [alias('die')]
     [switch]
@@ -358,7 +351,7 @@ function dbg:eval {
   {
     $tmp = $message
     dbg:data:reset # in case the of non-critical failure
-    dbg:fail -message:"${tmp}" -context:"${context}" -critcal:$critcal
+    dbg:fail -context:"${context}" -message:"${tmp}" -critcal:$critcal
   } else {
     dbg:data:reset
   }
@@ -435,10 +428,10 @@ function nfo:help {
     $nude
   )
 
-  function help:defaults { Get-Help "${path}" }
-  function help:complete { Get-Help "${path}" -Full }
-  function help:examples { Get-Help "${path}" -Examples }
-  function help:detailed { Get-Help "${path}" -Detailed }
+  function self:defaults { Get-Help "${path}" }
+  function self:complete { Get-Help "${path}" -Full }
+  function self:examples { Get-Help "${path}" -Examples }
+  function self:detailed { Get-Help "${path}" -Detailed }
 
   if ($nude)
   {
@@ -448,10 +441,10 @@ function nfo:help {
     log:host -rgb:Yellow     -out:'h '
     log:host -rgb:DarkGray   -out:'for more information ...'
     log:feed -num:1
-  } elseif ($complete) { help:complete
-  } elseif ($examples) { help:examples
-  } elseif ($detailed) { help:detailed
-  } else { help:defaults }
+  } elseif ($complete) { self:complete
+  } elseif ($examples) { self:examples
+  } elseif ($detailed) { self:detailed
+  } else { self:defaults }
 }
 #:SYNOPSIS
 # Prints information about the source code repository.
@@ -528,6 +521,27 @@ $app.name.Add('conf', $app.name.base + '.psd1')
 #endregion ------------------------------------------------------------------
 
 #:SYNOPSIS
+# Stops the script!
+function app:kill {
+  param (
+    [Parameter()]
+    [int]
+    $code = 1,
+    [Parameter()]
+    [switch]
+    $fake
+  )
+
+  if ($fake)
+  {
+    log:host -rgb:Yellow   -out:exit
+    log:host -rgb:DarkGray -out::
+    log:host -rgb:Red      -out:$code
+    log:feed -num:1
+  } else { exit $code }
+}
+
+#:SYNOPSIS
 # Returns the number of cmd-line arguments.
 function app:argc { # returns the number of cmd-line arguments.
   param (
@@ -536,8 +550,9 @@ function app:argc { # returns the number of cmd-line arguments.
     $all
   )
 
-  return $all ? $app.args.all.Length : $app.args.bound.Count
+  $all ? $app.args.all.Length : $app.args.bound.Count
 }
+
 #:SYNOPSIS
 # Returns the cmd-line arguments as an array.
 function app:argv { # returns the cmd-line arguments
@@ -547,11 +562,13 @@ function app:argv { # returns the cmd-line arguments
     $all
   )
 
-  return $all ? $app.args.all : $app.args.bound
+  $all ? $app.args.all : $app.args.bound
 }
+
 #.SYNOPSIS
 # Returns true if the scripts was invoked without arguments (nude)?
 function app:nude { (app:argc) -eq 0 }
+
 #:SYNOPSIS
 # Returns true if the specified list contains the named file.
 function app:keep { # determines whether to keep the file or not.
@@ -566,9 +583,11 @@ function app:keep { # determines whether to keep the file or not.
     $file
   )
 
-  $list.foreach({ if ("${_}" -eq "${file}") { return $true } })
-  return $false
+  #$list.foreach({ if ("${_}" -eq "${file}") { return $true } })
+  #return $false
+  $list.Contains($file)
 }
+
 #:SYNOPSIS
 # Main functionality (deleter).
 function app:nuke {
@@ -592,6 +611,7 @@ function app:nuke {
       -Path:"${path}/${node}"
   }
 }
+
 #:SYNOPSIS
 # Main (first function called).
 function app:main { # called upon script entry
