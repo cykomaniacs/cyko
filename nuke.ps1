@@ -247,120 +247,6 @@ function log:file {
 
 
 
-
-
-
-
-#----------------------------------------------------------------------------
-#region namespace dbg (debug)
-#-----------------
-$script:dbg = $null # ErrorVariable
-$script:dov = 'OK!' # ErrorVariable : d(efault)o(kay)v(alue)
-#-----------------
-
-trap {
-  log:feed; log:line -long; log:feed
-  log:host -rgb:Magenta -out $_
-  log:feed; log:line -long; log:feed
-}
-
-#.SYNOPSIS
-# Returns the name of the common-debug-variable.
-# Use: Some-Command -ErrorVariable:(dbg:data:variable)
-function dbg:data:variable { 'dbg' <# name of ErrorVariable #> }
-#.SYNOPSIS
-# Resets the common-debug-varable to its default value (and clears $Error).
-function dbg:data:reset {
-  $script:dbg = $script:dov;
-  $Error.Clear()
-}
-#.SYNOPSIS
-# Returns the value of the common-debug-variable.
-function dbg:data { $script:dbg }
-#.SYNOPSIS
-# Returns true if there are no global errors.
-function dbg:okay { (dbg:fail:count) -eq 0 }
-#.SYNOPSIS
-# Returns the number of global errors.
-function dbg:fail:count { $Error.Count }
-
-#:SYNOPSIS
-# Failure handling.
-function dbg:fail {
-  param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('c')]
-    [string]
-    $context,
-    [Parameter()]
-    [Alias('m')]
-    [string]
-    $message = (dbg:data),
-    [Parameter()]
-    [alias('die')]
-    [switch]
-    $critcal
-  )
-
-  if (dbg:okay)
-  {
-    $ln = $PSCmdlet.MyInvocation.ScriptLineNumber
-    $cn = $PSCmdlet.MyInvocation.OffsetInLine
-  } else {
-    $ln = $Error[0].InvocationInfo.ScriptLineNumber
-    $cn = $Error[0].InvocationInfo.OffsetInLine
-  }
-
-  log:host -rgb:DarkRed   -out:'#'
-  log:host -rgb:Yellow    -out:'['
-  log:host -rgb:Green     -out:$ln #@ line-number
-  log:host -rgb:DarkGray  -out:','
-  log:host -rgb:DarkGreen -out:$cn #@ line-number:column-number
-  log:host -rgb:Yellow    -out:']'
-  log:host -rgb:Blue      -out:' <'
-  log:host -rgb:DarkCyan  -out:"${context}"
-  log:host -rgb:Blue      -out:'> '
-  log:host -rgb:Red       -out:"${message}"
-  log:feed -num:1
-
-  dbg:data:reset # clear $Error
-  app:kill -code:((dbg:okay) ? 1:(dbg:fail:count)) -fake:(!$critcal)
-}
-#:SYNOPSIS
-# Handle failures. Evaluates the common-debug parameters per default.
-function dbg:eval {
-  param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('c')]
-    [string]
-    $context,
-    [Parameter()]
-    [ValidateNotNullOrEmpty()]
-    [Alias('m')]
-    [string]
-    $message = (dbg:data),
-    [Parameter()]
-    [alias('die')]
-    [switch]
-    $critcal
-  )
-
-  if (!(dbg:okay))
-  {
-    $tmp = $message
-    dbg:data:reset # in case the of non-critical failure
-    dbg:fail -context:"${context}" -message:"${tmp}" -critcal:$critcal
-  } else {
-    dbg:data:reset
-  }
-}
-#endregion ------------------------------------------------------------------
-
-
-
-
 #----------------------------------------------------------------------------
 #region namespace nfo
 #-----------------
@@ -494,13 +380,128 @@ function nfo:version {
 
 
 
+#----------------------------------------------------------------------------
+#region namespace dbg (debug)
+#-----------------
+$script:dbg = $null # ErrorVariable
+$script:dov = 'OK!' # ErrorVariable : d(efault)o(kay)v(alue)
+#-----------------
+
+trap {
+  log:feed -num:1
+  log:line -rgb:DarkGray -full; log:feed
+  log:host -rgb:DarkGray -out:"> "
+  log:host -rgb:Red -out:"BUG"
+  log:host -rgb:DarkGray -out:"|"
+  log:host -rgb:Gray -out:"TRAP"
+  log:host -rgb:DarkGray -out:" Unknown error ..."
+  log:feed -num:1
+  log:host -rgb:DarkGray -out:"> "
+  log:host -rgb:Red -out $PSItem
+  log:feed -num:1
+  log:line -rgb:DarkGray -full
+  log:feed -num:2
+  #$Error[0].InvocationInfo
+}
+
+#.SYNOPSIS
+# Returns the name of the common-debug-variable.
+# Use: Some-Command -ErrorVariable:(dbg:data:variable)
+function dbg:data:variable { 'dbg' <# name of ErrorVariable #> }
+#.SYNOPSIS
+# Resets the common-debug-varable to its default value (and clears $Error).
+function dbg:data:reset { $script:dbg = $Error.Clear() }
+#.SYNOPSIS
+# Returns the value of the common-debug-variable.
+function dbg:data { $script:dbg }
+#.SYNOPSIS
+# Returns true if there are no global errors.
+function dbg:okay { (dbg:fail:count) -eq 0 }
+#.SYNOPSIS
+# Returns the number of global errors.
+function dbg:fail:count { $Error.Count }
+
+#:SYNOPSIS
+# Failure handling.
+function dbg:fail {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [Alias('x')]
+    [string]
+    $context,
+    [Parameter()]
+    [Alias('m')]
+    [string]
+    $message = (dbg:data),
+    [Parameter()]
+    [alias('die')]
+    [switch]
+    $critical
+  )
+
+  if (dbg:okay)
+  {
+    $ln = $PSCmdlet.MyInvocation.ScriptLineNumber
+    $cn = $PSCmdlet.MyInvocation.OffsetInLine
+  } else {
+    $ln = $Error[0].InvocationInfo.ScriptLineNumber
+    $cn = $Error[0].InvocationInfo.OffsetInLine
+  }
+
+  log:host -rgb:DarkRed   -out:'#'
+  log:host -rgb:Yellow    -out:'['
+  log:host -rgb:Green     -out:$ln #@ line-number
+  log:host -rgb:DarkGray  -out:','
+  log:host -rgb:DarkGreen -out:$cn #@ line-number:column-number
+  log:host -rgb:Yellow    -out:']'
+  log:host -rgb:Blue      -out:' <'
+  log:host -rgb:DarkCyan  -out:"${context}"
+  log:host -rgb:Blue      -out:'> '
+  log:host -rgb:Red       -out:"${message}"
+  log:feed -num:1
+
+  dbg:data:reset # clear $Error
+  app:kill -c:(dbg:fail:count) -fake:(!$critical)
+}
+
+#:SYNOPSIS
+# Handle failures. Evaluates the common-debug parameters per default.
+function dbg:eval {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [Alias('x')]
+    [string]
+    $context,
+    [Parameter()]
+    [ValidateNotNullOrEmpty()]
+    [Alias('m')]
+    [string]
+    $message = (dbg:data),
+    [Parameter()]
+    [alias('die')]
+    [switch]
+    $critical
+  )
+
+  if (!(dbg:okay))
+  {
+    dbg:fail -x:$context -m:$message -critical:$critical
+    dbg:data:reset
+    app:kill -c:1 -fake:(!$critcal)
+  } else { dbg:data:reset }
+}
+#endregion ------------------------------------------------------------------
+
+
 
 #----------------------------------------------------------------------------
 #region namespace app
 #----------------------------------------------------------------------------
 #region namespace app - constants
 #-----------------
-$app = @{
+$script:app = @{
   name = @{
     data = $MyInvocation.MyCommand.Name
   # base = script name without extension
@@ -515,9 +516,9 @@ $app = @{
    bound = $PSBoundParameters # named arguments <?>
   }
 }
-$app.name.Add('base', $app.name.data.Substring(0,
-  $app.name.data.LastIndexOf('.')))
-$app.name.Add('conf', $app.name.base + '.psd1')
+$script:app.name.Add('base', $script:app.name.data.Substring(0,
+  $script:app.name.data.LastIndexOf('.')))
+$script:app.name.Add('conf', $script:app.name.base + '.psd1')
 #endregion ------------------------------------------------------------------
 
 #:SYNOPSIS
@@ -525,6 +526,7 @@ $app.name.Add('conf', $app.name.base + '.psd1')
 function app:kill {
   param (
     [Parameter()]
+    [Alias('c')]
     [int]
     $code = 1,
     [Parameter()]
@@ -532,13 +534,15 @@ function app:kill {
     $fake
   )
 
-  if ($fake)
+  if (!$fake)
   {
+    exit $code
+  } elseif ($verbose) {
     log:host -rgb:Yellow   -out:exit
     log:host -rgb:DarkGray -out::
     log:host -rgb:Red      -out:$code
     log:feed -num:1
-  } else { exit $code }
+  }
 }
 
 #:SYNOPSIS
@@ -568,25 +572,6 @@ function app:argv { # returns the cmd-line arguments
 #.SYNOPSIS
 # Returns true if the scripts was invoked without arguments (nude)?
 function app:nude { (app:argc) -eq 0 }
-
-#:SYNOPSIS
-# Returns true if the specified list contains the named file.
-function app:keep { # determines whether to keep the file or not.
-  param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [array]  # file-names
-    $list,
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [string] # file-name
-    $file
-  )
-
-  #$list.foreach({ if ("${_}" -eq "${file}") { return $true } })
-  #return $false
-  $list.Contains($file)
-}
 
 #:SYNOPSIS
 # Main functionality (deleter).
@@ -654,7 +639,7 @@ function app:main { # called upon script entry
       -Name `
       -ErrorAction:SilentlyContinue `
       -ErrorVariable:(dbg:data:variable)
-    dbg:eval -context:Get-ChildItem -message:"path: ${path}" -critcal
+    dbg:eval -context:Get-ChildItem -message:"path: ${path}" -critical -verbose
     $tmp
   }
 
@@ -663,7 +648,7 @@ function app:main { # called upon script entry
   # need -Hidden:$true on nix, $false on win (-all alias for -Hidden)
   @($false,$true).foreach({
     $(main:list -path:"${node}" -all:$_).foreach({
-      if (app:keep -list:$keep -file:"${_}")
+      if ($keep.Contains("${_}"))
       {
         log:file -path:"${node}" -name:"${_}" -keep
       } else {
@@ -706,7 +691,7 @@ $mop = $app.path.work + '/' + $app.name.conf # m(od-)p(ath)
 $mod = Import-PowerShellDataFile -Path:$mop `
   -ErrorAction:SilentlyContinue `
   -ErrorVariable:(dbg:data:variable)
-dbg:eval -context:Import-PowerShellDataFile -critcal # fail-safe
+dbg:eval -context:Import-PowerShellDataFile -critical # fail-safe
 #-----------------
 function mod:has {
   param (
@@ -722,9 +707,7 @@ function mod:has {
   if (!$mod.ContainsKey($key)) {
     if ($critical)
     {
-      dbg:fail -critcal `
-        -context:configuration `
-        -message:"cannot find specified key: ${key}" `
+      dbg:fail -die -x:configuration -m:"cannot find specified key: ${key}"
     } else {
       return $false
     }
