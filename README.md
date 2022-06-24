@@ -1,8 +1,8 @@
-# **`cyko`** cxx toolkit
+# **`cyko`** - cxx toolkit
 
 ## **GitHub Codespaces Instructions**
 
-> `assumes that your container runs the latest **debian** release.`
+> `assumes that your container runs the latest debian release.`
 
 ### **BUILD DEPENDENCIES**
 
@@ -12,9 +12,9 @@
 
 ---
 
-### **`POWERSHELL`**
+### **POWERSHELL**
 
-Prepare
+##### PREPARE
 
   ```sh
   # udate package sources
@@ -23,7 +23,7 @@ Prepare
   sudo apt install curl
   ```
 
-Configure
+##### CONFIGURE
 
   ```sh
   # add microsofts gpg keys (important!)
@@ -38,7 +38,7 @@ Configure
   sudo apt update
   ```
 
-Install
+##### INSTALL
 
   ```sh
   sudo apt install powershell
@@ -46,7 +46,12 @@ Install
 
 </br>
 
-> Microsofts guide:</br>
+> Microsofts guide:\
 > https://docs.microsoft.com/en-us/powershell/scripting/install/install-debian
 
 ---
+
+<!--
+https://github.com/cykomaniacs/cyko/blob/main/README.md?plain=1#L26
+[POWERSHELL](https://github.com/cykomaniacs/cyko#powershell)
+-->
