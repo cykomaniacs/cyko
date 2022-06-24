@@ -8,16 +8,13 @@
 
 ---
 
-**`CLANG`** **`POWERSHELL`**
-
-[^setup-posh]: Microsofts powershell setup guide\
-https://docs.microsoft.com/en-us/powershell/scripting/install/install-debian
+**`CLANG`** - **`POWERSHELL`**
 
 ---
 
 ### **`POWERSHELL`**
 
-1. Prepare
+Prepare
 
   ```sh
   # udate package sources
@@ -26,7 +23,7 @@ https://docs.microsoft.com/en-us/powershell/scripting/install/install-debian
   sudo apt install curl
   ```
 
-2. Configure
+Configure
 
   ```sh
   # add microsofts gpg keys (important!)
@@ -41,9 +38,9 @@ https://docs.microsoft.com/en-us/powershell/scripting/install/install-debian
   sudo apt update
   ```
 
-3. Install
+Install
 
-  ```
+  ```sh
   sudo apt install powershell
   ```
 
