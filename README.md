@@ -1,4 +1,4 @@
-# **`cyko`** - cxx toolkit
+# **CYKO** - CXX ToolKit
 
 ## **GitHub Codespaces Instructions**
 
