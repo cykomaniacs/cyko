@@ -1,7 +1,11 @@
-# **CYKO** - CXX ToolKit
+# **`CYKO`** - CXX ToolKit
 
-Found some old code from 2012.\
-Updating it to current (c++20) standards.
+> *Found some old code from 2012 on my "cloud".*\
+> *Decided to use it as base for a toolkit.*
+>
+> > *June 2022*
+>
+> @eggheadedmonkey
 
 ## **GitHub Codespaces Instructions**
 
@@ -17,35 +21,35 @@ Updating it to current (c++20) standards.
 
 ### **POWERSHELL**
 
-> `setup required base environment`
+`setup base environment`
 
-  ```sh
-  # fetch latest package meta-data
-  sudo apt update
-  # fetch necessary utilities
-  sudo apt install curl
-  ```
+```sh
+# fetch latest package meta-data
+sudo apt update
+# fetch necessary utilities
+sudo apt install curl
+```
 
-> `setup required repositories`
+`setup repositories`
 
-  ```sh
-  # add microsofts gpg keys (important!)
-  curl https://packages.microsoft.com/keys/microsoft.asc \
-    | sudo apt-key add -
+```sh
+# add microsofts gpg keys (important!)
+curl https://packages.microsoft.com/keys/microsoft.asc \
+  | sudo apt-key add -
 
-  # add microsofts sources/feeds
-  sudo echo 'deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main' \
-    > /etc/apt/sources.list.d/microsoft.list
-  ```
+# add microsofts sources/feeds
+sudo echo 'deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main' \
+  > /etc/apt/sources.list.d/microsoft.list
+```
 
-> `setup package`
+`setup package`
 
-  ```sh
-  # fetch latest package meta-data (including the new sources/feeds)
-  sudo apt update
-  # fetch powershell!
-  sudo apt install powershell
-  ```
+```sh
+# fetch latest package meta-data (including the new sources/feeds)
+sudo apt update
+# fetch and install...
+sudo apt install powershell
+```
 
 </br>
 
