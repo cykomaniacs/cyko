@@ -1,8 +1,11 @@
 # **CYKO** - CXX ToolKit
 
+Found some old code from 2012.\
+Updating it to current (c++20) standards.
+
 ## **GitHub Codespaces Instructions**
 
-> `assumes that your container runs the latest debian release.`
+> `assumes that your container runs the latest stable debian`
 
 ### **BUILD DEPENDENCIES**
 
@@ -14,40 +17,40 @@
 
 ### **POWERSHELL**
 
-##### PREPARE
+> `setup required base environment`
 
   ```sh
-  # udate package sources
+  # fetch latest package meta-data
   sudo apt update
-  # setup necessary tools
+  # fetch necessary utilities
   sudo apt install curl
   ```
 
-##### CONFIGURE
+> `setup required repositories`
 
   ```sh
   # add microsofts gpg keys (important!)
   curl https://packages.microsoft.com/keys/microsoft.asc \
     | sudo apt-key add -
 
-  # add microsofts source/feed
+  # add microsofts sources/feeds
   sudo echo 'deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main' \
     > /etc/apt/sources.list.d/microsoft.list
-
-  # update package sources (includes the new source/feed)
-  sudo apt update
   ```
 
-##### INSTALL
+> `setup package`
 
   ```sh
+  # fetch latest package meta-data (including the new sources/feeds)
+  sudo apt update
+  # fetch powershell!
   sudo apt install powershell
   ```
 
 </br>
 
-> Microsofts guide:\
-> https://docs.microsoft.com/en-us/powershell/scripting/install/install-debian
+> *Read about more methods here...*\
+> *https://docs.microsoft.com/en-us/powershell/scripting/install/install-debian*
 
 ---
 
