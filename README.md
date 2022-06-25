@@ -1,4 +1,4 @@
-# **`CYKO`** - CXX ToolKit
+# **CYKO** - CXX ToolKit
 
 > *Found some old code from 2012 on my "cloud".*\
 > *Decided to use it as base for a toolkit.*
@@ -9,7 +9,7 @@
 
 ## **GitHub Codespaces Instructions**
 
-> `assumes that your container runs the latest stable debian`
+> `assumes your container runs debian`
 
 ### **BUILD DEPENDENCIES**
 
@@ -20,6 +20,8 @@
 ---
 
 ### **POWERSHELL**
+
+---
 
 `setup base environment`
 
