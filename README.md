@@ -67,7 +67,7 @@ is a **free** and **open-source** project distributed under the terms of the
 MIT License. A short and simple permissive license with conditions only
 requiring preservation of copyright and license notices.
 
-> See the [LICENSE](LICENSE) file for details.
+> *See the [LICENSE](LICENSE) file for details.*
 
 <!--
 https://github.com/cykomaniacs/cyko/blob/main/README.md?plain=1#L26
