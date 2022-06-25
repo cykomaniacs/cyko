@@ -5,7 +5,7 @@
 >
 > > *June 2022*
 >
-> @eggheadedmonkey
+> **@[eggheadedmonkey](https://github.com/eggheadedmonkey)**
 
 ## **GitHub Codespaces Instructions**
 
