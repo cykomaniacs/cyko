@@ -60,6 +60,15 @@ sudo apt install powershell
 
 ---
 
+## **License**
+
+[**CYKO**](https://github.com/cykomaniacs/cyko)
+is a **free** and **open-source** project distributed under the terms of the
+MIT License. A short and simple permissive license with conditions only
+requiring preservation of copyright and license notices.
+
+> See the [LICENSE](LICENSE) file for details.
+
 <!--
 https://github.com/cykomaniacs/cyko/blob/main/README.md?plain=1#L26
 [POWERSHELL](https://github.com/cykomaniacs/cyko#powershell)
