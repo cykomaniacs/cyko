@@ -60,6 +60,7 @@
 # 2022/06/22 - Almost documented! XD
 # 2022/06/22 - Feeling good about cleanup, optimization... dunno.
 # 2022/06/22 - Optimizing types (uint etc).
+# 2022/06/25 - Optimizing parameters (Attributes, Aliases...).
 #----------------------------------------------------------------------------
 using namespace system
 #----------------------------------------------------------------------------
@@ -87,10 +88,10 @@ param (
   #endregion
 
   #region parameters(help)
-  [Parameter(ParameterSetName='2.0', Mandatory)]
-  [Parameter(ParameterSetName='2.1', Mandatory)]
-  [Parameter(ParameterSetName='2.2', Mandatory)]
-  [Parameter(ParameterSetName='2.3', Mandatory)]
+  [Parameter(ParameterSetName='2.0', Position=0, Mandatory)]
+  [Parameter(ParameterSetName='2.1', Position=0, Mandatory)]
+  [Parameter(ParameterSetName='2.2', Position=0, Mandatory)]
+  [Parameter(ParameterSetName='2.3', Position=0, Mandatory)]
   [Alias('h')]
   [switch]
   $help,
@@ -105,14 +106,14 @@ param (
   $complete,
   #endregion
 
-  #region parameters(info) not manadatory! enables parameter-less invokation
-  [Parameter(ParameterSetName='3.0', Mandatory)]
-  [Parameter(ParameterSetName='3.1', Mandatory)]
+  #region parameters(info)
+  [Parameter(ParameterSetName='3.0', Position=0, Mandatory)]
+  [Parameter(ParameterSetName='3.1', Position=0, Mandatory)]
   [Alias('i')]
   [switch]
   $info,
   [Parameter(ParameterSetName='3.1', Position=1, Mandatory)]
-  [Parameter(ParameterSetName='3.2')]
+  [Parameter(ParameterSetName='3.2', Position=0)] # parameter-less invocation
   [Alias('v')]
   [switch]
   $version
@@ -133,7 +134,7 @@ function log:host {
     [ConsoleColor]
     $rgb = [ConsoleColor]::White,
     [Parameter()]
-    [string[]] # output: ...
+    [string[]]
     $out
   )
 
@@ -141,15 +142,17 @@ function log:host {
 }
 
 #:SYNOPSIS
-# Prints the line-feed character (new-line).
+# Prints the line-feed character (new-line) to STDOUT.
 function log:feed {
   param (
     [Parameter()]
-    [int]
+    [uint]
     $num = 1
   )
 
-  for ($i = 0; $i -lt $num; $i++) { Write-Host -NoNewline:$false }
+  for ($i = 0; $i -lt $num; $i++) {
+    Write-Host -NoNewline:$false
+  }
 }
 
 #:SYNOPSIS
@@ -178,8 +181,8 @@ function log:line {
     [switch] # length: < half
     $mini,
     [Parameter(ParameterSetName='1.0', Mandatory)]
-    [Alias('length','number','num')]
-    [uint] #--# length: manual
+    [Alias('num')]
+    [uint] #-# length: manual
     $len = 20
   )
 
@@ -192,6 +195,7 @@ function log:line {
     log:host -rgb:$rgb -out:'-'
   }
 }
+
 #:SYNOPSIS
 # Prints a header (info about target).
 function log:head {
@@ -207,14 +211,17 @@ function log:head {
   )
 
   log:host -rgb:Yellow   -out:'> '
-  log:host -rgb:Blue     -out:"${name}"
+  log:host -rgb:Blue     -out:$name
   log:host -rgb:DarkCyan -out:':'
-  log:host -rgb:Red      -out:"${arch}"
+  log:host -rgb:Red      -out:$arch
+  <#
   log:host -rgb:Yellow   -out:'('
   log:host -rgb:DarkGray -out:'nuke'
   log:host -rgb:Yellow   -out:')'
+  #>
   log:feed -num:1
 }
+
 #:SYNOPSIS
 # Prints info about a file (prefixed with nuke/keep indicator + path).
 function log:file {
@@ -245,8 +252,6 @@ function log:file {
 
 
 
-
-
 #----------------------------------------------------------------------------
 #region namespace nfo
 #-----------------
@@ -269,30 +274,39 @@ function nfo:main {
     $date
   )
 
+  function local:line {
+    log:line -rgb:DarkGray -num:22
+  }
+
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
-  log:host -rgb:Blue     -out:$info.description
+  log:host -rgb:Red      -out:$script:app.name.base #'Nuke'
   log:host -rgb:DarkGray -out:' - '
-  nfo:version -string:$info.version.number -name:$info.version.name
-  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray -len:40
+  log:host -rgb:Yellow   -out:$info.description
+  log:host -rgb:DarkGray -out:' - '
+  nfo:version -string:$info.version.number -name:$info.version.name -end:0
   log:feed -num:1
-  log:host -rgb:DarkGray -out:'# '
-  log:host -rgb:Gray     -out:$info.author.name
-  log:host -rgb:Gray     -out:' <'
-  log:host -rgb:DarkGray -out:$info.author.mail
-  log:host -rgb:Gray     -out:'>'
+  log:host -rgb:DarkGray -out:'# '; local:line
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
   log:host -rgb:Gray     -out:$info.organization.name
-  log:host -rgb:Gray     -out:' <'
-  log:host -rgb:DarkGray -out:$info.organization.home
-  log:host -rgb:Gray     -out:'>'
-  log:feed -num:1
-  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray -len:41
+  log:host -rgb:DarkGray -out:' <'
+  log:host -rgb:Blue     -out:$info.organization.home
+  log:host -rgb:DarkGray -out:'>'
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
-  nfo:repo -url:$repo  -rgb:Blue
-  log:host -rgb:DarkGray -out:'# ';log:line -rgb:DarkGray -len:22
+  log:host -rgb:Gray     -out:$info.author.name
+  log:host -rgb:DarkGray -out:' <'
+  log:host -rgb:Magenta  -out:$info.author.mail
+  log:host -rgb:DarkGray -out:'>'
+  log:feed -num:1
+  log:host -rgb:DarkGray -out:'# '
+  log:host -rgb:Gray     -out:'github'
+  log:host -rgb:DarkGray -out:' <'
+  nfo:address -rgb:Blue -url:$repo -end:0
+  log:host -rgb:DarkGray -out:'>'
+  log:feed -num:1
+  log:host -rgb:DarkGray -out:'# '; local:line
   log:feed -num:1
   log:host -rgb:DarkGray -out:'# '
   log:host -rgb:Cyan     -out:$date.updated
@@ -301,6 +315,7 @@ function nfo:main {
   log:host -rgb:DarkGray -out:')'
   log:feed -num:2
 }
+
 #:SYNOPSIS
 # Prints usage / help (using the Get-Help command).
 function nfo:help {
@@ -308,16 +323,19 @@ function nfo:help {
     [Parameter()]
     [ValidateNotNullOrEmpty()]
     [string] # script path
-    $path = "$($app.path.full)",
+    $path = $script:app.path.full,
     [Parameter()]
     [switch] # script called parameter-less?
-    $nude
+    $nude,
+    [Parameter()]
+    [uint] #-# line-feeds
+    $end = 1
   )
 
-  function self:defaults { Get-Help "${path}" }
-  function self:complete { Get-Help "${path}" -Full }
-  function self:examples { Get-Help "${path}" -Examples }
-  function self:detailed { Get-Help "${path}" -Detailed }
+  function local:defaults { Get-Help $path }
+  function local:complete { Get-Help $path -Full }
+  function local:examples { Get-Help $path -Examples }
+  function local:detailed { Get-Help $path -Detailed }
 
   if ($nude)
   {
@@ -326,15 +344,16 @@ function nfo:help {
     log:host -rgb:DarkYellow -out:' -'
     log:host -rgb:Yellow     -out:'h '
     log:host -rgb:DarkGray   -out:'for more information ...'
-    log:feed -num:1
-  } elseif ($complete) { self:complete
-  } elseif ($examples) { self:examples
-  } elseif ($detailed) { self:detailed
-  } else { self:defaults }
+    log:feed -num:$end
+  } elseif ($complete) { local:complete
+  } elseif ($examples) { local:examples
+  } elseif ($detailed) { local:detailed
+  } else { local:defaults }
 }
+
 #:SYNOPSIS
 # Prints information about the source code repository.
-function nfo:repo {
+function nfo:address {
   param (
     [Parameter()]
     [ValidateNotNullOrEmpty()]
@@ -343,12 +362,16 @@ function nfo:repo {
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [string]
-    $url
+    $url,
+    [Parameter()]
+    [uint] # line-feeds
+    $end = 1
   )
 
   log:host -rgb:$rgb -out:$url
-  log:feed -num:1
+  log:feed -num:$end
 }
+
 #:SYNOPSIS
 # Prints version information.
 function nfo:version {
@@ -358,9 +381,13 @@ function nfo:version {
     [string] # version number
     $string,
     [Parameter()]
+    [ValidateNotNullOrEmpty()]
     [AllowNull()]
     [string] # version name
-    $name = $null
+    $name = $null,
+    [Parameter()]
+    [uint] #-# line-feeds
+    $end = 1
   )
 
   log:host -rgb:Cyan -out:$string.Substring(0, $string.indexOf('.'))
@@ -370,11 +397,12 @@ function nfo:version {
     ($string.LastIndexOf('.') - 2))
   log:host -rgb:Blue -out:'.'
   log:host -rgb:Cyan -out:$string.Substring(($string.LastIndexOf('.') + 1))
-  log:feed -num:((($null -eq $name) -or ($name.Length -lt 1)) ? 1:0)
-  log:host -rgb:DarkCyan -out:' <'
-  log:host -rgb:DarkGray -out:$name
-  log:host -rgb:DarkCyan -out:'>'
-  log:feed -num:1
+  if (($null -ne $name) -and ($name.Length -gt 0)) {
+    log:host -rgb:DarkCyan -out:' <'
+    log:host -rgb:DarkGray -out:$name
+    log:host -rgb:DarkCyan -out:'>'
+  }
+  log:feed -num:$end
 }
 #endregion ------------------------------------------------------------------
 
@@ -386,22 +414,23 @@ function nfo:version {
 $script:dbg = $null # ErrorVariable
 $script:dov = 'OK!' # ErrorVariable : d(efault)o(kay)v(alue)
 #-----------------
-
-trap {
+trap { # handles unforseen failures (good bug catcher)
   log:feed -num:1
-  log:line -rgb:DarkGray -full; log:feed
-  log:host -rgb:DarkGray -out:"> "
-  log:host -rgb:Red -out:"BUG"
-  log:host -rgb:DarkGray -out:"|"
-  log:host -rgb:Gray -out:"TRAP"
-  log:host -rgb:DarkGray -out:" Unknown error ..."
+  log:line -rgb:DarkGray -full; log:feed -num:1
+  log:host -rgb:DarkGray -out:'> '
+  log:host -rgb:Red      -out:'BUG'
+  log:host -rgb:DarkGray -out:'|'
+  log:host -rgb:Gray     -out:'TRAP'
+  log:host -rgb:DarkGray -out:' Unknown error ...'
   log:feed -num:1
-  log:host -rgb:DarkGray -out:"> "
-  log:host -rgb:Red -out $PSItem
+  log:host -rgb:DarkGray -out:'> '
+  log:host -rgb:Red      -out:$_
   log:feed -num:1
   log:line -rgb:DarkGray -full
   log:feed -num:2
   #$Error[0].InvocationInfo
+
+  $Error.Clear()
 }
 
 #.SYNOPSIS
@@ -410,7 +439,7 @@ trap {
 function dbg:data:variable { 'dbg' <# name of ErrorVariable #> }
 #.SYNOPSIS
 # Resets the common-debug-varable to its default value (and clears $Error).
-function dbg:data:reset { $script:dbg = $Error.Clear() }
+function dbg:data:reset { $script:dbg = $null; $Error.Clear() }
 #.SYNOPSIS
 # Returns the value of the common-debug-variable.
 function dbg:data { $script:dbg }
@@ -432,8 +461,8 @@ function dbg:fail {
     $context,
     [Parameter()]
     [Alias('m')]
-    [string]
-    $message = (dbg:data),
+    [string[]]
+    $message = $dbg,
     [Parameter()]
     [alias('die')]
     [switch]
@@ -449,20 +478,20 @@ function dbg:fail {
     $cn = $Error[0].InvocationInfo.OffsetInLine
   }
 
-  log:host -rgb:DarkRed   -out:'#'
+  log:host -rgb:Red       -out:'#'
   log:host -rgb:Yellow    -out:'['
   log:host -rgb:Green     -out:$ln #@ line-number
   log:host -rgb:DarkGray  -out:','
   log:host -rgb:DarkGreen -out:$cn #@ line-number:column-number
   log:host -rgb:Yellow    -out:']'
   log:host -rgb:Blue      -out:' <'
-  log:host -rgb:DarkCyan  -out:"${context}"
+  log:host -rgb:DarkCyan  -out:$context
   log:host -rgb:Blue      -out:'> '
-  log:host -rgb:Red       -out:"${message}"
+  log:host -rgb:Red       -out:$message
   log:feed -num:1
 
   dbg:data:reset # clear $Error
-  app:kill -c:(dbg:fail:count) -fake:(!$critical)
+  app:kill -c:((dbg:fail:count) + 1) -fake:(!$critical)
 }
 
 #:SYNOPSIS
@@ -477,8 +506,8 @@ function dbg:eval {
     [Parameter()]
     [ValidateNotNullOrEmpty()]
     [Alias('m')]
-    [string]
-    $message = (dbg:data),
+    [string[]]
+    $message = $dbg,
     [Parameter()]
     [alias('die')]
     [switch]
@@ -489,7 +518,7 @@ function dbg:eval {
   {
     dbg:fail -x:$context -m:$message -critical:$critical
     dbg:data:reset
-    app:kill -c:1 -fake:(!$critcal)
+    app:kill -c:((dbg:fail:count) + 1) -fake:(!$critcal)
   } else { dbg:data:reset }
 }
 #endregion ------------------------------------------------------------------
@@ -534,39 +563,45 @@ function app:kill {
     $fake
   )
 
-  if (!$fake)
+  if ($VerbosePreference)
   {
-    exit $code
-  } elseif ($verbose) {
-    log:host -rgb:Yellow   -out:exit
-    log:host -rgb:DarkGray -out::
+    log:feed -num:0
+    log:host -rgb:Red      -out:'# '
+    log:host -rgb:DarkGray -out:'...'
+    log:feed -num:1
+    log:host -rgb:Red      -out:'$ '
+    log:host -rgb:Yellow   -out:'exit'
+    log:host -rgb:DarkGray -out:'('
     log:host -rgb:Red      -out:$code
+    log:host -rgb:DarkGray -out:')'
     log:feed -num:1
   }
+
+  if (!$fake) { exit $code }
 }
 
 #:SYNOPSIS
 # Returns the number of cmd-line arguments.
-function app:argc { # returns the number of cmd-line arguments.
+function app:argc {
   param (
     [Parameter()]
     [switch]
     $all
   )
 
-  $all ? $app.args.all.Length : $app.args.bound.Count
+  $all ? $script:app.args.all.Length : $script:app.args.bound.Count
 }
 
 #:SYNOPSIS
 # Returns the cmd-line arguments as an array.
-function app:argv { # returns the cmd-line arguments
+function app:argv {
   param (
     [Parameter()]
     [switch]
     $all
   )
 
-  $all ? $app.args.all : $app.args.bound
+  $all ? $script:app.args.all : $script:app.args.bound
 }
 
 #.SYNOPSIS
@@ -574,26 +609,73 @@ function app:argv { # returns the cmd-line arguments
 function app:nude { (app:argc) -eq 0 }
 
 #:SYNOPSIS
+# Returns true if the $keep list contains the file.
+function app:keep {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $file
+  )
+
+  $keep.Contains($file)
+}
+
+#:SYNOPSIS
+# Returns a list of file-names.
+function app:ls {
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $path,
+    [Parameter()]
+    [switch]
+    $all,
+    [Parameter()]
+    [switch]
+    $critical
+  )
+
+  $list = Get-ChildItem -Name `
+    -Path:$path `
+    -Hidden:$all `
+    -ErrorAction:SilentlyContinue `
+    -ErrorVariable:dbg;dbg:eval `
+    -x:Get-ChildItem `
+    -critical:$critical
+    #-m:'path:',$path `
+    #-critical:$critical #-verbose # verbose testing
+  $list # return the list
+}
+
+#:SYNOPSIS
 # Main functionality (deleter).
 function app:nuke {
   param (
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string] # file-path(excluding file-name)
     $path,
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
     [string] # file-name
-    $node,
-    [Parameter(Mandatory)]
-    [switch] # nuke?
-    $fake
+    $file,
+    [Parameter()]
+    [switch] # keep?
+    $fake = $fake
   )
 
   if (!$fake) {
     Remove-Item `
+      -Path:"${path}/${file}" `
       -Force `
       -Recurse `
-      -ErrorAction:SilentlyContinue `
-      -Path:"${path}/${node}"
+      -ErrorAction:SilentlyContinue
+
+    if ($VerbosePreference) {
+      # impl failure logging
+    }
   }
 }
 
@@ -602,7 +684,6 @@ function app:nuke {
 function app:main { # called upon script entry
   param (
     [Parameter()]
-    [ValidateNotNullOrEmpty()]
     [switch] # see configuration (nuke.psd1)
     $fake = $false,
     [Parameter(Mandatory)]
@@ -623,40 +704,20 @@ function app:main { # called upon script entry
     $arch
   )
 
-  function main:list {
-    param (
-      [Parameter(Mandatory)]
-      [ValidateNotNullOrEmpty()]
-      [string]
-      $path,
-      [Parameter()]
-      [switch]
-      $all
-    )
-
-    $tmp = Get-ChildItem -Hidden:$all `
-      -Path:"${path}" `
-      -Name `
-      -ErrorAction:SilentlyContinue `
-      -ErrorVariable:(dbg:data:variable)
-    dbg:eval -context:Get-ChildItem -message:"path: ${path}" -critical -verbose
-    $tmp
-  }
-
   # ex: ./bin/debug/x64
-  $node = $path + '/' + $name + '/' + $arch
-  # need -Hidden:$true on nix, $false on win (-all alias for -Hidden)
-  @($false,$true).foreach({
-    $(main:list -path:"${node}" -all:$_).foreach({
-      if ($keep.Contains("${_}"))
+  $p = $path + '/' + $name + '/' + $arch
+  # need -all:$true on nix, $false on win (-all alias for -Hidden)
+  foreach ($a in @($false,$true)) {
+    (app:ls -path:$p -all:$a -critical).foreach({
+      if (app:keep -file:$_)
       {
-        log:file -path:"${node}" -name:"${_}" -keep
+        log:file -path:$p -name:$_ -keep
       } else {
-        log:file -path:"${node}" -name:"${_}"
-        app:nuke -path:"${node}" -node:"${_}" -fake:$fake
+        log:file -path:$p -name:$_
+        app:nuke -path:$p -file:$_ -fake:$fake
       }
     })
-  })
+  }
 }
 #endregion ------------------------------------------------------------------
 
@@ -683,19 +744,23 @@ class key {
 }
 
 #endregion ------------------------------------------------------------------
-#region namespace mod(cfg) - module importer
+#region namespace mod(cfg) - module import
 #-----------------
-# import/source
-#-----------------
-$mop = $app.path.work + '/' + $app.name.conf # m(od-)p(ath)
-$mod = Import-PowerShellDataFile -Path:$mop `
+$script:mop = $app.path.work + '/' + $app.name.conf
+$script:mod = Import-PowerShellDataFile `
+  -Path:$mop `
   -ErrorAction:SilentlyContinue `
-  -ErrorVariable:(dbg:data:variable)
-dbg:eval -context:Import-PowerShellDataFile -critical # fail-safe
-#-----------------
+  -ErrorVariable:dbg;dbg:eval `
+  -x:Import-PowerShellDataFile `
+  -critical
+  #-m:'path:',$mop `
+  #-critical
+
 function mod:has {
   param (
     [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [Alias('k')]
     [string]
     $key,
     [Parameter()]
@@ -707,21 +772,21 @@ function mod:has {
   if (!$mod.ContainsKey($key)) {
     if ($critical)
     {
-      dbg:fail -die -x:configuration -m:"cannot find specified key: ${key}"
-    } else {
-      return $false
-    }
+      dbg:fail -x:'cfg(module)' -m:'missing key:',$key -critical
+    } else { return $false }
   } else { return $true }
 }
+
 function mod:get {
   param (
     [Parameter(ParameterSetName='1.0', Mandatory)]
     [Parameter(ParameterSetName='1.1', Mandatory)]
+    [Alias('k')]
     [string]
     $key,
     [Parameter(ParameterSetName='1.0')]
     [AllowNull()]
-    [Alias('def')]
+    [Alias('d')]
     [object]
     $default = $null,
     [Parameter(ParameterSetName='1.1')]
@@ -730,19 +795,20 @@ function mod:get {
     $critical
   )
 
-  (mod:has -key:$key -critical:$critical) ? $mod[$key] : $default
+  (mod:has -k:$key -critical:$critical) ? $mod[$key] : $default
 }
 #endregion ------------------------------------------------------------------
 #region namespace cfg
 #-----------------
-$cfg = @{ # importing
-  keep = @(mod:get -key:([key]::keep) -default:$keep) + $keep
-  #----------------------------------------------------#
-  info = mod:get -key:([key]::info) -default:$infocritical
-  date = mod:get -key:([key]::date) -critical
-  repo = mod:get -key:([key]::repo) -critical
-  fake = mod:get -key:([key]::fake) -default:$fake
+$script:cfg = @{ # importing
+  keep = @(mod:get -k:([key]::keep) -default:$keep) + $keep
+  #-------------------------------------------------
+  info = mod:get -k:([key]::info) -critical
+  date = mod:get -k:([key]::date) -critical
+  repo = mod:get -k:([key]::repo) -critical
+  fake = mod:get -k:([key]::fake) -default:$fake
 }
+#$cfg
 #endregion ------------------------------------------------------------------
 
 
@@ -766,9 +832,9 @@ if (app:nude)
       log:head -name:"${n}" -arch:"${_}" ; app:main `
         -fake:$cfg.fake `
         -keep:$cfg.keep `
-        -path:"${base}" `
-        -name:"${n}" `
-        -arch:"${_}"
+        -path:$base `
+        -name:$n `
+        -arch:$_
     })
   })
 }

@@ -58,6 +58,16 @@
     //"ms-vscode.powershell",
     "ms-vscode.powershell-preview",
     // --------------------------------
+    // MARKDOWN
+    // --------------------------------
+    "bierner.github-markdown-preview",
+    "bierner.markdown-checkbox",
+    "bierner.markdown-emoji",
+    "bierner.markdown-footnotes",
+    "bierner.markdown-preview-github-styles",
+    "bierner.markdown-shiki",
+    "bierner.markdown-yaml-preamble",
+    // --------------------------------
     // MISC
     // --------------------------------
     "ms-vscode.hexeditor", // Hex Editor

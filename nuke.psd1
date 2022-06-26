@@ -1,7 +1,7 @@
 @{
 # information (about, authors, version, etc...)
 info = @{
-  description = "Generic build cleaner for Windows"
+  description = "generic build cleaner"
   summary = "build cleaner"
   # --------------------------------
   # .number: major.minor.patch
@@ -30,7 +30,7 @@ info = @{
   }
 }
 # timestamps
-date = @{ created = "2022/06/14"; updated = "2022/06/21" }
+date = @{ created = "2022/06/14"; updated = "2022/06/26" }
 # repository url
 repo = "https://github.com/cykomaniacs/cyko"
 # dry-run (don't do anything, just print)

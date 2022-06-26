@@ -5,21 +5,18 @@
   "terminal.integrated.tabs.showActions": "always",
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.defaultProfile.windows": "posh",
-  "terminal.integrated.profiles.linux":
-  {
-    "bash":
-    {
+  "terminal.integrated.profiles.linux": {
+    "bash": {
       "path":  "bash",
       "icon":  "terminal-bash",
       "color": "terminal.ansiYellow"
     },
-    "posh":
-    {
+    "posh": {
       "path":  "pwsh",
       "icon":  "terminal-powershell",
       "color": "terminal.ansiBlue"
     },
-
+    // github codespace (debian)
     "fish": null,
     "tmux": null,
     "zsh":  null,
@@ -30,7 +27,7 @@
   //-------------------------------------------------------------------------
   // #region: TERMINAL | POSH
   //-------------------------------------------------------------------------
-  "powershell.powerShellDefaultVersion": "latest-linux", // -windows|linux
+ // "powershell.powerShellDefaultVersion": "latest-linux", // -windows|linux
   //"powershell.startAsLoginShell.linux": true,
   "powershell.integratedConsole.showOnStartup": true,
   //-------------------------------------------------------------------------
@@ -43,23 +40,11 @@
   // #region: GL8BAL | VISUALS
   //-------------------------------------------------------------------------
   "editor.fontFamily": "input, Monospace",
-  "debug.console.fontFamily": "input",
-  "scm.inputFontFamily": "input",
   "editor.codeLensFontFamily": "input",
   "editor.inlayHints.fontFamily": "input",
+  "scm.inputFontFamily": "input",
   "terminal.integrated.fontFamily": "input",
-  "editor.semanticTokenColorCustomizations": {
-    "[Night Rider]": { // <namespace>
-      "rules": {
-        "namespace": { "foreground": "#ff82e0",
-          "bold": true,
-          "italic": false,
-          "underline": false,
-          "strikethrough": false
-        }
-      }
-    }
-  },
+  "debug.console.fontFamily": "input",
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
@@ -130,27 +115,20 @@
   "gitlens.hovers.currentLine.enabled": true,
   "gitlens.hovers.currentLine.over": "annotation", // <annotation|line>
   "gitlens.hovers.currentLine.changes": true,
-  "gitlens.hovers.currentLine.details": false,
+  "gitlens.hovers.currentLine.details": true,
   "gitlens.codeLens.enabled": true,
-  "gitlens.codeLens.symbolScopes": [
-    "!namespace",
-    "!containers",
-    "!blocks",
-    "!enum",
-    "!struct",
-  ],
   //-------------------------------------------------------------------------
   // #endregion
   //-------------------------------------------------------------------------
 
 
 
-
   //-------------------------------------------------------------------------
   // #region: CXX | OVERRIDES
   //-------------------------------------------------------------------------
-  "[cpp]":
-  {
+  "[cpp]": {
+    /// EDITOR | INTELLISENSE (COMMENTING)
+    "files.trimTrailingWhitespace": true, // false: double white-space (newline)
     /// EDITOR | INTELLISENSE
     "editor.wordBasedSuggestions": false, // suggestion based on histor
     /// EDITOR | VISUALS
@@ -160,6 +138,17 @@
     "editor.occurrencesHighlight": true, // highligt cursor occurrences
     "editor.renderLineHighlight": "all", // highlight current line
     "editor.renderLineHighlightOnlyWhenFocus": false, // always highlight
+    /// EDITOR | CODELENS | GITLENS
+
+    "gitlens.codeLens.symbolScopes": [
+      "!namespace",
+      "!containers",
+      "!blocks",
+      "!enum",
+      "!struct",
+      "!method",
+      "function",
+    ],
   },
   //-------------------------------------------------------------------------
   // #endregion
@@ -275,8 +264,6 @@
   // #region: EDITOR | FILE/LANG ASSOCIATIONS
   //-------------------------------------------------------------------------
   "files.associations": {
-    "*.ps1": "powershell",
-    "*.bash": "shellscript",
     "xiosbase": "cpp",
     "ostream": "cpp",
     "iostream": "cpp",
@@ -295,7 +282,6 @@
     "tuple": "cpp",
     "type_traits": "cpp",
     "xtr1common": "cpp",
-    "*.tcc": "cpp",
     "optional": "cpp",
     "numeric": "cpp",
     "fstream": "cpp",
