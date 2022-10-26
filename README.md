@@ -7,23 +7,18 @@
 >
 > **@[eggheadedmonkey](https://github.com/eggheadedmonkey)**
 
-## **GitHub Codespaces Instructions**
+# **GitHub Codespaces Instructions**
 
-> `assumes your container runs debian`
+> Assumes your container runs **Debian**.
 
-### **BUILD DEPENDENCIES**
+## **BUILD DEPENDENCIES**
 
----
-
-**`CLANG`** - **`POWERSHELL`**
-
----
+- [**`CLANG`**](#clang)
+- [**`POWERSHELL`**](#powershell)
 
 ### **POWERSHELL**
 
----
-
-`setup base environment`
+> Setup the base environment
 
 ```sh
 # fetch latest package meta-data
@@ -32,7 +27,7 @@ sudo apt update
 sudo apt install curl
 ```
 
-`setup repositories`
+> Setup the repositories
 
 ```sh
 # add microsofts gpg keys (important!)
@@ -44,7 +39,7 @@ sudo echo 'deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debia
   > /etc/apt/sources.list.d/microsoft.list
 ```
 
-`setup package`
+> Setup the package
 
 ```sh
 # fetch latest package meta-data (including the new sources/feeds)
@@ -55,8 +50,8 @@ sudo apt install powershell
 
 </br>
 
-> *Read about more methods here...*\
-> *https://docs.microsoft.com/en-us/powershell/scripting/install/install-debian*
+> <sub>*Read about more methods here...*</sub>\
+> <sup>*https://docs.microsoft.com/en-us/powershell/scripting/install/install-debian*</sup>
 
 ---
 
