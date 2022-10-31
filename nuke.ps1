@@ -120,6 +120,13 @@ param (
   #endregion
 )
 
+$Error.Clear()
+
+trap {
+  $Error[-1]
+  $StackTrace
+  $Error.Clear()
+}
 
 #----------------------------------------------------------------------------
 #region namespace log
@@ -150,11 +157,16 @@ function log:feed {
   param (
     [Parameter()]
     [uint]
-    $num = 1
+    $num = 1,
+    [Parameter()]
+    [switch]
+    $tab
   )
 
+  $out = $tab ? "`t" : $null
+
   for ($i = 0; $i -lt $num; $i++) {
-    Write-Host -NoNewline:$false
+    Write-Host -NoNewline:$tab -Object:$out
   }
 }
 
@@ -189,6 +201,7 @@ function log:line {
     $len = 20
   )
 
+  # these parameters cannot be used together (no need for elseif)...
   if ($full) { $len = 76 }
   if ($long) { $len = 57 }
   if ($half) { $len = 38 }
@@ -216,7 +229,7 @@ function log:head {
   log:host -rgb:Yellow   -out:'> '
   log:host -rgb:Blue     -out:$name
   log:host -rgb:DarkCyan -out:':'
-  log:host -rgb:Red      -out:$arch
+  log:host -rgb:DarkBlue -out:$arch
   log:feed -num:1
 }
 
@@ -318,16 +331,15 @@ function dbg:fail {
   log:host -rgb:DarkGray  -out:','
   log:host -rgb:DarkGreen -out:$cn #@ line-number:column-number
   log:host -rgb:Yellow    -out:']'
-  log:host -rgb:Blue      -out:' <'
+  log:host -rgb:DarkGray  -out:' <'
   log:host -rgb:Magenta   -out:'['
   log:host -rgb:Blue      -out:$namespace
   log:host -rgb:Magenta   -out:']'
   log:host -rgb:DarkCyan  -out:$context
-  log:host -rgb:Blue      -out:'> '
+  log:host -rgb:DarkGray  -out:'> '
   log:host -rgb:Red       -out:$message
   log:feed -num:1
 
-  dbg:data:reset # clear $Error
   app:kill -c:((dbg:fail:count) + 1) -fake:(!$critical)
 }
 
@@ -359,10 +371,11 @@ function dbg:eval {
   if (!(dbg:okay))
   {
     dbg:fail -n:$namespace -x:$context -m:$message -critical:$critical
-    #dbg:data:reset
-    #app:kill -c:((dbg:fail:count) + 1) -fake:(!$critcal)
-  } else { dbg:data:reset }
+  } else {
+    $Error.Clear()
+  }
 }
+
 #endregion ------------------------------------------------------------------
 
 
@@ -376,18 +389,14 @@ function dbg:eval {
 $app = @{
   nude = $PSBoundParameters.Count -eq 0
 
-  file = $MyInvocation.MyCommand.Name -as [string]
-# name = script name without extension
-# conf = config(module) file-name
+  file = $MyInvocation.MyCommand.Name
+  name = $MyInvocation.MyCommand.Name.Split('.')[0]
 
   path = @{
     work = $PWD.Path
     full = $PSCommandPath
   }
 }
-
-$app.name = $app.file.Substring(0, $app.file.LastIndexOf('.'))
-$app.conf = $app.name + '.psd1'
 
 #endregion ------------------------------------------------------------------
 
@@ -418,7 +427,9 @@ function app:help {
     log:host -rgb:Red        -out:'$ '
     log:host -rgb:Yellow     -out:$file
     log:host -rgb:DarkYellow -out:' -'
-    log:host -rgb:Yellow     -out:'h '
+    log:host -rgb:Yellow     -out:'h'
+    log:feed -num:1
+    log:host -rgb:Red        -out:'# '
     log:host -rgb:DarkGray   -out:'for more information ...'
     log:feed -num:1
   } elseif ($complete) { local:complete
@@ -437,20 +448,17 @@ function app:info {
     $data
   )
 
-  $num = $data.number
-  $str = $data.name
+  $x = $data.number.split('.')
 
   # numbers
-  log:host -rgb:Blue     -out:$num.Substring(0, $num.indexOf('.'))
+  log:host -rgb:Blue     -out:$x[0]
   log:host -rgb:DarkGray -out:'.'
-  log:host -rgb:Blue     -out:$num.Substring(
-    ($num.indexOf('.') + 1),
-    ($num.LastIndexOf('.') - 2))
+  log:host -rgb:Blue     -out:$x[1]
   log:host -rgb:DarkGray -out:'.'
-  log:host -rgb:Magenta  -out:$num.Substring(($num.LastIndexOf('.') + 1))
+  log:host -rgb:Magenta  -out:$x[2]
   # name
   log:host -rgb:DarkCyan -out:' <'
-  log:host -rgb:DarkGray -out:$str
+  log:host -rgb:DarkGray -out:$data.name
   log:host -rgb:DarkCyan -out:'>'
   log:feed -num:1
 }
@@ -470,7 +478,8 @@ function app:kill {
 
   $Error.Clear()
 
-  if ($VerbosePreference) {
+  if ($VerbosePreference)
+  {
     log:feed -num:1
     log:host -rgb:Red      -out:'$ '
     log:host -rgb:Yellow   -out:'exit'
@@ -503,34 +512,6 @@ function app:keep {
 }
 
 #:SYNOPSIS
-# Returns a list of file-names.
-function app:ls {
-  param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $path,
-    [Parameter()]
-    [switch]
-    $all,
-    [Parameter()]
-    [switch]
-    $critical
-  )
-
-  $list = Get-ChildItem -Name `
-    -Path:$path `
-    -Hidden:$all `
-    -ErrorAction:SilentlyContinue `
-    -ErrorVariable:dbg;dbg:eval `
-    -x:Get-ChildItem `
-    -critical:$critical
-    #-m:'path:',$path `
-    #-critical:$critical #-verbose # verbose testing
-  $list # return the list
-}
-
-#:SYNOPSIS
 # Main functionality (deleter).
 function app:nuke {
   param (
@@ -548,7 +529,7 @@ function app:nuke {
   )
 
   if (!$fake) {
-    Remove-Item -Path:"${path}/${file}" -Force -Recurse #-ErrorAction:SilentlyContinue
+    Remove-Item -Path:"${path}/${file}" -Force -Recurse
   }
 }
 
